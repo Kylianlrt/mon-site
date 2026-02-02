@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>TITRE_DE_LA_PAGE</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>Mon site Linux & Tech</h1>
+    <nav>
+        <a href="index.html">Accueil</a>
+        <a href="about-me.html">À propos</a>
+        <a href="enterprise.html">Entreprise</a>
+        <a href="projects.html">Projets</a>
+        <a href="database.html">Base de Connaissances</a>
+        <a href="blog.html">Blog</a>
+        <a href="videos.html">Vidéos</a>
+        <a href="reviews.html">Avis</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
+
+<main>
+<section class="projects-container">
+
+    <h1>Mes projets et formations</h1>
+
+    <div class="projects-grid">
+        <div class="project-card" onclick="toggleProject('project1')">
+            <h2>Bachelor</h2>
+            <div id="project1" class="project-menu">
+                <ul>
+                    <li><a href="assets/docs/Bachelor1.pdf" target="_blank">Bachelor1.pdf</a></li>
+                    <li><a href="assets/docs/Bachelor2.docx" target="_blank">Bachelor2.docx</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="project-card" onclick="toggleProject('project2')">
+            <h2>BTS</h2>
+            <div id="project2" class="project-menu">
+                <ul>
+                    <li><a href="assets/docs/BTS1.pdf" target="_blank">BTS1.pdf</a></li>
+                    <li><a href="assets/docs/BTS2.docx" target="_blank">BTS2.docx</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="project-card" onclick="toggleProject('project3')">
+            <h2>APRES</h2>
+            <div id="project3" class="project-menu">
+                <ul>
+                    <li><a href="assets/docs/APRES1.pdf" target="_blank">APRES1.pdf</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="project-card" onclick="toggleProject('project4')">
+            <h2>ADES</h2>
+            <div id="project4" class="project-menu">
+                <ul>
+                    <li><a href="assets/docs/ADES1.pdf" target="_blank">ADES1.pdf</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="project-card" onclick="toggleProject('project5')">
+            <h2>Projets Perso</h2>
+            <div id="project5" class="project-menu">
+                <ul>
+                    <li><a href="assets/docs/ProjetPerso1.pdf" target="_blank">ProjetPerso1.pdf</a></li>
+                    <li><a href="assets/docs/ProjetPerso2.docx" target="_blank">ProjetPerso2.docx</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+</main>
+
+<footer>
+    <p>© 2026 – Mon site</p>
+</footer>
+
+</body>
+</html>

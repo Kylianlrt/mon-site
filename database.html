@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>TITRE_DE_LA_PAGE</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>Mon site Linux & Tech</h1>
+    <nav>
+        <a href="index.html">Accueil</a>
+        <a href="about-me.html">À propos</a>
+        <a href="enterprise.html">Entreprise</a>
+        <a href="projects.html">Projets</a>
+        <a href="database.html">Base de Connaissances</a>
+        <a href="blog.html">Blog</a>
+        <a href="videos.html">Vidéos</a>
+        <a href="reviews.html">Avis</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
+<body>
+
+<section class="knowledge-container">
+    <h1>Base de Connaissances</h1>
+
+    <div class="tabs">
+        <button class="tab-button" onclick="openTab('lexique')">Lexique</button>
+        <button class="tab-button" onclick="openTab('article')">Articles</button>
+        <button class="tab-button" onclick="openTab('commande')">Commandes</button>
+    </div>
+
+    <div id="lexique" class="tab-content">
+        <pre>Adresse IP
+Identifiant unique attribué à chaque appareil connecté à un réseau (IPv4/IPv6).
+
+MAC Address
+Adresse physique unique d’une interface réseau (couche liaison).
+
+DNS
+Système de résolution qui traduit des noms de domaine en adresses IP.
+
+DHCP
+Protocole attribuant dynamiquement des adresses IP aux clients.
+
+TCP
+Protocole de transport fiable et orienté connexion.
+
+UDP
+Protocole de transport non connecté et sans garantie de livraison.
+
+... (tous les autres termes que tu as fournis dans ton lexique) ...</pre>
+    </div>
+
+    <div id="article" class="tab-content" style="display:none;">
+        <pre>
+Articles sur la cybersécurité:
+- Article 1: Introduction à la cybersécurité
+- Article 2: Bonnes pratiques pour sécuriser un réseau
+- Article 3: Analyse de menaces avancées
+- Article 4: Sécurité cloud et virtualisation
+- Article 5: Protection contre ransomwares et malware
+        </pre>
+    </div>
+
+    <div id="commande" class="tab-content" style="display:none;">
+        <pre>
+Commandes Linux/Debian:
+ls - Lister les fichiers
+cd - Changer de dossier
+pwd - Afficher le chemin courant
+mkdir - Créer un dossier
+rmdir - Supprimer un dossier vide
+cp - Copier un fichier/dossier
+mv - Déplacer/renommer un fichier
+rm - Supprimer un fichier
+...
+Commandes Windows:
+dir - Lister les fichiers
+cd - Changer de dossier
+md / mkdir - Créer un dossier
+rd / rmdir - Supprimer un dossier
+...
+        </pre>
+    </div>
+
+</section>
+
+<script src="assets/js/knowledge.js"></script>
+
+</body>
+</html>

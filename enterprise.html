@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon site</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>Mon site</h1>
+    <nav>
+        <a href="index.html">Accueil</a>
+        <a href="about-me.html">À propos</a>
+        <a href="enterprise.html">Entreprise</a>
+        <a href="projects.html">Projets</a>
+        <a href="blog.html">Blog</a>
+        <a href="videos.html">Vidéos</a>
+        <a href="reviews.html">Avis</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
+
+<main>
+<section class="enterprise-container">
+
+    <h1>Mes expériences dans les entreprises</h1>
+
+    <div class="enterprise-grid">
+        <div class="enterprise-card" onclick="toggleMenu('menu1')">
+            <h2>Centre APRES</h2>
+            <div id="menu1" class="enterprise-menu">
+                <ul>
+                    <li><a href="#">Informations</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Missions</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="enterprise-card" onclick="toggleMenu('menu2')">
+            <h2>Analyse Décision & Solutions</h2>
+            <div id="menu2" class="enterprise-menu">
+                <ul>
+                    <li><a href="#">Informations</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Missions</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Lien JS séparé -->
+<script src="assets/js/enterprise.js"></script>
+
+</body>
+</main>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
