@@ -2,65 +2,622 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mon site</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Expériences Professionnelles - Kylian Laurent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, 0.03) 2px, rgba(0, 212, 255, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px);
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+            z-index: 1000;
+            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+        }
+
+        /* Burger Menu */
+        .burger {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .burger:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .burger span {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .burger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .burger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 10, 30, 0.98), rgba(0, 30, 60, 0.98));
+            backdrop-filter: blur(20px);
+            padding: 120px 40px 40px;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+            box-shadow: -10px 0 30px rgba(0, 212, 255, 0.2);
+            border-left: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        nav.nav-open {
+            right: 0;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 18px 20px;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        nav a:hover::before {
+            left: 100%;
+        }
+
+        nav a:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-left-color: #00d4ff;
+            padding-left: 30px;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 100px;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .enterprise-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .enterprise-container > h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .enterprise-container > h1::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+        }
+
+        /* Enterprise Grid */
+        .enterprise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        /* Enterprise Card */
+        .enterprise-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .enterprise-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transform: rotate(0deg);
+            transition: transform 0.6s ease;
+        }
+
+        .enterprise-card:hover::before {
+            transform: rotate(180deg);
+        }
+
+        .enterprise-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3),
+                        0 0 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .enterprise-card h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #00d4ff;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .enterprise-card h2::before {
+            content: '▶';
+            font-size: 1.2rem;
+            color: #00ff88;
+            transition: transform 0.3s ease;
+        }
+
+        .enterprise-card.active h2::before {
+            transform: rotate(90deg);
+        }
+
+        /* Enterprise Menu */
+        .enterprise-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .enterprise-menu.active {
+            max-height: 500px;
+        }
+
+        .enterprise-menu ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .enterprise-menu li {
+            margin-bottom: 15px;
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .enterprise-menu.active li {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .enterprise-menu.active li:nth-child(1) { transition-delay: 0.1s; }
+        .enterprise-menu.active li:nth-child(2) { transition-delay: 0.2s; }
+        .enterprise-menu.active li:nth-child(3) { transition-delay: 0.3s; }
+        .enterprise-menu.active li:nth-child(4) { transition-delay: 0.4s; }
+
+        .enterprise-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 3px solid transparent;
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .enterprise-menu a::before {
+            content: '→';
+            color: #00ff88;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .enterprise-menu a::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .enterprise-menu a:hover::after {
+            left: 100%;
+        }
+
+        .enterprise-menu a:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-left-color: #00d4ff;
+            padding-left: 30px;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+            color: #00ff88;
+        }
+
+        .enterprise-menu a:hover::before {
+            transform: translateX(5px);
+        }
+
+        /* Add Enterprise Button */
+        .add-enterprise-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+            border: 2px dashed rgba(0, 212, 255, 0.4);
+            border-radius: 20px;
+            padding: 40px;
+            min-height: 250px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .add-enterprise-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 136, 0.2));
+            border-color: rgba(0, 212, 255, 0.6);
+            transform: scale(1.02);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .add-enterprise-btn::before {
+            content: '+';
+            font-size: 3rem;
+            color: #00ff88;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            nav {
+                width: 100%;
+                right: -100%;
+                padding: 100px 30px 30px;
+            }
+
+            .enterprise-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .enterprise-card {
+                padding: 30px 20px;
+            }
+
+            .enterprise-card h2 {
+                font-size: 1.4rem;
+            }
+
+            .add-enterprise-btn {
+                font-size: 1.2rem;
+                padding: 30px;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .loading {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
 </head>
 <body>
+    <div class="animated-bg"></div>
 
-<header>
-    <h1>Mon site</h1>
-    <nav>
-        <a href="index.html">Accueil</a>
-        <a href="about-me.html">À propos</a>
-        <a href="enterprise.html">Entreprise</a>
-        <a href="projects.html">Projets</a>
-        <a href="database.html">Base de connaissances</a>
-        <a href="blog.html">Blog</a>
-        <a href="videos.html">Vidéos</a>
-        <a href="reviews.html">Avis</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-</header>
+    <!-- Particles -->
+    <script>
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 3 + 1 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.background = Math.random() > 0.5 ? '#00d4ff' : '#00ff88';
+            particle.style.opacity = Math.random() * 0.5;
+            particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+            particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(particle);
+        }
+    </script>
 
-<main>
-<section class="enterprise-container">
-
-    <h1>Mes expériences dans les entreprises</h1>
-
-    <div class="enterprise-grid">
-        <div class="enterprise-card" onclick="toggleMenu('menu1')">
-            <h2>Centre APRES</h2>
-            <div id="menu1" class="enterprise-menu">
-                <ul>
-                    <li><a href="#">Informations</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Missions</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
+    <header>
+        <h1>KYLIAN LAURENT</h1>
+        <div class="burger" id="burger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <nav id="nav-links">
+            <a href="index.html">Accueil</a>
+            <a href="about-me.html">À propos</a>
+            <a href="enterprise.html">Entreprise</a>
+            <a href="projects.html">Projets</a>
+            <a href="database.html">Base de connaissances</a>
+            <a href="formations.html">Formations</a>
+            <a href="videos.html">Vidéos</a>
+            <a href="reviews.html">Avis</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
 
-        <div class="enterprise-card" onclick="toggleMenu('menu2')">
-            <h2>Analyse Décision & Solutions</h2>
-            <div id="menu2" class="enterprise-menu">
-                <ul>
-                    <li><a href="#">Informations</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Missions</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
+    <main>
+        <section class="enterprise-container">
+            <h1>Mes Expériences Professionnelles</h1>
+
+            <div class="enterprise-grid">
+                <!-- Enterprise Card 1 -->
+                <div class="enterprise-card" onclick="toggleMenu('menu1', this)">
+                    <h2>Centre APRES</h2>
+                    <div id="menu1" class="enterprise-menu">
+                        <ul>
+                            <li><a href="#info1">Informations</a></li>
+                            <li><a href="#services1">Services</a></li>
+                            <li><a href="#missions1">Missions</a></li>
+                            <li><a href="#contact1">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Enterprise Card 2 -->
+                <div class="enterprise-card" onclick="toggleMenu('menu2', this)">
+                    <h2>Analyse Décision & Solutions</h2>
+                    <div id="menu2" class="enterprise-menu">
+                        <ul>
+                            <li><a href="#info2">Informations</a></li>
+                            <li><a href="#services2">Services</a></li>
+                            <li><a href="#missions2">Missions</a></li>
+                            <li><a href="#contact2">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Add New Enterprise -->
+                <div class="add-enterprise-btn" onclick="alert('Fonctionnalité à venir : Ajouter une nouvelle entreprise')">
+                    Ajouter une expérience
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-</section>
+    <script>
+        // Burger Menu Toggle
+        const burger = document.getElementById('burger');
+        const navLinks = document.getElementById('nav-links');
 
-<!-- Lien JS séparé -->
-<script src="assets/js/enterprise.js"></script>
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            navLinks.classList.toggle('nav-open');
+        });
 
-</body>
-</main>
+        // Close menu when clicking on a link
+        const links = navLinks.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                burger.classList.remove('active');
+                navLinks.classList.remove('nav-open');
+            });
+        });
 
-<script src="assets/js/main.js"></script>
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !burger.contains(e.target)) {
+                burger.classList.remove('active');
+                navLinks.classList.remove('nav-open');
+            }
+        });
+
+        // Toggle Enterprise Menu
+        function toggleMenu(menuId, card) {
+            const menu = document.getElementById(menuId);
+            const allMenus = document.querySelectorAll('.enterprise-menu');
+            const allCards = document.querySelectorAll('.enterprise-card');
+            
+            // Close all other menus
+            allMenus.forEach(m => {
+                if (m.id !== menuId) {
+                    m.classList.remove('active');
+                }
+            });
+            
+            // Remove active class from all cards
+            allCards.forEach(c => {
+                if (c !== card) {
+                    c.classList.remove('active');
+                }
+            });
+            
+            // Toggle current menu and card
+            menu.classList.toggle('active');
+            card.classList.toggle('active');
+            
+            // Prevent event bubbling
+            event.stopPropagation();
+        }
+
+        // Prevent menu links from toggling the card
+        document.querySelectorAll('.enterprise-menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+    </script>
 </body>
 </html>

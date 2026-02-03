@@ -2,93 +2,1034 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>TITRE_DE_LA_PAGE</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Connaissances - Kylian Laurent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, 0.03) 2px, rgba(0, 212, 255, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px);
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+            z-index: 1000;
+            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+        }
+
+        /* Burger Menu */
+        .burger {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .burger:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .burger span {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .burger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .burger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 10, 30, 0.98), rgba(0, 30, 60, 0.98));
+            backdrop-filter: blur(20px);
+            padding: 120px 40px 40px;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+            box-shadow: -10px 0 30px rgba(0, 212, 255, 0.2);
+            border-left: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        nav.nav-open {
+            right: 0;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 18px 20px;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        nav a:hover::before {
+            left: 100%;
+        }
+
+        nav a:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-left-color: #00d4ff;
+            padding-left: 30px;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 100px;
+            padding: 40px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .knowledge-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .knowledge-container > h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .knowledge-container > h1::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 18px 50px 18px 25px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.08);
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+            color: #00d4ff;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 60px 0 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 15px 35px;
+            background: rgba(0, 212, 255, 0.08);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .tab-button:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 255, 136, 0.3));
+            border-color: #00d4ff;
+            color: #00ff88;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Term Cards */
+        .term-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .term-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .term-card:hover::before {
+            left: 100%;
+        }
+
+        .term-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .term-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .term-description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Command Blocks */
+        .command-section {
+            margin-bottom: 40px;
+        }
+
+        .command-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #00ff88;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .command-item {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .command-item:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+        }
+
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .command-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.2rem;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            padding: 8px 20px;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            border-radius: 20px;
+            color: #00ff88;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .command-code {
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            color: #00ff88;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #00d4ff;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .command-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Article Cards */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .article-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transform: rotate(0deg);
+            transition: transform 0.6s ease;
+        }
+
+        .article-card:hover::before {
+            transform: rotate(180deg);
+        }
+
+        .article-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+            transform: translateY(-8px);
+        }
+
+        .article-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .article-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .article-preview {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            nav {
+                width: 100%;
+                right: -100%;
+                padding: 100px 30px 30px;
+            }
+
+            .tabs {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .tab-button {
+                width: 100%;
+            }
+
+            .article-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .command-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .copy-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="animated-bg"></div>
 
-<header>
-    <h1>Mon site Linux & Tech</h1>
-    <nav>
-        <a href="index.html">Accueil</a>
-        <a href="about-me.html">À propos</a>
-        <a href="enterprise.html">Entreprise</a>
-        <a href="projects.html">Projets</a>
-        <a href="database.html">Base de Connaissances</a>
-        <a href="blog.html">Blog</a>
-        <a href="videos.html">Vidéos</a>
-        <a href="reviews.html">Avis</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-</header>
-<body>
+    <!-- Particles -->
+    <script>
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 3 + 1 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.background = Math.random() > 0.5 ? '#00d4ff' : '#00ff88';
+            particle.style.opacity = Math.random() * 0.5;
+            particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+            particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(particle);
+        }
+    </script>
 
-<section class="knowledge-container">
-    <h1>Base de Connaissances</h1>
+    <header>
+        <h1>KYLIAN LAURENT</h1>
+        <div class="burger" id="burger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav id="nav-links">
+            <a href="index.html">Accueil</a>
+            <a href="about-me.html">À propos</a>
+            <a href="enterprise.html">Entreprise</a>
+            <a href="projects.html">Projets</a>
+            <a href="database.html">Base de connaissances</a>
+            <a href="formations.html">Formations</a>
+            <a href="videos.html">Vidéos</a>
+            <a href="reviews.html">Avis</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
 
-    <div class="tabs">
-        <button class="tab-button" onclick="openTab('lexique')">Lexique</button>
-        <button class="tab-button" onclick="openTab('article')">Articles</button>
-        <button class="tab-button" onclick="openTab('commande')">Commandes</button>
-    </div>
+    <main>
+        <section class="knowledge-container">
+            <h1>Base de Connaissances</h1>
 
-    <div id="lexique" class="tab-content">
-        <pre>Adresse IP
-Identifiant unique attribué à chaque appareil connecté à un réseau (IPv4/IPv6).
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" class="search-bar" id="searchBar" placeholder="🔍 Rechercher un terme, une commande ou un article...">
+                <span class="search-icon">⚡</span>
+            </div>
 
-MAC Address
-Adresse physique unique d’une interface réseau (couche liaison).
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab('lexique')">📚 Lexique</button>
+                <button class="tab-button" onclick="openTab('article')">📰 Articles</button>
+                <button class="tab-button" onclick="openTab('commande')">⌨️ Commandes</button>
+            </div>
 
-DNS
-Système de résolution qui traduit des noms de domaine en adresses IP.
+            <!-- Lexique Tab -->
+            <div id="lexique" class="tab-content active">
+                <div class="term-card">
+                    <div class="term-title">Adresse IP</div>
+                    <div class="term-description">Identifiant unique attribué à chaque appareil connecté à un réseau (IPv4/IPv6).</div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-title">MAC Address</div>
+                    <div class="term-description">Adresse physique unique d'une interface réseau (couche liaison).</div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-title">DNS</div>
+                    <div class="term-description">Système de résolution qui traduit des noms de domaine en adresses IP.</div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-title">DHCP</div>
+                    <div class="term-description">Protocole attribuant dynamiquement des adresses IP aux clients.</div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-title">TCP</div>
+                    <div class="term-description">Protocole de transport fiable et orienté connexion.</div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-title">UDP</div>
+                    <div class="term-description">Protocole de transport non connecté et sans garantie de livraison.</div>
+                </div>
 
-DHCP
-Protocole attribuant dynamiquement des adresses IP aux clients.
+                <div class="term-card">
+                    <div class="term-title">Firewall</div>
+                    <div class="term-description">Système de sécurité réseau qui contrôle le trafic entrant et sortant selon des règles prédéfinies.</div>
+                </div>
 
-TCP
-Protocole de transport fiable et orienté connexion.
+                <div class="term-card">
+                    <div class="term-title">VPN</div>
+                    <div class="term-description">Réseau privé virtuel permettant une connexion sécurisée et chiffrée sur Internet.</div>
+                </div>
 
-UDP
-Protocole de transport non connecté et sans garantie de livraison.
+                <div class="term-card">
+                    <div class="term-title">SSH</div>
+                    <div class="term-description">Protocole de communication sécurisé pour l'accès distant à un système.</div>
+                </div>
 
-... (tous les autres termes que tu as fournis dans ton lexique) ...</pre>
-    </div>
+                <div class="term-card">
+                    <div class="term-title">SSL/TLS</div>
+                    <div class="term-description">Protocoles cryptographiques assurant la sécurité des communications sur Internet.</div>
+                </div>
+            </div>
 
-    <div id="article" class="tab-content" style="display:none;">
-        <pre>
-Articles sur la cybersécurité:
-- Article 1: Introduction à la cybersécurité
-- Article 2: Bonnes pratiques pour sécuriser un réseau
-- Article 3: Analyse de menaces avancées
-- Article 4: Sécurité cloud et virtualisation
-- Article 5: Protection contre ransomwares et malware
-        </pre>
-    </div>
+            <!-- Articles Tab -->
+            <div id="article" class="tab-content">
+                <div class="article-grid">
+                    <div class="article-card">
+                        <div class="article-number">Article #1</div>
+                        <div class="article-title">Introduction à la Cybersécurité</div>
+                        <div class="article-preview">Découvrez les fondamentaux de la cybersécurité, les menaces courantes et les bonnes pratiques pour protéger vos systèmes informatiques.</div>
+                    </div>
 
-    <div id="commande" class="tab-content" style="display:none;">
-        <pre>
-Commandes Linux/Debian:
-ls - Lister les fichiers
-cd - Changer de dossier
-pwd - Afficher le chemin courant
-mkdir - Créer un dossier
-rmdir - Supprimer un dossier vide
-cp - Copier un fichier/dossier
-mv - Déplacer/renommer un fichier
-rm - Supprimer un fichier
-...
-Commandes Windows:
-dir - Lister les fichiers
-cd - Changer de dossier
-md / mkdir - Créer un dossier
-rd / rmdir - Supprimer un dossier
-...
-        </pre>
-    </div>
+                    <div class="article-card">
+                        <div class="article-number">Article #2</div>
+                        <div class="article-title">Bonnes Pratiques Réseau</div>
+                        <div class="article-preview">Guide complet pour sécuriser efficacement votre infrastructure réseau et mettre en place des règles de sécurité robustes.</div>
+                    </div>
 
-</section>
+                    <div class="article-card">
+                        <div class="article-number">Article #3</div>
+                        <div class="article-title">Analyse de Menaces Avancées</div>
+                        <div class="article-preview">Techniques d'analyse et de détection des menaces sophistiquées, incluant les APT et les attaques zero-day.</div>
+                    </div>
 
-<script src="assets/js/knowledge.js"></script>
+                    <div class="article-card">
+                        <div class="article-number">Article #4</div>
+                        <div class="article-title">Sécurité Cloud & Virtualisation</div>
+                        <div class="article-preview">Stratégies de sécurisation des environnements cloud et des infrastructures virtualisées modernes.</div>
+                    </div>
 
+                    <div class="article-card">
+                        <div class="article-number">Article #5</div>
+                        <div class="article-title">Protection Anti-Ransomware</div>
+                        <div class="article-preview">Méthodes de prévention, détection et récupération face aux attaques par ransomware et malware.</div>
+                    </div>
+
+                    <div class="article-card">
+                        <div class="article-number">Article #6</div>
+                        <div class="article-title">Pentest & Red Team</div>
+                        <div class="article-description">Méthodologies de tests d'intrusion et exercices Red Team pour évaluer la sécurité de vos systèmes.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commandes Tab -->
+            <div id="commande" class="tab-content">
+                <div class="command-section">
+                    <h3>🐧 Commandes Linux/Debian</h3>
+                    
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">ls</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'ls')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">ls</div>
+                        <div class="command-description">Lister les fichiers et dossiers du répertoire courant</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">cd</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'cd /chemin/vers/dossier')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">cd /chemin/vers/dossier</div>
+                        <div class="command-description">Changer de répertoire</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">pwd</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'pwd')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">pwd</div>
+                        <div class="command-description">Afficher le chemin absolu du répertoire courant</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">mkdir</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'mkdir nom_du_dossier')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">mkdir nom_du_dossier</div>
+                        <div class="command-description">Créer un nouveau dossier</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">rm</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'rm fichier.txt')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">rm fichier.txt</div>
+                        <div class="command-description">Supprimer un fichier</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">cp</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'cp source.txt destination.txt')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">cp source.txt destination.txt</div>
+                        <div class="command-description">Copier un fichier ou dossier</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">mv</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'mv ancien.txt nouveau.txt')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">mv ancien.txt nouveau.txt</div>
+                        <div class="command-description">Déplacer ou renommer un fichier</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">chmod</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'chmod 755 script.sh')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">chmod 755 script.sh</div>
+                        <div class="command-description">Modifier les permissions d'un fichier</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">sudo apt update</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'sudo apt update && sudo apt upgrade -y')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">sudo apt update && sudo apt upgrade -y</div>
+                        <div class="command-description">Mettre à jour les paquets système</div>
+                    </div>
+                </div>
+
+                <div class="command-section">
+                    <h3>🪟 Commandes Windows</h3>
+                    
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">dir</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'dir')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">dir</div>
+                        <div class="command-description">Lister les fichiers et dossiers</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">cd</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'cd C:\\Users\\Documents')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">cd C:\Users\Documents</div>
+                        <div class="command-description">Changer de répertoire</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">mkdir</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'mkdir nouveau_dossier')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">mkdir nouveau_dossier</div>
+                        <div class="command-description">Créer un nouveau dossier</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">del</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'del fichier.txt')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">del fichier.txt</div>
+                        <div class="command-description">Supprimer un fichier</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">ipconfig</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'ipconfig /all')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">ipconfig /all</div>
+                        <div class="command-description">Afficher la configuration réseau</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">netstat</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'netstat -ano')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">netstat -ano</div>
+                        <div class="command-description">Afficher les connexions réseau actives</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-header">
+                            <span class="command-name">tasklist</span>
+                            <button class="copy-btn" onclick="copyCommand(this, 'tasklist')">
+                                <span>📋</span> Copier
+                            </button>
+                        </div>
+                        <div class="command-code">tasklist</div>
+                        <div class="command-description">Lister tous les processus en cours</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Burger Menu Toggle
+        const burger = document.getElementById('burger');
+        const navLinks = document.getElementById('nav-links');
+
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            navLinks.classList.toggle('nav-open');
+        });
+
+        // Close menu when clicking on a link
+        const links = navLinks.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                burger.classList.remove('active');
+                navLinks.classList.remove('nav-open');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !burger.contains(e.target)) {
+                burger.classList.remove('active');
+                navLinks.classList.remove('nav-open');
+            }
+        });
+
+        // Tab Switching
+        function openTab(tabName) {
+            // Hide all tabs
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Copy Command Function
+        function copyCommand(button, command) {
+            navigator.clipboard.writeText(command).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span>✅</span> Copié !';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Search Functionality
+        const searchBar = document.getElementById('searchBar');
+        searchBar.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            // Search in lexique
+            const termCards = document.querySelectorAll('.term-card');
+            termCards.forEach(card => {
+                const title = card.querySelector('.term-title').textContent.toLowerCase();
+                const description = card.querySelector('.term-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Search in commands
+            const commandItems = document.querySelectorAll('.command-item');
+            commandItems.forEach(item => {
+                const name = item.querySelector('.command-name').textContent.toLowerCase();
+                const description = item.querySelector('.command-description').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Search in articles
+            const articleCards = document.querySelectorAll('.article-card');
+            articleCards.forEach(card => {
+                const title = card.querySelector('.article-title').textContent.toLowerCase();
+                const preview = card.querySelector('.article-preview').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || preview.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
