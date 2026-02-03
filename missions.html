@@ -48,223 +48,6 @@
             100% { transform: translate(50px, 50px); }
         }
 
-        /* Admin Login Modal */
-        .admin-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .admin-modal.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .admin-login-box {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 255, 136, 0.08));
-            border: 2px solid rgba(0, 212, 255, 0.4);
-            border-radius: 25px;
-            padding: 50px 40px;
-            max-width: 450px;
-            width: 90%;
-            backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
-            animation: slideDown 0.4s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .admin-login-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            animation: rotate-gradient 8s linear infinite;
-        }
-
-        @keyframes rotate-gradient {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .admin-login-header {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .admin-login-header h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            color: #00d4ff;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .admin-login-header p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1rem;
-        }
-
-        .admin-form {
-            position: relative;
-            z-index: 1;
-        }
-
-        .admin-form-group {
-            margin-bottom: 20px;
-        }
-
-        .admin-form-group label {
-            display: block;
-            color: #00ff88;
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .admin-form-group input {
-            width: 100%;
-            background: rgba(0, 212, 255, 0.08);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 12px;
-            padding: 12px 18px;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .admin-form-group input:focus {
-            border-color: #00d4ff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-            background: rgba(0, 212, 255, 0.12);
-        }
-
-        .admin-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn-admin-login {
-            flex: 1;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            border: none;
-            border-radius: 12px;
-            padding: 14px;
-            color: #0a0e27;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 25px rgba(0, 212, 255, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-admin-login::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-
-        .btn-admin-login:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-admin-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 35px rgba(0, 212, 255, 0.6);
-        }
-
-        .btn-admin-cancel {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 14px;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-admin-cancel:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .admin-error {
-            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 69, 58, 0.3));
-            border: 1px solid rgba(255, 59, 48, 0.5);
-            color: #ff3b30;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-            text-align: center;
-            font-weight: 600;
-            display: none;
-            animation: shake 0.5s ease;
-        }
-
-        .admin-error.show {
-            display: block;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
         /* Container */
         .container {
             max-width: 1400px;
@@ -309,39 +92,6 @@
 
         .btn-back:hover .arrow {
             transform: translateX(-3px);
-        }
-
-        /* Admin Button */
-        .btn-admin {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 255, 136, 0.15));
-            border: 2px solid rgba(0, 212, 255, 0.4);
-            border-radius: 12px;
-            padding: 12px 25px;
-            color: #00d4ff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-admin:hover {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 255, 136, 0.25));
-            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .btn-admin.admin-mode {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 255, 0.2));
-            border-color: #00ff88;
-            color: #00ff88;
         }
 
         /* Header */
@@ -424,6 +174,11 @@
             transition: opacity 0.4s ease;
         }
 
+        @keyframes rotate-gradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .stat-card:hover::before {
             opacity: 1;
         }
@@ -455,162 +210,6 @@
             font-weight: 500;
             position: relative;
             z-index: 1;
-        }
-
-        /* Add Mission Form */
-        .add-mission-section {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 25px;
-            padding: 50px;
-            margin-bottom: 60px;
-            backdrop-filter: blur(15px);
-            position: relative;
-            overflow: hidden;
-            display: none;
-        }
-
-        .add-mission-section.admin-active {
-            display: block;
-            animation: slideInDown 0.5s ease;
-        }
-
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .add-mission-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-            animation: slide-line 4s linear infinite;
-        }
-
-        @keyframes slide-line {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .add-mission-section h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem;
-            color: #00d4ff;
-            margin-bottom: 35px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-align: center;
-        }
-
-        .mission-form {
-            display: grid;
-            gap: 25px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .form-group label {
-            color: #00ff88;
-            font-weight: 600;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            background: rgba(0, 212, 255, 0.08);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 12px;
-            padding: 15px 20px;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            border-color: #00d4ff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-            background: rgba(0, 212, 255, 0.12);
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-group select {
-            cursor: pointer;
-        }
-
-        .btn-add {
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            border: none;
-            border-radius: 15px;
-            padding: 18px 50px;
-            color: #0a0e27;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 25px rgba(0, 212, 255, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-add::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-
-        .btn-add:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-add:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 35px rgba(0, 212, 255, 0.6);
-        }
-
-        .btn-add:active {
-            transform: translateY(-1px);
         }
 
         /* Missions List */
@@ -726,10 +325,34 @@
             color: #00ff88;
         }
 
+        .badge-status.en-cours {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.3));
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            color: #00d4ff;
+        }
+
+        .badge-status.en-attente {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.3));
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            color: #ffd54f;
+        }
+
         .badge-priority {
             background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.3));
             border: 1px solid rgba(255, 193, 7, 0.5);
             color: #ffd54f;
+        }
+
+        .badge-priority.haute {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 69, 58, 0.3));
+            border: 1px solid rgba(255, 59, 48, 0.5);
+            color: #ff6b6b;
+        }
+
+        .badge-priority.basse {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.3));
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            color: #00ff88;
         }
 
         .mission-meta {
@@ -768,42 +391,6 @@
             margin-bottom: 20px;
         }
 
-        .mission-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            display: none;
-        }
-
-        .mission-actions.admin-active {
-            display: flex;
-        }
-
-        .btn {
-            padding: 10px 25px;
-            border-radius: 10px;
-            border: none;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 69, 58, 0.3));
-            border: 1px solid rgba(255, 59, 48, 0.5);
-            color: #ff3b30;
-        }
-
-        .btn-delete:hover {
-            background: linear-gradient(135deg, rgba(255, 59, 48, 0.3), rgba(255, 69, 58, 0.4));
-            box-shadow: 0 5px 20px rgba(255, 59, 48, 0.4);
-            transform: translateY(-2px);
-        }
-
         .empty-state {
             text-align: center;
             padding: 80px 40px;
@@ -832,27 +419,12 @@
                 font-size: 0.9rem;
             }
 
-            .btn-admin {
-                top: 20px;
-                right: 20px;
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-
             .page-header h1 {
                 font-size: 2rem;
             }
 
             .page-header p {
                 font-size: 1rem;
-            }
-
-            .add-mission-section {
-                padding: 30px 20px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
             }
 
             .mission-card {
@@ -878,40 +450,10 @@
         <span>Retour</span>
     </a>
 
-    <!-- Admin Login Modal -->
-    <div class="admin-modal" id="adminModal">
-        <div class="admin-login-box">
-            <div class="admin-login-header">
-                <h2>🔐 Mode Admin</h2>
-                <p>Entrez le mot de passe administrateur</p>
-            </div>
-            <form class="admin-form" id="adminForm">
-                <div class="admin-form-group">
-                    <label for="adminPassword">Mot de passe</label>
-                    <input type="password" id="adminPassword" placeholder="••••••••" required autofocus>
-                </div>
-                <div class="admin-buttons">
-                    <button type="submit" class="btn-admin-login">
-                        <span style="position: relative; z-index: 1;">Connexion</span>
-                    </button>
-                    <button type="button" class="btn-admin-cancel" id="adminCancel">
-                        Annuler
-                    </button>
-                </div>
-                <div class="admin-error" id="adminError">
-                    ❌ Mot de passe incorrect
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Admin Toggle Button -->
-    <button class="btn-admin" id="adminBtn">🔒 Mode Admin</button>
-
     <div class="container">
         <header class="page-header">
             <h1>Mission Tracker</h1>
-            <p>Portfolio de mes missions d'alternance</p>
+            <p>Mes missions d'alternance</p>
         </header>
 
         <!-- Stats -->
@@ -934,60 +476,6 @@
             </div>
         </div>
 
-        <!-- Add Mission Form (Admin Only) -->
-        <section class="add-mission-section" id="addMissionSection">
-            <h2>➕ Nouvelle Mission</h2>
-            <form class="mission-form" id="missionForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="missionTitle">Titre de la Mission *</label>
-                        <input type="text" id="missionTitle" placeholder="Ex: Développement d'une API REST" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="missionStatus">Statut *</label>
-                        <select id="missionStatus" required>
-                            <option value="En cours">🔄 En cours</option>
-                            <option value="Terminée">✅ Terminée</option>
-                            <option value="En attente">⏸️ En attente</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="missionStartDate">Date de Début *</label>
-                        <input type="date" id="missionStartDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="missionEndDate">Date de Fin</label>
-                        <input type="date" id="missionEndDate">
-                    </div>
-                    <div class="form-group">
-                        <label for="missionPriority">Priorité *</label>
-                        <select id="missionPriority" required>
-                            <option value="Haute">🔴 Haute</option>
-                            <option value="Moyenne">🟡 Moyenne</option>
-                            <option value="Basse">🟢 Basse</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="missionDescription">Description de la Mission *</label>
-                    <textarea id="missionDescription" placeholder="Décrivez les objectifs, les technologies utilisées, les résultats obtenus..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="missionTechnologies">Technologies Utilisées</label>
-                    <input type="text" id="missionTechnologies" placeholder="Ex: React, Node.js, PostgreSQL...">
-                </div>
-
-                <button type="submit" class="btn-add">
-                    <span style="position: relative; z-index: 1;">Ajouter la Mission</span>
-                </button>
-            </form>
-        </section>
-
         <!-- Missions List -->
         <section>
             <h2 class="missions-header">📋 Mes Missions</h2>
@@ -1001,112 +489,36 @@
     </div>
 
     <script>
-        // CONFIGURATION - CHANGEZ CE MOT DE PASSE !
-        const ADMIN_PASSWORD = 'Kykybad31';
-
-        // Storage management
-        let missions = JSON.parse(localStorage.getItem('missions')) || [];
-        let isAdminMode = false;
+        // Missions pré-chargées - UN SEUL TABLEAU AVEC LES DEUX MISSIONS
+        const missions = [
+            {
+                id: 1,
+                title: "Installation d'un serveur GLPI",
+                status: "Terminée",
+                startDate: "2024-10-16",
+                endDate: "2024-10-16",
+                priority: "Moyenne",
+                description: "Installation d'un serveur GLPI afin de pouvoir faire l'inventaire de l'hardware détenue par l'association. Configuration complète du serveur avec intégration à l'infrastructure existante.",
+                technologies: "HyperV / Debian 12 / Apache2 / MariaDB",
+                createdAt: new Date("2024-10-16").toISOString()
+            },
+            {
+                id: 2,
+                title: "Suivi et documentation de l'AD",
+                status: "Terminée",
+                startDate: "2024-10-06",
+                endDate: "2024-11-16",
+                priority: "Moyenne",
+                description: "J'ai regardé les points de faiblesse de l'Active Directory et j'ai rendu une documentation à ma hiérarchie.",
+                technologies: "Windows Server / Active Directory / GPO / Groupes de sécurité",
+                createdAt: new Date("2024-10-06").toISOString()
+            }
+        ];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             displayMissions();
             updateStats();
-        });
-
-        // Admin button click
-        document.getElementById('adminBtn').addEventListener('click', () => {
-            if (isAdminMode) {
-                // Logout
-                exitAdminMode();
-            } else {
-                // Show login modal
-                document.getElementById('adminModal').classList.add('active');
-                document.getElementById('adminPassword').focus();
-            }
-        });
-
-        // Admin login form
-        document.getElementById('adminForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('adminPassword').value;
-            
-            if (password === ADMIN_PASSWORD) {
-                enterAdminMode();
-                document.getElementById('adminModal').classList.remove('active');
-                document.getElementById('adminError').classList.remove('show');
-                document.getElementById('adminPassword').value = '';
-            } else {
-                document.getElementById('adminError').classList.add('show');
-                document.getElementById('adminPassword').value = '';
-                document.getElementById('adminPassword').focus();
-            }
-        });
-
-        // Admin cancel button
-        document.getElementById('adminCancel').addEventListener('click', () => {
-            document.getElementById('adminModal').classList.remove('active');
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminError').classList.remove('show');
-        });
-
-        // Close modal on outside click
-        document.getElementById('adminModal').addEventListener('click', (e) => {
-            if (e.target.id === 'adminModal') {
-                document.getElementById('adminModal').classList.remove('active');
-                document.getElementById('adminPassword').value = '';
-                document.getElementById('adminError').classList.remove('show');
-            }
-        });
-
-        function enterAdminMode() {
-            isAdminMode = true;
-            document.getElementById('adminBtn').textContent = '🔓 Quitter Admin';
-            document.getElementById('adminBtn').classList.add('admin-mode');
-            document.getElementById('addMissionSection').classList.add('admin-active');
-            document.querySelectorAll('.mission-actions').forEach(el => {
-                el.classList.add('admin-active');
-            });
-        }
-
-        function exitAdminMode() {
-            isAdminMode = false;
-            document.getElementById('adminBtn').textContent = '🔒 Mode Admin';
-            document.getElementById('adminBtn').classList.remove('admin-mode');
-            document.getElementById('addMissionSection').classList.remove('admin-active');
-            document.querySelectorAll('.mission-actions').forEach(el => {
-                el.classList.remove('admin-active');
-            });
-        }
-
-        // Mission form submission
-        document.getElementById('missionForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const mission = {
-                id: Date.now(),
-                title: document.getElementById('missionTitle').value,
-                status: document.getElementById('missionStatus').value,
-                startDate: document.getElementById('missionStartDate').value,
-                endDate: document.getElementById('missionEndDate').value || null,
-                priority: document.getElementById('missionPriority').value,
-                description: document.getElementById('missionDescription').value,
-                technologies: document.getElementById('missionTechnologies').value,
-                createdAt: new Date().toISOString()
-            };
-
-            missions.unshift(mission);
-            localStorage.setItem('missions', JSON.stringify(missions));
-            
-            // Reset form
-            e.target.reset();
-            
-            // Update display
-            displayMissions();
-            updateStats();
-            
-            // Scroll to missions list
-            document.getElementById('missionsList').scrollIntoView({ behavior: 'smooth' });
         });
 
         // Display missions
@@ -1125,13 +537,16 @@
 
             container.innerHTML = missions.map((mission, index) => {
                 const duration = calculateDuration(mission.startDate, mission.endDate);
+                const statusClass = mission.status.toLowerCase().replace(/é/g, 'e').replace(/ /g, '-');
+                const priorityClass = mission.priority.toLowerCase();
+                
                 return `
                     <div class="mission-card" style="animation-delay: ${index * 0.1}s">
                         <div class="mission-header">
                             <h3 class="mission-title">${mission.title}</h3>
                             <div class="mission-badges">
-                                <span class="badge badge-status">${mission.status}</span>
-                                <span class="badge badge-priority">${mission.priority}</span>
+                                <span class="badge badge-status ${statusClass}">${mission.status}</span>
+                                <span class="badge badge-priority ${priorityClass}">${mission.priority}</span>
                             </div>
                         </div>
                         
@@ -1146,7 +561,7 @@
                             </div>
                             <div class="meta-item">
                                 <span class="meta-label">Durée</span>
-                                <span class="meta-value">${duration} jours</span>
+                                <span class="meta-value">${duration} jour${duration > 1 ? 's' : ''}</span>
                             </div>
                             ${mission.technologies ? `
                             <div class="meta-item">
@@ -1157,27 +572,9 @@
                         </div>
                         
                         <p class="mission-description">${mission.description}</p>
-                        
-                        <div class="mission-actions ${isAdminMode ? 'admin-active' : ''}">
-                            <button class="btn btn-delete" onclick="deleteMission(${mission.id})">
-                                🗑️ Supprimer
-                            </button>
-                        </div>
                     </div>
                 `;
             }).join('');
-        }
-
-        // Delete mission
-        function deleteMission(id) {
-            if (!isAdminMode) return;
-            
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette mission ?')) {
-                missions = missions.filter(m => m.id !== id);
-                localStorage.setItem('missions', JSON.stringify(missions));
-                displayMissions();
-                updateStats();
-            }
         }
 
         // Update stats
