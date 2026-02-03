@@ -1,0 +1,650 @@
+Download center · HTML
+Copier
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centre de Téléchargement - Kylian Laurent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', 'Orbitron', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .video-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+        }
+
+        /* Menu Burger */
+        .burger-menu {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .burger-menu:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.8);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .burger-menu span {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .burger-menu.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .burger-menu.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .burger-menu.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Menu Navigation */
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 10, 30, 0.98), rgba(0, 30, 60, 0.98));
+            backdrop-filter: blur(20px);
+            padding: 120px 40px 40px 40px;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+            box-shadow: -10px 0 30px rgba(0, 212, 255, 0.2);
+            border-left: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .nav-menu.active {
+            right: 0;
+        }
+
+        .nav-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 18px 20px;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-menu a:hover::before {
+            left: 100%;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-left-color: #00d4ff;
+            padding-left: 30px;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+        }
+
+        /* Effet de scan futuriste sur le menu */
+        .nav-menu::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* Grille futuriste */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Particules flottantes */
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: #00d4ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00d4ff;
+            animation: float 10s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Contenu Principal */
+        .main-content {
+            min-height: 100vh;
+            padding: 120px 20px 60px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88, #00d4ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            position: relative;
+        }
+
+        .page-title::before {
+            content: '🚀 Centre de Téléchargement';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(20px);
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .page-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #00d4ff;
+            font-weight: 300;
+        }
+
+        /* Grille de cartes */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Cartes */
+        .download-card {
+            background: linear-gradient(135deg, rgba(0, 10, 30, 0.8), rgba(0, 30, 60, 0.8));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.05), transparent);
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .download-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.4);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #00d4ff;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: center;
+            min-height: 50px;
+        }
+
+        /* Bouton de téléchargement */
+        .download-button {
+            display: block;
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 136, 0.2));
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            border-radius: 50px;
+            color: #00d4ff;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .download-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .download-button:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(0, 255, 136, 0.4));
+            border-color: rgba(0, 212, 255, 0.8);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .download-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 1;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .burger-menu {
+                top: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+
+            .nav-menu {
+                width: 100%;
+                right: -100%;
+                padding: 100px 30px 30px 30px;
+            }
+
+            .main-content {
+                padding: 100px 15px 40px 15px;
+            }
+
+            .page-header {
+                margin-bottom: 40px;
+            }
+
+            .page-title {
+                letter-spacing: 3px;
+            }
+
+            .page-subtitle {
+                letter-spacing: 2px;
+            }
+
+            .downloads-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 10px;
+            }
+
+            .download-card {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .download-card {
+                padding: 20px;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+            }
+
+            .download-button {
+                padding: 12px 25px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="5483085-uhd_4096_2160_25fps.mp4" type="video/mp4">
+            Votre navigateur ne supporte pas la vidéo.
+        </video>
+    </div>
+
+    <!-- Grille futuriste -->
+    <div class="grid-overlay"></div>
+
+    <!-- Particules -->
+    <script>
+        // Créer des particules flottantes
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            document.body.appendChild(particle);
+        }
+    </script>
+
+    <!-- Menu Burger -->
+    <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Menu Navigation -->
+    <nav class="nav-menu" id="navMenu">
+        <a href="index.html">Accueil</a>
+        <a href="about-me.html">À propos</a>
+        <a href="enterprise.html">Entreprise</a>
+        <a href="projects.html">Projets</a>
+        <a href="database.html">Base de connaissances</a>
+        <a href="formations.html">Formations</a>
+        <a href="logiciels.html">Logiciels</a>
+        <a href="reviews.html">Avis</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">🚀 Centre de Téléchargement</h1>
+            <p class="page-subtitle">Applications, outils et ISO</p>
+        </header>
+
+        <div class="downloads-grid">
+            <div class="download-card">
+                <h2 class="card-title">Debian 13 ISO</h2>
+                <p class="card-description">Image officielle netinstall AMD64</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">Windows 11 ISO</h2>
+                <p class="card-description">Version bootable ISO (64-bit)</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">pfSense ISO</h2>
+                <p class="card-description">Distribution firewall et routeur open source</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">Proxmox</h2>
+                <p class="card-description">Image officielle de la plateforme de virtualisation libre basée sur l'hyperviseur Linux</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">WinDirStat</h2>
+                <p class="card-description">Analyseur d'espace disque pour Windows</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">Visual Studio Code</h2>
+                <p class="card-description">Éditeur de code moderne et puissant</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">RustDesk</h2>
+                <p class="card-description">Logiciel de bureau à distance open source</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">Google Play Jeux</h2>
+                <p class="card-description">Jouez à vos jeux Android préférés sur PC</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">TranslucentTB</h2>
+                <p class="card-description">La personnalisation unique de la barre des tâches</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+
+            <div class="download-card">
+                <h2 class="card-title">Python</h2>
+                <p class="card-description">Commencez à coder en quelques minutes</p>
+                <a href="#" class="download-button">
+                    <span>⬇ Télécharger</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 Kylian Laurent - Portfolio Futuriste
+    </footer>
+
+    <script>
+        // Gestion du menu burger
+        const burgerMenu = document.getElementById('burgerMenu');
+        const navMenu = document.getElementById('navMenu');
+
+        burgerMenu.addEventListener('click', () => {
+            burgerMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Fermer le menu en cliquant sur un lien
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                burgerMenu.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Fermer le menu en cliquant en dehors
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !burgerMenu.contains(e.target)) {
+                burgerMenu.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+
+        // Effet de ripple sur les boutons de téléchargement
+        const downloadButtons = document.querySelectorAll('.download-button');
+        downloadButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Ici vous pouvez ajouter la logique de téléchargement
+                console.log('Téléchargement de:', button.closest('.download-card').querySelector('.card-title').textContent);
+            });
+        });
+    </script>
+</body>
+</html>
