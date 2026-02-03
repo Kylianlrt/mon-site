@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informations - Mon Alternance</title>
+    <title>Mission Tracker - Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -48,142 +48,236 @@
             100% { transform: translate(50px, 50px); }
         }
 
-        /* Header */
-        header {
+        /* Admin Login Modal */
+        .admin-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
-            z-index: 1000;
-            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.1);
-        }
-
-        header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-        }
-
-        /* Burger Menu */
-        .burger {
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1001;
-        }
-
-        .burger:hover {
-            background: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-        }
-
-        .burger span {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #00d4ff, #00ff88);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-
-        .burger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
-        }
-
-        .burger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
             height: 100vh;
-            background: linear-gradient(135deg, rgba(0, 10, 30, 0.98), rgba(0, 30, 60, 0.98));
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .admin-modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .admin-login-box {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 255, 136, 0.08));
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 25px;
+            padding: 50px 40px;
+            max-width: 450px;
+            width: 90%;
             backdrop-filter: blur(20px);
-            padding: 120px 40px 40px;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 999;
-            box-shadow: -10px 0 30px rgba(0, 212, 255, 0.2);
-            border-left: 2px solid rgba(0, 212, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            animation: slideDown 0.4s ease;
         }
 
-        nav.nav-open {
-            right: 0;
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        nav a {
+        .admin-login-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            animation: rotate-gradient 8s linear infinite;
+        }
+
+        @keyframes rotate-gradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .admin-login-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-login-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .admin-login-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+
+        .admin-form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-form-group {
+            margin-bottom: 20px;
+        }
+
+        .admin-form-group label {
             display: block;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            padding: 18px 20px;
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 0.95rem;
             margin-bottom: 8px;
-            border-left: 3px solid transparent;
-            background: rgba(0, 212, 255, 0.05);
-            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .admin-form-group input {
+            width: 100%;
+            background: rgba(0, 212, 255, 0.08);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 18px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .admin-form-group input:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.12);
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-admin-login {
+            flex: 1;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: #0a0e27;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 25px rgba(0, 212, 255, 0.4);
             position: relative;
             overflow: hidden;
         }
 
-        nav a::before {
+        .btn-admin-login::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
-            transition: left 0.5s ease;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
         }
 
-        nav a:hover::before {
-            left: 100%;
+        .btn-admin-login:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
-        nav a:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-left-color: #00d4ff;
-            padding-left: 30px;
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-            color: #00d4ff;
+        .btn-admin-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px rgba(0, 212, 255, 0.6);
+        }
+
+        .btn-admin-cancel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 14px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-admin-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .admin-error {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 69, 58, 0.3));
+            border: 1px solid rgba(255, 59, 48, 0.5);
+            color: #ff3b30;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .admin-error.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
         }
 
         /* Bouton Retour */
         .btn-back {
             position: fixed;
-            top: 100px;
+            top: 30px;
             left: 30px;
             display: inline-flex;
             align-items: center;
@@ -198,7 +292,7 @@
             font-size: 1rem;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            z-index: 100;
+            z-index: 1000;
             box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
         }
 
@@ -217,101 +311,190 @@
             transform: translateX(-3px);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            margin-top: 80px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header {
-            text-align: center;
-            padding: 60px 40px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
-            border-radius: 20px;
-            border: 2px solid rgba(0, 212, 255, 0.2);
+        /* Admin Button */
+        .btn-admin {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 255, 136, 0.15));
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: #00d4ff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 50px rgba(0, 212, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .header::before {
+        .btn-admin:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 255, 136, 0.25));
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-admin.admin-mode {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 255, 0.2));
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            padding: 80px 40px 60px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .page-header::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.05), transparent);
-            animation: rotate-gradient 6s linear infinite;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #00d4ff, #00ff88, transparent);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            animation: pulse-line 3s ease-in-out infinite;
         }
 
-        @keyframes rotate-gradient {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.5; width: 300px; }
+            50% { opacity: 1; width: 500px; }
         }
 
-        .header h1 {
+        .page-header h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 900;
             background: linear-gradient(135deg, #00d4ff, #00ff88);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 3px;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
         }
 
-        .header p {
-            font-size: 1.3rem;
-            color: #00ff88;
-            position: relative;
-            z-index: 1;
-            font-weight: 500;
+        .page-header p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            letter-spacing: 1px;
         }
 
-        /* Logo Section */
-        .logo-section {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 60px 40px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
-            border: 2px solid rgba(0, 212, 255, 0.2);
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 255, 136, 0.08));
+            border: 2px solid rgba(0, 212, 255, 0.3);
             border-radius: 20px;
-            backdrop-filter: blur(10px);
+            padding: 30px;
+            text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 50px rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
         }
 
-        .logo-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-            animation: slide-line 3s linear infinite;
-        }
-
-        .logo-section::after {
+        .stat-card::before {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.05), transparent);
-            animation: rotate-gradient 6s linear infinite;
-            z-index: 0;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            animation: rotate-gradient 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+            border-color: rgba(0, 212, 255, 0.6);
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Add Mission Form */
+        .add-mission-section {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+
+        .add-mission-section.admin-active {
+            display: block;
+            animation: slideInDown 0.5s ease;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .add-mission-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            animation: slide-line 4s linear infinite;
         }
 
         @keyframes slide-line {
@@ -319,177 +502,369 @@
             100% { left: 100%; }
         }
 
-        .logo-placeholder {
-            width: 350px;
-            height: 350px;
-            margin: 0 auto;
-            background: rgba(0, 212, 255, 0.05);
-            border: 4px solid rgba(0, 212, 255, 0.3);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 16px;
+        .add-mission-section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            color: #00d4ff;
+            margin-bottom: 35px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             text-align: center;
-            padding: 30px;
-            box-shadow: 0 0 40px rgba(0, 212, 255, 0.3),
-                        inset 0 0 30px rgba(0, 212, 255, 0.05);
+        }
+
+        .mission-form {
+            display: grid;
+            gap: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group label {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: rgba(0, 212, 255, 0.08);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
+            outline: none;
         }
 
-        .logo-placeholder:hover {
-            box-shadow: 0 0 60px rgba(0, 212, 255, 0.5),
-                        inset 0 0 40px rgba(0, 212, 255, 0.1);
-            border-color: rgba(0, 212, 255, 0.6);
-            transform: scale(1.02);
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.12);
         }
 
-        .logo-placeholder img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.6));
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
         }
 
-        /* Info Sections */
-        .info-section {
-            background: rgba(0, 212, 255, 0.03);
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border: none;
+            border-radius: 15px;
+            padding: 18px 50px;
+            color: #0a0e27;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 25px rgba(0, 212, 255, 0.4);
             position: relative;
             overflow: hidden;
         }
 
-        .info-section::before {
+        .btn-add::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn-add:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(0, 212, 255, 0.6);
+        }
+
+        .btn-add:active {
+            transform: translateY(-1px);
+        }
+
+        /* Missions List */
+        .missions-list {
+            display: grid;
+            gap: 30px;
+        }
+
+        .missions-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .missions-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00d4ff, #00ff88, transparent);
+        }
+
+        .mission-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 212, 255, 0.25);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            animation: slideInUp 0.6s ease backwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mission-card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-            animation: slide-line 3s linear infinite;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(180deg, #00d4ff, #00ff88);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .info-section h2 {
+        .mission-card:hover::before {
+            opacity: 1;
+        }
+
+        .mission-card:hover {
+            transform: translateX(10px);
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .mission-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: #00d4ff;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            font-weight: 700;
+            flex: 1;
+            min-width: 200px;
         }
 
-        .info-section p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 15px;
-            color: rgba(255, 255, 255, 0.9);
+        .mission-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .info-box {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            margin-top: 20px;
-        }
-
-        .info-box p {
-            margin-bottom: 12px;
-        }
-
-        .info-box strong {
-            color: #00ff88;
+        .badge {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
             font-weight: 600;
-            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .editable {
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
-            padding: 3px 8px;
-            border-radius: 5px;
-            border-bottom: 2px solid rgba(255, 193, 7, 0.5);
-            color: #ffd54f;
-            font-weight: 500;
-        }
-
-        .instruction {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
-            color: #00d4ff;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .instruction strong {
-            display: block;
-            margin-bottom: 10px;
+        .badge-status {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.3));
+            border: 1px solid rgba(0, 255, 136, 0.5);
             color: #00ff88;
-            font-size: 1.2em;
+        }
+
+        .badge-priority {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.3));
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            color: #ffd54f;
+        }
+
+        .mission-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .meta-value {
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .mission-description {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .mission-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            display: none;
+        }
+
+        .mission-actions.admin-active {
+            display: flex;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 69, 58, 0.3));
+            border: 1px solid rgba(255, 59, 48, 0.5);
+            color: #ff3b30;
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.3), rgba(255, 69, 58, 0.4));
+            box-shadow: 0 5px 20px rgba(255, 59, 48, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(0, 255, 136, 0.03));
+            border: 2px dashed rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.5);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            header h1 {
-                font-size: 1.3rem;
-            }
-
-            nav {
-                width: 100%;
-                right: -100%;
-                padding: 100px 30px 30px;
-            }
-
             .btn-back {
-                top: 80px;
+                top: 20px;
                 left: 20px;
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
 
-            .container {
-                padding: 20px 15px;
-                margin-top: 60px;
+            .btn-admin {
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
             }
 
-            .header {
-                padding: 40px 20px;
+            .page-header h1 {
+                font-size: 2rem;
             }
 
-            .header h1 {
-                font-size: 2.5rem;
+            .page-header p {
+                font-size: 1rem;
             }
 
-            .logo-section {
-                padding: 40px 20px;
+            .add-mission-section {
+                padding: 30px 20px;
             }
 
-            .logo-placeholder {
-                width: 250px;
-                height: 250px;
+            .form-row {
+                grid-template-columns: 1fr;
             }
 
-            .info-section {
+            .mission-card {
                 padding: 25px 20px;
             }
 
-            .info-section h2 {
-                font-size: 1.5rem;
+            .mission-header {
+                flex-direction: column;
+            }
+
+            .mission-meta {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -497,107 +872,373 @@
 <body>
     <div class="animated-bg"></div>
 
-    <!-- Header avec menu burger -->
-    <header>
-        <h1>PORTFOLIO</h1>
-        <div class="burger" id="burger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </header>
-
-    <!-- Navigation -->
-    <nav id="nav">
-        <a href="index.html">Accueil</a>
-        <a href="informations.html">Informations</a>
-        <a href="competences.html">Compétences</a>
-        <a href="projets.html">Projets</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-
     <!-- Bouton Retour -->
-    <a href="javascript:history.back()" class="btn-back">
-        <span class="arrow">←</span> Retour
+    <a href="#" class="btn-back" onclick="window.history.back(); return false;">
+        <span class="arrow">←</span>
+        <span>Retour</span>
     </a>
 
-    <div class="container">
-        <div class="header">
-            <h1>INFORMATIONS</h1>
-        </div>
-
-        <div class="instruction">
-            <strong>📝 Instructions :</strong>
-            Remplacez les textes surlignés en jaune par vos propres informations. Pour le logo, remplacez le chemin "logo.png" par le chemin de votre image.
-        </div>
-
-        <!-- Section Logo -->
-        <div class="logo-section">
-            <div class="logo-placeholder">
-                <!-- Remplacez "logo.png" par le chemin de votre logo -->
-                <img src="logo.png" alt="Logo de l'entreprise" style="display: none;">
-                <span>Ajoutez votre logo ici<br>(Remplacez "logo.png" dans le code)</span>
+    <!-- Admin Login Modal -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-login-box">
+            <div class="admin-login-header">
+                <h2>🔐 Mode Admin</h2>
+                <p>Entrez le mot de passe administrateur</p>
             </div>
-        </div>
-
-        <!-- Section Entreprise -->
-        <div class="info-section">
-            <h2>L'Entreprise</h2>
-            <p>
-                <span class="editable">[Nom de l'entreprise]</span> est une entreprise spécialisée dans 
-                <span class="editable">[secteur d'activité, ex: le développement web, la cybersécurité, etc.]</span>.
-            </p>
-            <p>
-                L'entreprise propose <span class="editable">[description des services/produits principaux, ex: des solutions innovantes pour la transformation digitale des entreprises]</span>.
-            </p>
-            <p>
-                <span class="editable">[Ajoutez d'autres informations pertinentes sur l'entreprise: sa taille, son marché, ses valeurs, etc.]</span>
-            </p>
-        </div>
-
-        <!-- Section Alternance -->
-        <div class="info-section">
-            <h2>Mon Alternance</h2>
-            <div class="info-box">
-                <p>
-                    <strong>Durée :</strong> <span class="editable">[Ex: 2 ans - du 01/09/2024 au 31/08/2026]</span>
-                </p>
-                <p>
-                    <strong>Poste :</strong> <span class="editable">[Ex: Développeur Web en alternance]</span>
-                </p>
-                <p>
-                    <strong>Formation :</strong> <span class="editable">[Ex: BTS SIO option SLAM]</span>
-                </p>
-            </div>
+            <form class="admin-form" id="adminForm">
+                <div class="admin-form-group">
+                    <label for="adminPassword">Mot de passe</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" required autofocus>
+                </div>
+                <div class="admin-buttons">
+                    <button type="submit" class="btn-admin-login">
+                        <span style="position: relative; z-index: 1;">Connexion</span>
+                    </button>
+                    <button type="button" class="btn-admin-cancel" id="adminCancel">
+                        Annuler
+                    </button>
+                </div>
+                <div class="admin-error" id="adminError">
+                    ❌ Mot de passe incorrect
+                </div>
+            </form>
         </div>
     </div>
 
+    <!-- Admin Toggle Button -->
+    <button class="btn-admin" id="adminBtn">🔒 Mode Admin</button>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Mission Tracker</h1>
+            <p>Portfolio de mes missions d'alternance</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-number" id="totalMissions">0</div>
+                <div class="stat-label">Missions Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedMissions">0</div>
+                <div class="stat-label">Terminées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="inProgressMissions">0</div>
+                <div class="stat-label">En Cours</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgDuration">0</div>
+                <div class="stat-label">Durée Moy. (jours)</div>
+            </div>
+        </div>
+
+        <!-- Add Mission Form (Admin Only) -->
+        <section class="add-mission-section" id="addMissionSection">
+            <h2>➕ Nouvelle Mission</h2>
+            <form class="mission-form" id="missionForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="missionTitle">Titre de la Mission *</label>
+                        <input type="text" id="missionTitle" placeholder="Ex: Développement d'une API REST" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="missionStatus">Statut *</label>
+                        <select id="missionStatus" required>
+                            <option value="En cours">🔄 En cours</option>
+                            <option value="Terminée">✅ Terminée</option>
+                            <option value="En attente">⏸️ En attente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="missionStartDate">Date de Début *</label>
+                        <input type="date" id="missionStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="missionEndDate">Date de Fin</label>
+                        <input type="date" id="missionEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="missionPriority">Priorité *</label>
+                        <select id="missionPriority" required>
+                            <option value="Haute">🔴 Haute</option>
+                            <option value="Moyenne">🟡 Moyenne</option>
+                            <option value="Basse">🟢 Basse</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="missionDescription">Description de la Mission *</label>
+                    <textarea id="missionDescription" placeholder="Décrivez les objectifs, les technologies utilisées, les résultats obtenus..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="missionTechnologies">Technologies Utilisées</label>
+                    <input type="text" id="missionTechnologies" placeholder="Ex: React, Node.js, PostgreSQL...">
+                </div>
+
+                <button type="submit" class="btn-add">
+                    <span style="position: relative; z-index: 1;">Ajouter la Mission</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- Missions List -->
+        <section>
+            <h2 class="missions-header">📋 Mes Missions</h2>
+            <div class="missions-list" id="missionsList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🚀</div>
+                    <div class="empty-state-text">Aucune mission enregistrée pour le moment.</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <script>
-        // Menu burger
-        const burger = document.getElementById('burger');
-        const nav = document.getElementById('nav');
+        // CONFIGURATION - CHANGEZ CE MOT DE PASSE !
+        const ADMIN_PASSWORD = 'Kykybad31';
 
-        burger.addEventListener('click', () => {
-            burger.classList.toggle('active');
-            nav.classList.toggle('nav-open');
+        // Storage management
+        let missions = JSON.parse(localStorage.getItem('missions')) || [];
+        let isAdminMode = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            displayMissions();
+            updateStats();
         });
 
-        // Fermer le menu en cliquant sur un lien
-        const navLinks = document.querySelectorAll('nav a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                burger.classList.remove('active');
-                nav.classList.remove('nav-open');
-            });
-        });
-
-        // Fermer le menu en cliquant en dehors
-        document.addEventListener('click', (e) => {
-            if (!burger.contains(e.target) && !nav.contains(e.target)) {
-                burger.classList.remove('active');
-                nav.classList.remove('nav-open');
+        // Admin button click
+        document.getElementById('adminBtn').addEventListener('click', () => {
+            if (isAdminMode) {
+                // Logout
+                exitAdminMode();
+            } else {
+                // Show login modal
+                document.getElementById('adminModal').classList.add('active');
+                document.getElementById('adminPassword').focus();
             }
         });
+
+        // Admin login form
+        document.getElementById('adminForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                enterAdminMode();
+                document.getElementById('adminModal').classList.remove('active');
+                document.getElementById('adminError').classList.remove('show');
+                document.getElementById('adminPassword').value = '';
+            } else {
+                document.getElementById('adminError').classList.add('show');
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        });
+
+        // Admin cancel button
+        document.getElementById('adminCancel').addEventListener('click', () => {
+            document.getElementById('adminModal').classList.remove('active');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminError').classList.remove('show');
+        });
+
+        // Close modal on outside click
+        document.getElementById('adminModal').addEventListener('click', (e) => {
+            if (e.target.id === 'adminModal') {
+                document.getElementById('adminModal').classList.remove('active');
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminError').classList.remove('show');
+            }
+        });
+
+        function enterAdminMode() {
+            isAdminMode = true;
+            document.getElementById('adminBtn').textContent = '🔓 Quitter Admin';
+            document.getElementById('adminBtn').classList.add('admin-mode');
+            document.getElementById('addMissionSection').classList.add('admin-active');
+            document.querySelectorAll('.mission-actions').forEach(el => {
+                el.classList.add('admin-active');
+            });
+        }
+
+        function exitAdminMode() {
+            isAdminMode = false;
+            document.getElementById('adminBtn').textContent = '🔒 Mode Admin';
+            document.getElementById('adminBtn').classList.remove('admin-mode');
+            document.getElementById('addMissionSection').classList.remove('admin-active');
+            document.querySelectorAll('.mission-actions').forEach(el => {
+                el.classList.remove('admin-active');
+            });
+        }
+
+        // Mission form submission
+        document.getElementById('missionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const mission = {
+                id: Date.now(),
+                title: document.getElementById('missionTitle').value,
+                status: document.getElementById('missionStatus').value,
+                startDate: document.getElementById('missionStartDate').value,
+                endDate: document.getElementById('missionEndDate').value || null,
+                priority: document.getElementById('missionPriority').value,
+                description: document.getElementById('missionDescription').value,
+                technologies: document.getElementById('missionTechnologies').value,
+                createdAt: new Date().toISOString()
+            };
+
+            missions.unshift(mission);
+            localStorage.setItem('missions', JSON.stringify(missions));
+            
+            // Reset form
+            e.target.reset();
+            
+            // Update display
+            displayMissions();
+            updateStats();
+            
+            // Scroll to missions list
+            document.getElementById('missionsList').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Display missions
+        function displayMissions() {
+            const container = document.getElementById('missionsList');
+            
+            if (missions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🚀</div>
+                        <div class="empty-state-text">Aucune mission enregistrée pour le moment.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = missions.map((mission, index) => {
+                const duration = calculateDuration(mission.startDate, mission.endDate);
+                return `
+                    <div class="mission-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="mission-header">
+                            <h3 class="mission-title">${mission.title}</h3>
+                            <div class="mission-badges">
+                                <span class="badge badge-status">${mission.status}</span>
+                                <span class="badge badge-priority">${mission.priority}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Date de début</span>
+                                <span class="meta-value">${formatDate(mission.startDate)}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Date de fin</span>
+                                <span class="meta-value">${mission.endDate ? formatDate(mission.endDate) : '—'}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Durée</span>
+                                <span class="meta-value">${duration} jours</span>
+                            </div>
+                            ${mission.technologies ? `
+                            <div class="meta-item">
+                                <span class="meta-label">Technologies</span>
+                                <span class="meta-value">${mission.technologies}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <p class="mission-description">${mission.description}</p>
+                        
+                        <div class="mission-actions ${isAdminMode ? 'admin-active' : ''}">
+                            <button class="btn btn-delete" onclick="deleteMission(${mission.id})">
+                                🗑️ Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Delete mission
+        function deleteMission(id) {
+            if (!isAdminMode) return;
+            
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette mission ?')) {
+                missions = missions.filter(m => m.id !== id);
+                localStorage.setItem('missions', JSON.stringify(missions));
+                displayMissions();
+                updateStats();
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = missions.length;
+            const completed = missions.filter(m => m.status === 'Terminée').length;
+            const inProgress = missions.filter(m => m.status === 'En cours').length;
+            
+            let totalDuration = 0;
+            let missionCount = 0;
+            missions.forEach(m => {
+                if (m.endDate) {
+                    totalDuration += calculateDuration(m.startDate, m.endDate);
+                    missionCount++;
+                }
+            });
+            const avgDuration = missionCount > 0 ? Math.round(totalDuration / missionCount) : 0;
+
+            animateNumber('totalMissions', total);
+            animateNumber('completedMissions', completed);
+            animateNumber('inProgressMissions', inProgress);
+            animateNumber('avgDuration', avgDuration);
+        }
+
+        // Animate numbers
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent) || 0;
+            const increment = targetValue > currentValue ? 1 : -1;
+            const duration = 500;
+            const steps = Math.abs(targetValue - currentValue);
+            const stepDuration = steps > 0 ? duration / steps : 0;
+
+            let current = currentValue;
+            const timer = setInterval(() => {
+                if ((increment > 0 && current >= targetValue) || (increment < 0 && current <= targetValue)) {
+                    element.textContent = targetValue;
+                    clearInterval(timer);
+                } else {
+                    current += increment;
+                    element.textContent = current;
+                }
+            }, stepDuration);
+        }
+
+        // Helper functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        function calculateDuration(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = endDate ? new Date(endDate) : new Date();
+            const diffTime = Math.abs(end - start);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
     </script>
 </body>
 </html>

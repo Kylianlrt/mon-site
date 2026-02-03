@@ -1,9 +1,13 @@
+Index · HTML
+Copier
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kylian Laurent - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,281 +15,70 @@
             box-sizing: border-box;
         }
 
+        :root {
+            /* Mode Sombre (par défaut) */
+            --bg-primary: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --text-primary: #ffffff;
+            --text-secondary: #00d4ff;
+            --accent-1: #00d4ff;
+            --accent-2: #00ff88;
+            --grid-color: rgba(0, 212, 255, 0.03);
+            --card-bg: rgba(0, 212, 255, 0.05);
+            --border-color: rgba(0, 212, 255, 0.2);
+            --shadow-color: rgba(0, 212, 255, 0.1);
+        }
+
+        body.light-mode {
+            /* Mode Clair */
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #2563eb;
+            --accent-1: #3b82f6;
+            --accent-2: #10b981;
+            --grid-color: rgba(59, 130, 246, 0.08);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(59, 130, 246, 0.3);
+            --shadow-color: rgba(59, 130, 246, 0.15);
+        }
+
         body {
-            font-family: 'Rajdhani', 'Orbitron', 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             overflow-x: hidden;
             position: relative;
-        }
-
-        /* Video Background */
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-
-        .video-background video {
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-        }
-
-        .video-background::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(2px);
-        }
-
-        /* Menu Burger */
-        .burger-menu {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .burger-menu:hover {
-            background: rgba(0, 212, 255, 0.2);
-            border-color: rgba(0, 212, 255, 0.8);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-        }
-
-        .burger-menu span {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #00d4ff, #00ff88);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-
-        .burger-menu.active span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
-        }
-
-        .burger-menu.active span:nth-child(2) {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-
-        .burger-menu.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Menu Navigation */
-        .nav-menu {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(0, 10, 30, 0.98), rgba(0, 30, 60, 0.98));
-            backdrop-filter: blur(20px);
-            padding: 120px 40px 40px 40px;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 999;
-            box-shadow: -10px 0 30px rgba(0, 212, 255, 0.2);
-            border-left: 2px solid rgba(0, 212, 255, 0.3);
-        }
-
-        .nav-menu.active {
-            right: 0;
-        }
-
-        .nav-menu a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            padding: 18px 20px;
-            margin-bottom: 8px;
-            border-left: 3px solid transparent;
-            background: rgba(0, 212, 255, 0.05);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-menu a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-menu a:hover::before {
-            left: 100%;
-        }
-
-        .nav-menu a:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-left-color: #00d4ff;
-            padding-left: 30px;
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-            color: #00d4ff;
-        }
-
-        /* Effet de scan futuriste sur le menu */
-        .nav-menu::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-            animation: scan 3s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { top: 0; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        /* Contenu Principal */
-        .main-content {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
+            transition: all 0.5s ease;
         }
 
-        .name-container {
-            position: relative;
-            padding: 40px;
-        }
-
-        .name {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 800;
-            letter-spacing: 8px;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, #00d4ff, #00ff88, #00d4ff);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease infinite;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-            position: relative;
-        }
-
-        .name::before {
-            content: 'KYLIAN LAURENT';
-            position: absolute;
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: blur(20px);
-            opacity: 0.5;
             z-index: -1;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+            transition: all 0.5s ease;
         }
 
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .profession {
-            font-size: clamp(1rem, 2.5vw, 1.5rem);
-            font-weight: 400;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: #00d4ff;
-            padding: 20px 40px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 50px;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
-        }
-
-        .profession::before {
+        .animated-bg::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            animation: shine 3s linear infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .subtitle {
-            display: block;
-            font-size: clamp(0.8rem, 1.5vw, 1rem);
-            margin-top: 10px;
-            color: #00ff88;
-            font-weight: 300;
-        }
-
-        /* Effet de grille futuriste */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             background-image: 
-                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: 0;
+                repeating-linear-gradient(0deg, transparent, transparent 2px, var(--grid-color) 2px, var(--grid-color) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, var(--grid-color) 2px, var(--grid-color) 4px);
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         /* Particules flottantes */
@@ -293,11 +86,12 @@
             position: fixed;
             width: 3px;
             height: 3px;
-            background: #00d4ff;
+            background: var(--accent-1);
             border-radius: 50%;
-            box-shadow: 0 0 10px #00d4ff;
+            box-shadow: 0 0 10px var(--accent-1);
             animation: float 10s linear infinite;
             z-index: 0;
+            transition: background 0.5s ease;
         }
 
         @keyframes float {
@@ -317,19 +111,301 @@
             }
         }
 
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--border-color);
+            z-index: 1000;
+            box-shadow: 0 5px 30px var(--shadow-color);
+            transition: all 0.5s ease;
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Bouton Mode Clair/Sombre */
+        .theme-toggle {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--accent-1);
+        }
+
+        .theme-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--accent-1);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle .moon {
+            display: block;
+        }
+
+        .theme-toggle .sun {
+            display: none;
+        }
+
+        body.light-mode .theme-toggle .moon {
+            display: none;
+        }
+
+        body.light-mode .theme-toggle .sun {
+            display: block;
+        }
+
+        /* Burger Menu */
+        .burger {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .burger:hover {
+            background: var(--card-bg);
+            box-shadow: 0 0 20px var(--accent-1);
+        }
+
+        .burger span {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .burger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .burger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 120px 40px 40px;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+            box-shadow: -10px 0 30px var(--shadow-color);
+            border-left: 2px solid var(--border-color);
+        }
+
+        nav.nav-open {
+            right: 0;
+        }
+
+        nav a {
+            display: block;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 18px 20px;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+            background: var(--card-bg);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            transition: left 0.5s ease;
+        }
+
+        nav a:hover::before {
+            left: 100%;
+        }
+
+        nav a:hover {
+            background: var(--border-color);
+            border-left-color: var(--accent-1);
+            padding-left: 30px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            color: var(--accent-1);
+        }
+
+        /* Contenu Principal */
+        main {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .name-container {
+            position: relative;
+            padding: 40px;
+        }
+
+        .name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: 8px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-1));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            position: relative;
+        }
+
+        .name::before {
+            content: 'KYLIAN LAURENT';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(20px);
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .profession {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-weight: 400;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent-1);
+            padding: 20px 40px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px var(--shadow-color);
+            transition: all 0.5s ease;
+        }
+
+        .profession::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--border-color), transparent);
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .subtitle {
+            display: block;
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+            margin-top: 10px;
+            color: var(--accent-2);
+            font-weight: 300;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .burger-menu {
-                top: 20px;
-                right: 20px;
+            header {
+                padding: 15px 20px;
+            }
+
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            .theme-toggle {
                 width: 40px;
                 height: 40px;
             }
 
-            .nav-menu {
+            nav {
                 width: 100%;
                 right: -100%;
-                padding: 100px 30px 30px 30px;
+                padding: 100px 30px 30px;
             }
 
             .name {
@@ -339,58 +415,59 @@
             .profession {
                 letter-spacing: 2px;
                 padding: 15px 25px;
-                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Video Background -->
-    <div class="video-background">
-        <video autoplay muted loop playsinline>
-            <source src="5483085-uhd_4096_2160_25fps.mp4" type="video/mp4">
-            Votre navigateur ne supporte pas la vidéo.
-        </video>
-    </div>
+    <div class="animated-bg"></div>
 
-    <!-- Grille futuriste -->
-    <div class="grid-overlay"></div>
+    <!-- Header -->
+    <header>
+        <h1>PORTFOLIO</h1>
+        <div class="header-controls">
+            <!-- Bouton Mode Clair/Sombre -->
+            <div class="theme-toggle" id="themeToggle">
+                <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+                <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+            </div>
+            
+            <!-- Menu Burger -->
+            <div class="burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
 
-    <!-- Particules -->
-    <script>
-        // Créer des particules flottantes
-        for (let i = 0; i < 30; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 10 + 's';
-            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-            document.body.appendChild(particle);
-        }
-    </script>
-
-    <!-- Menu Burger -->
-    <div class="burger-menu" id="burgerMenu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-
-    <!-- Menu Navigation -->
-    <nav class="nav-menu" id="navMenu">
+    <!-- Navigation -->
+    <nav id="nav">
         <a href="index.html">Accueil</a>
         <a href="about-me.html">À propos</a>
         <a href="enterprise.html">Entreprise</a>
         <a href="projects.html">Projets</a>
         <a href="database.html">Base de connaissances</a>
         <a href="formations.html">Formations</a>
-        <a href="videos.html">Vidéos</a>
+        <a href="logiciels.html">Logiciels</a>
         <a href="reviews.html">Avis</a>
         <a href="contact.html">Contact</a>
     </nav>
 
     <!-- Contenu Principal -->
-    <main class="main-content">
+    <main>
         <div class="name-container">
             <h1 class="name">KYLIAN LAURENT</h1>
             <div class="profession">
@@ -401,29 +478,60 @@
     </main>
 
     <script>
-        // Gestion du menu burger
-        const burgerMenu = document.getElementById('burgerMenu');
-        const navMenu = document.getElementById('navMenu');
+        // Créer des particules flottantes
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            document.body.appendChild(particle);
+        }
 
-        burgerMenu.addEventListener('click', () => {
-            burgerMenu.classList.toggle('active');
-            navMenu.classList.toggle('active');
+        // Gestion du menu burger
+        const burger = document.getElementById('burger');
+        const nav = document.getElementById('nav');
+
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            nav.classList.toggle('nav-open');
         });
 
         // Fermer le menu en cliquant sur un lien
-        const navLinks = document.querySelectorAll('.nav-menu a');
+        const navLinks = document.querySelectorAll('nav a');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                burgerMenu.classList.remove('active');
-                navMenu.classList.remove('active');
+                burger.classList.remove('active');
+                nav.classList.remove('nav-open');
             });
         });
 
         // Fermer le menu en cliquant en dehors
         document.addEventListener('click', (e) => {
-            if (!navMenu.contains(e.target) && !burgerMenu.contains(e.target)) {
-                burgerMenu.classList.remove('active');
-                navMenu.classList.remove('active');
+            if (!burger.contains(e.target) && !nav.contains(e.target)) {
+                burger.classList.remove('active');
+                nav.classList.remove('nav-open');
+            }
+        });
+
+        // Gestion du mode Clair/Sombre
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Vérifier si un mode est déjà enregistré
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            // Sauvegarder la préférence
+            if (body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
             }
         });
     </script>
