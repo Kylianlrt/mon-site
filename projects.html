@@ -334,69 +334,144 @@
         }
 
         .project-menu.active {
-            max-height: 600px;
+            max-height: 1000px;
         }
 
-        .project-menu ul {
+        .project-menu > ul {
             list-style: none;
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid rgba(0, 212, 255, 0.2);
         }
 
-        .project-menu li {
-            margin-bottom: 12px;
+        /* Folder Items */
+        .folder-item {
+            margin-bottom: 8px;
             transform: translateX(-20px);
             opacity: 0;
             transition: all 0.3s ease;
         }
 
-        .project-menu.active li {
+        .project-menu.active .folder-item {
             transform: translateX(0);
             opacity: 1;
         }
 
-        .project-menu.active li:nth-child(1) { transition-delay: 0.1s; }
-        .project-menu.active li:nth-child(2) { transition-delay: 0.2s; }
-        .project-menu.active li:nth-child(3) { transition-delay: 0.3s; }
-        .project-menu.active li:nth-child(4) { transition-delay: 0.4s; }
-        .project-menu.active li:nth-child(5) { transition-delay: 0.5s; }
+        .project-menu.active .folder-item:nth-child(1) { transition-delay: 0.1s; }
+        .project-menu.active .folder-item:nth-child(2) { transition-delay: 0.15s; }
+        .project-menu.active .folder-item:nth-child(3) { transition-delay: 0.2s; }
+        .project-menu.active .folder-item:nth-child(4) { transition-delay: 0.25s; }
+        .project-menu.active .folder-item:nth-child(5) { transition-delay: 0.3s; }
+        .project-menu.active .folder-item:nth-child(6) { transition-delay: 0.35s; }
 
-        .project-menu a {
+        /* Folder Header */
+        .folder-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(0, 255, 136, 0.08);
+            border-left: 3px solid rgba(0, 255, 136, 0.5);
+            border-radius: 8px;
+            color: #00ff88;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .folder-header::before {
+            content: '📁';
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .folder-header.active::before {
+            content: '📂';
+            transform: rotate(15deg);
+        }
+
+        .folder-header::after {
+            content: '▸';
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .folder-header.active::after {
+            transform: rotate(90deg);
+        }
+
+        .folder-header:hover {
+            background: rgba(0, 255, 136, 0.15);
+            padding-left: 20px;
+            box-shadow: 0 3px 10px rgba(0, 255, 136, 0.2);
+        }
+
+        /* Subfolder Content */
+        .subfolder-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+
+        .subfolder-content.active {
+            max-height: 500px;
+        }
+
+        .subfolder-content ul {
+            list-style: none;
+            padding-left: 10px;
+            border-left: 2px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .subfolder-content li {
+            margin: 5px 0;
+        }
+
+        /* File Links */
+        .file-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
             background: rgba(0, 212, 255, 0.08);
             border-left: 3px solid transparent;
             border-radius: 8px;
             color: #fff;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .project-menu a::before {
+        .file-link::before {
             content: '📄';
             font-size: 1rem;
         }
 
-        .project-menu a[href$=".pdf"]::before {
+        .file-link[href$=".pdf"]::before {
             content: '📕';
         }
 
-        .project-menu a[href$=".docx"]::before {
+        .file-link[href$=".docx"]::before {
             content: '📘';
         }
 
-        .project-menu a[href$=".xlsx"]::before {
+        .file-link[href$=".xlsx"]::before {
             content: '📗';
         }
 
-        .project-menu a::after {
+        .file-link[href$=".pptx"]::before {
+            content: '📙';
+        }
+
+        .file-link::after {
             content: '';
             position: absolute;
             top: 0;
@@ -407,14 +482,14 @@
             transition: left 0.5s ease;
         }
 
-        .project-menu a:hover::after {
+        .file-link:hover::after {
             left: 100%;
         }
 
-        .project-menu a:hover {
+        .file-link:hover {
             background: rgba(0, 212, 255, 0.15);
             border-left-color: #00d4ff;
-            padding-left: 25px;
+            padding-left: 20px;
             box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
             color: #00ff88;
             transform: translateX(5px);
@@ -536,6 +611,10 @@
             .stat-number {
                 font-size: 2rem;
             }
+
+            .subfolder-content {
+                margin-left: 10px;
+            }
         }
     </style>
 </head>
@@ -591,69 +670,182 @@
                     <div class="stat-label">Catégories</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">8+</div>
+                    <div class="stat-number">15+</div>
                     <div class="stat-label">Documents</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">3</div>
-                    <div class="stat-label">Années</div>
+                    <div class="stat-number">8+</div>
+                    <div class="stat-label">Sous-dossiers</div>
                 </div>
             </div>
 
             <div class="projects-grid">
-                <!-- Project Card 1 -->
+                <!-- Project Card 1: Bachelor -->
                 <div class="project-card" onclick="toggleProject('project1', this)">
                     <h2>Bachelor</h2>
                     <div id="project1" class="project-menu">
                         <ul>
-                            <li> AD
-                                <ul>
-                                    <li><a href="assets/docs/Bachelor1.pdf" target="_blank">Bachelor1.pdf</a></li>
-                                    <li><a href="assets/docs/Bachelor2.docx" target="_blank">Bachelor2.docx</a></li>
-                                </ul>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('bachelor-1er-annee', event)">
+                                    1ère Année
+                                </div>
+                                <div id="bachelor-1er-annee" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/Bachelor1-Annee1-Projet1.pdf" target="_blank" class="file-link">Projet Infrastructure.pdf</a></li>
+                                        <li><a href="assets/docs/Bachelor1-Annee1-Rapport.docx" target="_blank" class="file-link">Rapport Sécurité.docx</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('bachelor-2eme-annee', event)">
+                                    2ème Année
+                                </div>
+                                <div id="bachelor-2eme-annee" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/Bachelor1-Annee2-Pentest.pdf" target="_blank" class="file-link">Pentest Report.pdf</a></li>
+                                        <li><a href="assets/docs/Bachelor1-Annee2-SOC.docx" target="_blank" class="file-link">Analyse SOC.docx</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('bachelor-3eme-annee', event)">
+                                    3ème Année
+                                </div>
+                                <div id="bachelor-3eme-annee" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/Bachelor1-Annee3-TFE.pdf" target="_blank" class="file-link">Travail de Fin d'Études.pdf</a></li>
+                                        <li><a href="assets/docs/Bachelor1-Annee3-Stage.docx" target="_blank" class="file-link">Rapport de Stage.docx</a></li>
+                                    </ul>
+                                </div>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Project Card 2 -->
+                <!-- Project Card 2: BTS -->
                 <div class="project-card" onclick="toggleProject('project2', this)">
                     <h2>BTS</h2>
                     <div id="project2" class="project-menu">
                         <ul>
-                            <li><a href="assets/docs/AD.docx" target="_blank">AD.pdf</a></li>
-                            <li><a href="assets/docs/BTS2.docx" target="_blank">BTS2.docx</a></li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('bts-1ere-annee', event)">
+                                    1ère Année
+                                </div>
+                                <div id="bts-1ere-annee" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/BTS-Annee1-Reseau.pdf" target="_blank" class="file-link">Configuration Réseau.pdf</a></li>
+                                        <li><a href="assets/docs/BTS-Annee1-Systeme.docx" target="_blank" class="file-link">Administration Système.docx</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('bts-2eme-annee', event)">
+                                    2ème Année
+                                </div>
+                                <div id="bts-2eme-annee" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/BTS-Annee2-E4.pdf" target="_blank" class="file-link">Épreuve E4.pdf</a></li>
+                                        <li><a href="assets/docs/BTS-Annee2-E5.pdf" target="_blank" class="file-link">Épreuve E5.pdf</a></li>
+                                        <li><a href="assets/docs/BTS-Annee2-E6.docx" target="_blank" class="file-link">Rapport de Stage.docx</a></li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Project Card 3 -->
+                <!-- Project Card 3: APRES -->
                 <div class="project-card" onclick="toggleProject('project3', this)">
                     <h2>APRES</h2>
                     <div id="project3" class="project-menu">
                         <ul>
-                            <li><a href="assets/docs/APRES1.pdf" target="_blank">APRES1.pdf</a></li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('apres-audits', event)">
+                                    Audits de Sécurité
+                                </div>
+                                <div id="apres-audits" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/APRES-Audit-Infrastructure.pdf" target="_blank" class="file-link">Audit Infrastructure.pdf</a></li>
+                                        <li><a href="assets/docs/APRES-Audit-Application.pdf" target="_blank" class="file-link">Audit Application Web.pdf</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="folder-item">
+                                <a href="assets/docs/APRES-Pentest-Final.pdf" target="_blank" class="file-link">Pentest Report Final.pdf</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Project Card 4 -->
+                <!-- Project Card 4: ADES -->
                 <div class="project-card" onclick="toggleProject('project4', this)">
                     <h2>ADES</h2>
                     <div id="project4" class="project-menu">
                         <ul>
-                            <li><a href="assets/docs/ADES1.pdf" target="_blank">ADES1.pdf</a></li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('ades-certifications', event)">
+                                    Certifications
+                                </div>
+                                <div id="ades-certifications" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/ADES-OSCP.pdf" target="_blank" class="file-link">OSCP Certificate.pdf</a></li>
+                                        <li><a href="assets/docs/ADES-CEH.pdf" target="_blank" class="file-link">CEH Certificate.pdf</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('ades-projets', event)">
+                                    Projets Avancés
+                                </div>
+                                <div id="ades-projets" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/ADES-Threat-Hunting.pdf" target="_blank" class="file-link">Threat Hunting.pdf</a></li>
+                                        <li><a href="assets/docs/ADES-IR-Plan.docx" target="_blank" class="file-link">Incident Response Plan.docx</a></li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Project Card 5 -->
+                <!-- Project Card 5: Projets Perso -->
                 <div class="project-card" onclick="toggleProject('project5', this)">
                     <h2>Projets Perso</h2>
                     <div id="project5" class="project-menu">
                         <ul>
-                            <li><a href="assets/docs/ProjetPerso1.pdf" target="_blank">ProjetPerso1.pdf</a></li>
-                            <li><a href="assets/docs/ProjetPerso2.docx" target="_blank">ProjetPerso2.docx</a></li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('perso-homelab', event)">
+                                    Homelab
+                                </div>
+                                <div id="perso-homelab" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/Perso-Homelab-Setup.pdf" target="_blank" class="file-link">Configuration Homelab.pdf</a></li>
+                                        <li><a href="assets/docs/Perso-Homelab-Security.docx" target="_blank" class="file-link">Sécurisation.docx</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('perso-ctf', event)">
+                                    CTF & Challenges
+                                </div>
+                                <div id="perso-ctf" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/Perso-CTF-Writeups.pdf" target="_blank" class="file-link">CTF Writeups 2025.pdf</a></li>
+                                        <li><a href="assets/docs/Perso-HackTheBox.pdf" target="_blank" class="file-link">HackTheBox Solutions.pdf</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="folder-item">
+                                <div class="folder-header" onclick="toggleSubfolder('perso-outils', event)">
+                                    Outils Développés
+                                </div>
+                                <div id="perso-outils" class="subfolder-content">
+                                    <ul>
+                                        <li><a href="assets/docs/Perso-Scanner-Doc.pdf" target="_blank" class="file-link">Vulnerability Scanner.pdf</a></li>
+                                        <li><a href="assets/docs/Perso-Automation-Scripts.pdf" target="_blank" class="file-link">Scripts d'Automatisation.pdf</a></li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -702,6 +894,9 @@
             allMenus.forEach(m => {
                 if (m.id !== projectId) {
                     m.classList.remove('active');
+                    // Close all subfolders in other projects
+                    m.querySelectorAll('.subfolder-content').forEach(sf => sf.classList.remove('active'));
+                    m.querySelectorAll('.folder-header').forEach(fh => fh.classList.remove('active'));
                 }
             });
             
@@ -720,8 +915,20 @@
             event.stopPropagation();
         }
 
+        // Toggle Subfolder
+        function toggleSubfolder(subfolderId, event) {
+            event.stopPropagation();
+            
+            const subfolder = document.getElementById(subfolderId);
+            const header = event.currentTarget;
+            
+            // Toggle the clicked subfolder
+            subfolder.classList.toggle('active');
+            header.classList.toggle('active');
+        }
+
         // Prevent menu links from toggling the card
-        document.querySelectorAll('.project-menu a').forEach(link => {
+        document.querySelectorAll('.file-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.stopPropagation();
             });
