@@ -493,10 +493,10 @@
         const missions = [
             {
                 id: 1,
-                title: "Installation d'un serveur GLPI",
+                title: "Installation et configuration d'un serveur GLPI",
                 status: "Terminée",
-                startDate: "2024-10-16",
-                endDate: "2024-10-16",
+                startDate: "2025-10-16",
+                endDate: "2025-10-16",
                 priority: "Moyenne",
                 description: "Installation d'un serveur GLPI afin de pouvoir faire l'inventaire de l'hardware détenue par l'association. Configuration complète du serveur avec intégration à l'infrastructure existante.",
                 technologies: "HyperV / Debian 12 / Apache2 / MariaDB",
@@ -504,15 +504,38 @@
             },
             {
                 id: 2,
-                title: "Suivi et documentation de l'AD",
+                title: "Remontée de toute l'infrastructure de l'association sur GLPI",
                 status: "Terminée",
-                startDate: "2024-10-06",
-                endDate: "2024-11-16",
+                startDate: "2025-10-17",
+                endDate: "2025-11-14",
+                priority: "Basse",
+                description: "Je devais me déplacer sur les sites pour faire une remontée de toute l'infrastructure que possède l'association.",
+                technologies: "Agent GLPI / GLPI / Inventaire / Ticketing",
+                createdAt: new Date("2024-10-06").toISOString()
+            },
+            {
+                id: 3,
+                title: "Préparation pour la bascule de l'Active Directory",
+                status: "Terminée",
+                startDate: "2025-11-17",
+                endDate: "2026-1-23",
                 priority: "Moyenne",
                 description: "J'ai regardé les points de faiblesse de l'Active Directory et j'ai rendu une documentation à ma hiérarchie.",
                 technologies: "Windows Server / Active Directory / GPO / Groupes de sécurité",
                 createdAt: new Date("2024-10-06").toISOString()
-            }
+            },
+
+            {
+                id: 3,
+                title: "Installation et configuration de Zabbix",
+                status: "Terminée",
+                startDate: "2026-1-26",
+                endDate: "2026-1-26",
+                priority: "Moyenne",
+                description: "On m'a demandé d'installer Zabbix sur une VM pour que ce dernier puisse surperviser nos serveurs et pouvoir envoyer des alertes aux responsables SI.",
+                technologies: "Zabbix server / Agent Zabbix / Supervision / Monitoring",
+                createdAt: new Date("2024-10-06").toISOString()
+            },
         ];
 
         // Initialize

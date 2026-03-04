@@ -1,938 +1,985 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Projets et Formations - Kylian Laurent</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background: #0a0e27;
-            color: #fff;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Animated Background */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
-        }
-
-        .animated-bg::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, 0.03) 2px, rgba(0, 212, 255, 0.03) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px);
-            animation: grid-move 20s linear infinite;
-        }
-
-        @keyframes grid-move {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        /* Floating Particles */
-        .particle {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% {
-                transform: translateY(-100vh) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Header */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
-            z-index: 1000;
-            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.1);
-        }
-
-        header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
-        }
-
-        /* Burger Menu */
-        .burger {
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1001;
-        }
-
-        .burger:hover {
-            background: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-        }
-
-        .burger span {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #00d4ff, #00ff88);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-
-        .burger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
-        }
-
-        .burger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(0, 10, 30, 0.98), rgba(0, 30, 60, 0.98));
-            backdrop-filter: blur(20px);
-            padding: 120px 40px 40px;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 999;
-            box-shadow: -10px 0 30px rgba(0, 212, 255, 0.2);
-            border-left: 2px solid rgba(0, 212, 255, 0.3);
-        }
-
-        nav.nav-open {
-            right: 0;
-        }
-
-        nav a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            padding: 18px 20px;
-            margin-bottom: 8px;
-            border-left: 3px solid transparent;
-            background: rgba(0, 212, 255, 0.05);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        nav a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        nav a:hover::before {
-            left: 100%;
-        }
-
-        nav a:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-left-color: #00d4ff;
-            padding-left: 30px;
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-            color: #00d4ff;
-        }
-
-        /* Main Content */
-        main {
-            flex: 1;
-            margin-top: 100px;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .projects-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .projects-container > h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            text-align: center;
-            margin-bottom: 60px;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            position: relative;
-        }
-
-        .projects-container > h1::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
-        }
-
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            margin-top: 80px;
-        }
-
-        /* Project Card */
-        .project-card {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 20px;
-            padding: 35px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            min-height: 180px;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            transform: rotate(0deg);
-            transition: transform 0.6s ease;
-        }
-
-        .project-card:hover::before {
-            transform: rotate(180deg);
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: rgba(0, 212, 255, 0.6);
-            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3),
-                        0 0 40px rgba(0, 212, 255, 0.2);
-        }
-
-        .project-card h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.6rem;
-            color: #00d4ff;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .project-card h2::before {
-            content: '📁';
-            font-size: 1.4rem;
-            transition: transform 0.3s ease;
-        }
-
-        .project-card.active h2::before {
-            content: '📂';
-            transform: scale(1.2);
-        }
-
-        .project-card h2::after {
-            content: '▼';
-            font-size: 0.8rem;
-            color: #00ff88;
-            margin-left: auto;
-            transition: transform 0.3s ease;
-        }
-
-        .project-card.active h2::after {
-            transform: rotate(180deg);
-        }
-
-        /* Project Menu */
-        .project-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 1;
-        }
-
-        .project-menu.active {
-            max-height: 1000px;
-        }
-
-        .project-menu > ul {
-            list-style: none;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        /* Folder Items */
-        .folder-item {
-            margin-bottom: 8px;
-            transform: translateX(-20px);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .project-menu.active .folder-item {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .project-menu.active .folder-item:nth-child(1) { transition-delay: 0.1s; }
-        .project-menu.active .folder-item:nth-child(2) { transition-delay: 0.15s; }
-        .project-menu.active .folder-item:nth-child(3) { transition-delay: 0.2s; }
-        .project-menu.active .folder-item:nth-child(4) { transition-delay: 0.25s; }
-        .project-menu.active .folder-item:nth-child(5) { transition-delay: 0.3s; }
-        .project-menu.active .folder-item:nth-child(6) { transition-delay: 0.35s; }
-
-        /* Folder Header */
-        .folder-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            background: rgba(0, 255, 136, 0.08);
-            border-left: 3px solid rgba(0, 255, 136, 0.5);
-            border-radius: 8px;
-            color: #00ff88;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .folder-header::before {
-            content: '📁';
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .folder-header.active::before {
-            content: '📂';
-            transform: rotate(15deg);
-        }
-
-        .folder-header::after {
-            content: '▸';
-            margin-left: auto;
-            transition: transform 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .folder-header.active::after {
-            transform: rotate(90deg);
-        }
-
-        .folder-header:hover {
-            background: rgba(0, 255, 136, 0.15);
-            padding-left: 20px;
-            box-shadow: 0 3px 10px rgba(0, 255, 136, 0.2);
-        }
-
-        /* Subfolder Content */
-        .subfolder-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-left: 20px;
-            margin-top: 5px;
-        }
-
-        .subfolder-content.active {
-            max-height: 500px;
-        }
-
-        .subfolder-content ul {
-            list-style: none;
-            padding-left: 10px;
-            border-left: 2px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .subfolder-content li {
-            margin: 5px 0;
-        }
-
-        /* File Links */
-        .file-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            background: rgba(0, 212, 255, 0.08);
-            border-left: 3px solid transparent;
-            border-radius: 8px;
-            color: #fff;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-link::before {
-            content: '📄';
-            font-size: 1rem;
-        }
-
-        .file-link[href$=".pdf"]::before {
-            content: '📕';
-        }
-
-        .file-link[href$=".docx"]::before {
-            content: '📘';
-        }
-
-        .file-link[href$=".xlsx"]::before {
-            content: '📗';
-        }
-
-        .file-link[href$=".pptx"]::before {
-            content: '📙';
-        }
-
-        .file-link::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .file-link:hover::after {
-            left: 100%;
-        }
-
-        .file-link:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-left-color: #00d4ff;
-            padding-left: 20px;
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-            color: #00ff88;
-            transform: translateX(5px);
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 2px solid rgba(0, 212, 255, 0.2);
-            padding: 30px;
-            text-align: center;
-            position: relative;
-            z-index: 100;
-            margin-top: 80px;
-        }
-
-        footer p {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 400;
-        }
-
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-            animation: slide-line 3s linear infinite;
-        }
-
-        @keyframes slide-line {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Stats Counter */
-        .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 40px 0;
-            flex-wrap: wrap;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 15px;
-            padding: 25px 35px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
-        }
-
-        .stat-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            header h1 {
-                font-size: 1.3rem;
-            }
-
-            nav {
-                width: 100%;
-                right: -100%;
-                padding: 100px 30px 30px;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .project-card {
-                padding: 25px 20px;
-            }
-
-            .project-card h2 {
-                font-size: 1.3rem;
-            }
-
-            .stats-container {
-                gap: 20px;
-            }
-
-            .stat-card {
-                padding: 20px 25px;
-            }
-
-            .stat-number {
-                font-size: 2rem;
-            }
-
-            .subfolder-content {
-                margin-left: 10px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projets & Formations — Kylian Laurent</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+::selection { background:rgba(0,212,255,.3); color:#fff; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family:'Rajdhani',sans-serif;
+  background:#0a0e27;
+  color:#fff;
+  overflow-x:hidden;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── ANIMATED BG ── */
+.animated-bg {
+  position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;
+  background:linear-gradient(135deg,#0a0e27 0%,#1a1f3a 50%,#0a0e27 100%);
+}
+.animated-bg::before {
+  content:''; position:absolute; width:200%; height:200%;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,.03) 2px,rgba(0,212,255,.03) 4px),
+    repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(0,255,136,.03) 2px,rgba(0,255,136,.03) 4px);
+  animation:grid-move 20s linear infinite;
+}
+@keyframes grid-move { 0%{transform:translate(0,0)} 100%{transform:translate(50px,50px)} }
+
+.particle { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
+@keyframes float {
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  10%{opacity:1} 90%{opacity:1}
+  100%{transform:translateY(-100vh) translateX(80px) rotate(360deg);opacity:0}
+}
+
+/* ── HEADER ── */
+header {
+  position:fixed; top:0; left:0; width:100%;
+  padding:20px 50px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(10,14,39,.95);
+  backdrop-filter:blur(20px);
+  border-bottom:2px solid rgba(0,212,255,.2);
+  z-index:1000;
+  box-shadow:0 5px 30px rgba(0,212,255,.1);
+}
+header h1 {
+  font-family:'Orbitron',sans-serif;
+  font-size:1.8rem; font-weight:900; letter-spacing:3px;
+  background:linear-gradient(135deg,#00d4ff,#00ff88);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+/* ── BURGER ── */
+.burger {
+  width:40px; height:40px; cursor:pointer;
+  display:flex; flex-direction:column; justify-content:center; gap:6px; padding:8px;
+  background:rgba(0,212,255,.1); border:2px solid rgba(0,212,255,.5); border-radius:8px;
+  transition:all .3s; position:relative; z-index:1001;
+}
+.burger:hover { background:rgba(0,212,255,.2); box-shadow:0 0 20px rgba(0,212,255,.4); }
+.burger span { width:100%; height:3px; background:linear-gradient(90deg,#00d4ff,#00ff88); border-radius:10px; transition:all .3s; }
+.burger.active span:nth-child(1){transform:rotate(45deg) translate(7px,7px)}
+.burger.active span:nth-child(2){opacity:0}
+.burger.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-7px)}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; right:-350px; width:350px; height:100vh;
+  background:linear-gradient(135deg,rgba(0,10,30,.98),rgba(0,30,60,.98));
+  backdrop-filter:blur(20px);
+  padding:120px 40px 40px;
+  transition:right .4s cubic-bezier(.68,-.55,.265,1.55);
+  z-index:999;
+  box-shadow:-10px 0 30px rgba(0,212,255,.2);
+  border-left:2px solid rgba(0,212,255,.3);
+}
+nav.nav-open { right:0; }
+nav a {
+  display:block; color:white; text-decoration:none;
+  font-size:18px; font-weight:500; padding:18px 20px; margin-bottom:8px;
+  border-left:3px solid transparent;
+  background:rgba(0,212,255,.05); border-radius:8px;
+  transition:all .3s; position:relative; overflow:hidden;
+}
+nav a::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(0,212,255,.2),transparent); transition:left .5s; }
+nav a:hover::before { left:100%; }
+nav a:hover { background:rgba(0,212,255,.15); border-left-color:#00d4ff; padding-left:30px; color:#00d4ff; }
+
+/* ── MAIN ── */
+main { flex:1; margin-top:100px; padding:40px 20px; position:relative; z-index:1; }
+.page-wrap { max-width:1400px; margin:0 auto; padding:40px 20px; }
+
+/* ── PAGE TITLE ── */
+.page-title {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.2rem,5vw,4rem);
+  text-align:center; margin-bottom:20px;
+  background:linear-gradient(135deg,#00d4ff,#00ff88);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  letter-spacing:3px; text-transform:uppercase; position:relative;
+}
+.page-title::after {
+  content:''; position:absolute; bottom:-20px; left:50%; transform:translateX(-50%);
+  width:200px; height:3px;
+  background:linear-gradient(90deg,transparent,#00d4ff,transparent);
+  box-shadow:0 0 20px rgba(0,212,255,.6);
+}
+
+/* ── STATS ── */
+.stats { display:flex; justify-content:center; gap:30px; margin:60px 0 50px; flex-wrap:wrap; }
+.stat-card {
+  background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(0,255,136,.1));
+  border:2px solid rgba(0,212,255,.3); border-radius:15px;
+  padding:22px 32px; text-align:center; backdrop-filter:blur(10px); transition:all .3s;
+}
+.stat-card:hover { transform:translateY(-5px); box-shadow:0 10px 30px rgba(0,212,255,.3); }
+.stat-num { font-family:'Orbitron',sans-serif; font-size:2.2rem; font-weight:900; background:linear-gradient(135deg,#00d4ff,#00ff88); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.stat-lbl { font-size:.9rem; color:rgba(255,255,255,.7); margin-top:6px; text-transform:uppercase; letter-spacing:1px; }
+
+/* ── CATEGORY ── */
+.category { margin-bottom:60px; }
+.cat-header {
+  display:flex; align-items:center; gap:16px;
+  margin-bottom:24px; padding-bottom:14px; position:relative;
+}
+.cat-header::after {
+  content:''; position:absolute; bottom:0; left:0; width:100%; height:2px;
+  background:linear-gradient(90deg,var(--cc,#00d4ff),transparent 70%);
+  opacity:.4;
+}
+.cat-badge {
+  width:52px; height:52px; border-radius:14px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+  background:linear-gradient(135deg,rgba(var(--cr,0,212,255),.18),rgba(var(--cr,0,212,255),.06));
+  border:2px solid rgba(var(--cr,0,212,255),.3);
+  box-shadow:0 4px 20px rgba(var(--cr,0,212,255),.15);
+}
+.cat-info { flex:1; }
+.cat-name { font-family:'Orbitron',sans-serif; font-size:1.1rem; font-weight:700; color:var(--cc,#00d4ff); letter-spacing:3px; text-transform:uppercase; }
+.cat-count { font-size:.8rem; color:rgba(255,255,255,.5); margin-top:4px; }
+.cat-idx { font-size:.75rem; color:rgba(var(--cr,0,212,255),.35); letter-spacing:1px; margin-left:auto; }
+
+/* ── GRID ── */
+.icons-grid { display:flex; flex-wrap:wrap; gap:20px; }
+
+/* ── FLIP CARD ── */
+.fc {
+  width:220px; height:280px;
+  perspective:1200px; cursor:pointer; flex-shrink:0; position:relative;
+}
+
+.fc::before {
+  content:''; position:absolute; inset:-2px; border-radius:20px;
+  background:conic-gradient(from 0deg,transparent,var(--cc,#00d4ff) 60deg,transparent 120deg);
+  z-index:-1; opacity:0; transition:opacity .5s;
+  animation:spin-ring 3s linear infinite;
+}
+@keyframes spin-ring { to{transform:rotate(360deg)} }
+.fc.open::before { opacity:.5; }
+
+.fci {
+  width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .7s cubic-bezier(.4,.2,.2,1);
+}
+.fc.open .fci { transform:rotateY(180deg); }
+
+.ff,.fb {
+  position:absolute; width:100%; height:100%;
+  backface-visibility:hidden; border-radius:18px; overflow:hidden;
+}
+
+/* FRONT */
+.ff {
+  background:linear-gradient(145deg,rgba(15,25,70,.95),rgba(8,14,40,.98));
+  border:2px solid rgba(var(--cr,0,212,255),.25);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:24px 18px; gap:0;
+  transition:border-color .3s, box-shadow .3s;
+}
+.ff::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(var(--cr,0,212,255),.7),transparent);
+}
+.ff::after {
+  content:''; position:absolute; inset:0; border-radius:18px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(var(--cr,0,212,255),.07),transparent 65%);
+  pointer-events:none;
+}
+.fc:hover .ff {
+  border-color:rgba(var(--cr,0,212,255),.55);
+  box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 40px rgba(var(--cr,0,212,255),.15), inset 0 0 40px rgba(var(--cr,0,212,255),.04);
+}
+
+/* type pill */
+.ctype {
+  position:absolute; top:11px; left:11px;
+  font-size:.6rem; letter-spacing:1px; text-transform:uppercase;
+  padding:3px 9px; border-radius:20px;
+  background:rgba(var(--cr,0,212,255),.12);
+  border:1px solid rgba(var(--cr,0,212,255),.35);
+  color:var(--cc,#00d4ff);
+}
+.fhint {
+  position:absolute; bottom:10px; right:12px;
+  font-size:.65rem; color:rgba(var(--cr,0,212,255),.35); letter-spacing:.5px;
+  transition:color .3s;
+}
+.fc:hover .fhint { color:rgba(var(--cr,0,212,255),.8); }
+
+/* Icon wrapper */
+.ciw {
+  width:100px; height:100px; border-radius:20px; margin-bottom:14px;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,rgba(var(--cr,0,212,255),.15),rgba(var(--cr,0,212,255),.05));
+  border:2px solid rgba(var(--cr,0,212,255),.22);
+  box-shadow:0 8px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+  position:relative; z-index:1; overflow:hidden;
+  cursor:pointer;
+}
+.fc:hover .ciw {
+  transform:translateY(-8px) scale(1.08);
+  box-shadow:0 18px 44px rgba(0,0,0,.45), 0 0 28px rgba(var(--cr,0,212,255),.28);
+}
+
+/* emoji icon */
+.ci { font-size:2.8rem; line-height:1; user-select:none; }
+
+/* image icon */
+.ciw img {
+  width:100%; height:100%;
+  object-fit:cover;
+  border-radius:18px;
+  display:block;
+}
+/* quand has-img : on cache l'emoji et on enlève le fond */
+.ciw.has-img .ci { display:none; }
+.ciw.has-img {
+  background:none;
+  border-color:rgba(var(--cr,0,212,255),.4);
+  padding:0;
+}
+
+/* card label */
+.cl { font-size:.9rem; font-weight:600; color:rgba(255,255,255,.85); text-align:center; letter-spacing:.5px; line-height:1.35; position:relative; z-index:1; }
+
+/* BACK */
+.fb {
+  background:linear-gradient(145deg,rgba(0,35,80,.97),rgba(0,18,50,.99));
+  border:2px solid rgba(var(--cr,0,212,255),.4);
+  transform:rotateY(180deg);
+  display:flex; flex-direction:column; padding:18px;
+  box-shadow:inset 0 0 40px rgba(var(--cr,0,212,255),.05);
+}
+.fb::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,var(--cc,#00d4ff),transparent);
+  opacity:.65;
+}
+
+.bh { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; padding-bottom:9px; border-bottom:1px solid rgba(var(--cr,0,212,255),.18); }
+.bn { font-family:'Orbitron',sans-serif; font-size:.65rem; font-weight:700; color:var(--cc,#00d4ff); letter-spacing:1.5px; text-transform:uppercase; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bx {
+  width:22px; height:22px; border-radius:7px; border:none; cursor:pointer;
+  background:rgba(255,60,110,.12); color:rgba(255,100,130,.7);
+  font-size:.75rem; display:flex; align-items:center; justify-content:center;
+  transition:all .2s; flex-shrink:0; margin-left:6px;
+}
+.bx:hover { background:rgba(255,60,110,.28); color:#ff3c6e; transform:scale(1.1); }
+
+.bd { font-size:.82rem; font-weight:400; color:rgba(210,230,255,.72); line-height:1.6; flex:1; overflow-y:auto; margin-bottom:10px; scrollbar-width:thin; scrollbar-color:rgba(0,212,255,.2) transparent; }
+.btags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.btag { font-size:.65rem; letter-spacing:.5px; text-transform:uppercase; padding:3px 8px; border-radius:20px; background:rgba(var(--cr,0,212,255),.1); border:1px solid rgba(var(--cr,0,212,255),.28); color:rgba(var(--cr,0,212,255),.9); }
+
+.bcta {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  padding:10px 14px; border-radius:12px;
+  background:linear-gradient(135deg,rgba(var(--cr,0,212,255),.16),rgba(var(--cr,0,212,255),.07));
+  border:1px solid rgba(var(--cr,0,212,255),.38);
+  color:var(--cc,#00d4ff); text-decoration:none;
+  font-size:.78rem; font-weight:600; letter-spacing:.8px; text-transform:uppercase;
+  transition:all .25s; position:relative; overflow:hidden;
+}
+.bcta::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(var(--cr,0,212,255),.22),transparent); opacity:0; transition:opacity .25s; }
+.bcta:hover::before { opacity:1; }
+.bcta:hover { box-shadow:0 4px 20px rgba(var(--cr,0,212,255),.3); transform:translateY(-2px); }
+
+/* ── FOOTER ── */
+footer {
+  background:rgba(10,14,39,.95); backdrop-filter:blur(20px);
+  border-top:2px solid rgba(0,212,255,.2);
+  padding:30px; text-align:center; position:relative; z-index:100; margin-top:60px;
+}
+footer p { font-size:1rem; color:rgba(255,255,255,.6); }
+footer::before {
+  content:''; position:absolute; top:0; left:0; width:100%; height:2px;
+  background:linear-gradient(90deg,transparent,#00d4ff,transparent);
+  animation:slide-line 3s linear infinite;
+}
+@keyframes slide-line { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:rgba(0,0,0,.2); }
+::-webkit-scrollbar-thumb { background:rgba(0,212,255,.3); border-radius:4px; }
+
+@media(max-width:768px){
+  header { padding:15px 20px; }
+  header h1 { font-size:1.3rem; }
+  nav { width:100%; right:-100%; padding:100px 30px 30px; }
+  .fc { width:185px; height:240px; }
+  .ciw { width:80px; height:80px; }
+  .cat-idx { display:none; }
+}
+</style>
 </head>
 <body>
-    <div class="animated-bg"></div>
+<div class="animated-bg"></div>
 
-    <!-- Particles -->
-    <script>
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.width = Math.random() * 3 + 1 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.background = Math.random() > 0.5 ? '#00d4ff' : '#00ff88';
-            particle.style.opacity = Math.random() * 0.5;
-            particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
-            particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
-            particle.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(particle);
-        }
-    </script>
+<script>
+for(let i=0;i<50;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.cssText=`width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${Math.random()>.5?'#00d4ff':'#00ff88'};opacity:${Math.random()*.5};box-shadow:0 0 10px currentColor;animation:float ${Math.random()*10+10}s linear infinite;animation-delay:${Math.random()*5}s`;
+  document.body.appendChild(p);
+}
+</script>
 
-    <header>
-        <h1>KYLIAN LAURENT</h1>
-        <div class="burger" id="burger">
-            <span></span>
-            <span></span>
-            <span></span>
+<header>
+  <h1>KYLIAN LAURENT</h1>
+  <div class="burger" id="burger"><span></span><span></span><span></span></div>
+  <nav id="nav">
+    <a href="index.html">Accueil</a>
+    <a href="about-me.html">À propos</a>
+    <a href="enterprise.html">Entreprise</a>
+    <a href="projects.html">Projets</a>
+    <a href="database.html">Base de connaissances</a>
+    <a href="formations.html">Formations</a>
+    <a href="videos.html">Vidéos</a>
+    <a href="reviews.html">Avis</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main>
+<div class="page-wrap">
+
+  <h1 class="page-title">Mes Projets &amp; Formations</h1>
+
+  <div class="stats">
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Catégories</div></div>
+    <div class="stat-card"><div class="stat-num">15+</div><div class="stat-lbl">Documents</div></div>
+    <div class="stat-card"><div class="stat-num">8+</div><div class="stat-lbl">Sous-dossiers</div></div>
+    <div class="stat-card"><div class="stat-num">2</div><div class="stat-lbl">Certifications</div></div>
+  </div>
+
+  <!-- ═══ BACHELOR ═══ -->
+  <section class="category" style="--cc:#00d4ff;--cr:0,212,255">
+    <div class="cat-header">
+      <div class="cat-badge">🎓</div>
+      <div class="cat-info"><div class="cat-name">Bachelor</div><div class="cat-count">2 documents · 1ère Année</div></div>
+      <div class="cat-idx">[ 01 / 05 ]</div>
+    </div>
+    <div class="icons-grid">
+
+      <!-- Active Directory - Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/ACTIVE DIRECTORY.webp"Active Directory">
+            </div>
+            <div class="cl">Active Directory</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Active Directory</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Documentation complète sur la mise en place d'un Active Directory Windows Server. Gestion des GPO, unités d'organisation et politiques de sécurité avancées.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">AD</span><span class="btag">GPO</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
         </div>
-        <nav id="nav-links">
-            <a href="index.html">Accueil</a>
-            <a href="about-me.html">À propos</a>
-            <a href="enterprise.html">Entreprise</a>
-            <a href="projects.html">Projets</a>
-            <a href="database.html">Base de connaissances</a>
-            <a href="formations.html">Formations</a>
-            <a href="videos.html">Vidéos</a>
-            <a href="reviews.html">Avis</a>
-            <a href="contact.html">Contact</a>
-        </nav>
-    </header>
+      </div>
 
-    <main>
-        <section class="projects-container">
-            <h1>Mes Projets et Formations</h1>
-
-            <!-- Stats -->
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-number">5</div>
-                    <div class="stat-label">Catégories</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">15+</div>
-                    <div class="stat-label">Documents</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">8+</div>
-                    <div class="stat-label">Sous-dossiers</div>
-                </div>
+      <!-- Python - Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/f5643096750899.5eb54f3381b8f.png" alt="Rapport Sécurité">
             </div>
+            <div class="cl">Python</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Rapport Sécurité</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Rapport de sécurité 1ère année. Analyse des risques, cartographie des menaces et préconisations de remédiation priorisées par criticité.</div>
+            <div class="btags"><span class="btag">Sécurité</span><span class="btag">Risques</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/Bachelor1-Annee1-Rapport.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
 
-            <div class="projects-grid">
-                <!-- Project Card 1: Bachelor -->
-                <div class="project-card" onclick="toggleProject('project1', this)">
-                    <h2>Bachelor</h2>
-                    <div id="project1" class="project-menu">
-                        <ul>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('bachelor-1er-annee', event)">
-                                    1ère Année
-                                </div>
-                                <div id="bachelor-1er-annee" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/Bachelor1-Annee1-Projet1.pdf" target="_blank" class="file-link">Projet Infrastructure.pdf</a></li>
-                                        <li><a href="assets/docs/Bachelor1-Annee1-Rapport.docx" target="_blank" class="file-link">Rapport Sécurité.docx</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('bachelor-2eme-annee', event)">
-                                    2ème Année
-                                </div>
-                                <div id="bachelor-2eme-annee" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/Bachelor1-Annee2-Pentest.pdf" target="_blank" class="file-link">Pentest Report.pdf</a></li>
-                                        <li><a href="assets/docs/Bachelor1-Annee2-SOC.docx" target="_blank" class="file-link">Analyse SOC.docx</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('bachelor-3eme-annee', event)">
-                                    3ème Année
-                                </div>
-                                <div id="bachelor-3eme-annee" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/Bachelor1-Annee3-TFE.pdf" target="_blank" class="file-link">Travail de Fin d'Études.pdf</a></li>
-                                        <li><a href="assets/docs/Bachelor1-Annee3-Stage.docx" target="_blank" class="file-link">Rapport de Stage.docx</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
 
-                <!-- Project Card 2: BTS -->
-                <div class="project-card" onclick="toggleProject('project2', this)">
-                    <h2>BTS</h2>
-                    <div id="project2" class="project-menu">
-                        <ul>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('bts-1ere-annee', event)">
-                                    1ère Année
-                                </div>
-                                <div id="bts-1ere-annee" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/BTS-Annee1-Reseau.pdf" target="_blank" class="file-link">Configuration Réseau.pdf</a></li>
-                                        <li><a href="assets/docs/BTS-Annee1-Systeme.docx" target="_blank" class="file-link">Administration Système.docx</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('bts-2eme-annee', event)">
-                                    2ème Année
-                                </div>
-                                <div id="bts-2eme-annee" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/BTS-Annee2-E4.pdf" target="_blank" class="file-link">Épreuve E4.pdf</a></li>
-                                        <li><a href="assets/docs/BTS-Annee2-E5.pdf" target="_blank" class="file-link">Épreuve E5.pdf</a></li>
-                                        <li><a href="assets/docs/BTS-Annee2-E6.docx" target="_blank" class="file-link">Rapport de Stage.docx</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Project Card 3: APRES -->
-                <div class="project-card" onclick="toggleProject('project3', this)">
-                    <h2>APRES</h2>
-                    <div id="project3" class="project-menu">
-                        <ul>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('apres-audits', event)">
-                                    Audits de Sécurité
-                                </div>
-                                <div id="apres-audits" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/APRES-Audit-Infrastructure.pdf" target="_blank" class="file-link">Audit Infrastructure.pdf</a></li>
-                                        <li><a href="assets/docs/APRES-Audit-Application.pdf" target="_blank" class="file-link">Audit Application Web.pdf</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="folder-item">
-                                <a href="assets/docs/APRES-Pentest-Final.pdf" target="_blank" class="file-link">Pentest Report Final.pdf</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Project Card 4: ADES -->
-                <div class="project-card" onclick="toggleProject('project4', this)">
-                    <h2>ADES</h2>
-                    <div id="project4" class="project-menu">
-                        <ul>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('ades-certifications', event)">
-                                    Certifications
-                                </div>
-                                <div id="ades-certifications" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/ADES-OSCP.pdf" target="_blank" class="file-link">OSCP Certificate.pdf</a></li>
-                                        <li><a href="assets/docs/ADES-CEH.pdf" target="_blank" class="file-link">CEH Certificate.pdf</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('ades-projets', event)">
-                                    Projets Avancés
-                                </div>
-                                <div id="ades-projets" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/ADES-Threat-Hunting.pdf" target="_blank" class="file-link">Threat Hunting.pdf</a></li>
-                                        <li><a href="assets/docs/ADES-IR-Plan.docx" target="_blank" class="file-link">Incident Response Plan.docx</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Project Card 5: Projets Perso -->
-                <div class="project-card" onclick="toggleProject('project5', this)">
-                    <h2>Projets Perso</h2>
-                    <div id="project5" class="project-menu">
-                        <ul>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('perso-homelab', event)">
-                                    Homelab
-                                </div>
-                                <div id="perso-homelab" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/Perso-Homelab-Setup.pdf" target="_blank" class="file-link">Configuration Homelab.pdf</a></li>
-                                        <li><a href="assets/docs/Perso-Homelab-Security.docx" target="_blank" class="file-link">Sécurisation.docx</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('perso-ctf', event)">
-                                    CTF & Challenges
-                                </div>
-                                <div id="perso-ctf" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/Perso-CTF-Writeups.pdf" target="_blank" class="file-link">CTF Writeups 2025.pdf</a></li>
-                                        <li><a href="assets/docs/Perso-HackTheBox.pdf" target="_blank" class="file-link">HackTheBox Solutions.pdf</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="folder-item">
-                                <div class="folder-header" onclick="toggleSubfolder('perso-outils', event)">
-                                    Outils Développés
-                                </div>
-                                <div id="perso-outils" class="subfolder-content">
-                                    <ul>
-                                        <li><a href="assets/docs/Perso-Scanner-Doc.pdf" target="_blank" class="file-link">Vulnerability Scanner.pdf</a></li>
-                                        <li><a href="assets/docs/Perso-Automation-Scripts.pdf" target="_blank" class="file-link">Scripts d'Automatisation.pdf</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+            <!-- CTF- Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/hackaton.webp"Active Directory">
             </div>
-        </section>
-    </main>
+            <div class="cl">CTF</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Active Directory</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Documentation complète sur la mise en place d'un Active Directory Windows Server. Gestion des GPO, unités d'organisation et politiques de sécurité avancées.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">AD</span><span class="btag">GPO</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
 
-    <footer>
-        <p>© 2026 – Kylian Laurent – Portfolio Cybersécurité</p>
-    </footer>
+                  <!-- Backup- Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/backup.webp"Active Directory">
+            </div>
+            <div class="cl">Backup</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Backup</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Documentation complète sur la mise en place d'un Active Directory Windows Server. Gestion des GPO, unités d'organisation et politiques de sécurité avancées.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">AD</span><span class="btag">GPO</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
 
-    <script>
-        // Burger Menu Toggle
-        const burger = document.getElementById('burger');
-        const navLinks = document.getElementById('nav-links');
+                 <!-- Supervison- Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/supervision.png"Active Directory">
+            </div>
+            <div class="cl">Supervision</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Active Directory</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Documentation complète sur la mise en place d'un Active Directory Windows Server. Gestion des GPO, unités d'organisation et politiques de sécurité avancées.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">AD</span><span class="btag">GPO</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
 
-        burger.addEventListener('click', () => {
-            burger.classList.toggle('active');
-            navLinks.classList.toggle('nav-open');
-        });
+                       <!-- VMware- Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/vmware.png"Active Directory">
+            </div>
+            <div class="cl">VMware</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Active Directory</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Documentation complète sur la mise en place d'un Active Directory Windows Server. Gestion des GPO, unités d'organisation et politiques de sécurité avancées.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">AD</span><span class="btag">GPO</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
 
-        // Close menu when clicking on a link
-        const links = navLinks.querySelectorAll('a');
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                burger.classList.remove('active');
-                navLinks.classList.remove('nav-open');
-            });
-        });
+                       <!-- powershell - Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/powershell.png"Active Directory">
+            </div>
+            <div class="cl">PowerShell</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Active Directory</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Documentation complète sur la mise en place d'un Active Directory Windows Server. Gestion des GPO, unités d'organisation et politiques de sécurité avancées.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">AD</span><span class="btag">GPO</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
 
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navLinks.contains(e.target) && !burger.contains(e.target)) {
-                burger.classList.remove('active');
-                navLinks.classList.remove('nav-open');
-            }
-        });
+                       <!-- HyperV - Bachelor -->
+      <div class="fc" style="--cc:#00d4ff;--cr:0,212,255" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/hyperv.webp"Active Directory">
+            </div>
+            <div class="cl">HyperV</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Active Directory</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Documentation complète sur la mise en place d'un Active Directory Windows Server. Gestion des GPO, unités d'organisation et politiques de sécurité avancées.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">AD</span><span class="btag">GPO</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
 
-        // Toggle Project Menu
-        function toggleProject(projectId, card) {
-            const menu = document.getElementById(projectId);
-            const allMenus = document.querySelectorAll('.project-menu');
-            const allCards = document.querySelectorAll('.project-card');
-            
-            // Close all other menus
-            allMenus.forEach(m => {
-                if (m.id !== projectId) {
-                    m.classList.remove('active');
-                    // Close all subfolders in other projects
-                    m.querySelectorAll('.subfolder-content').forEach(sf => sf.classList.remove('active'));
-                    m.querySelectorAll('.folder-header').forEach(fh => fh.classList.remove('active'));
-                }
-            });
-            
-            // Remove active class from all cards
-            allCards.forEach(c => {
-                if (c !== card) {
-                    c.classList.remove('active');
-                }
-            });
-            
-            // Toggle current menu and card
-            menu.classList.toggle('active');
-            card.classList.toggle('active');
-            
-            // Prevent event bubbling
-            event.stopPropagation();
-        }
 
-        // Toggle Subfolder
-        function toggleSubfolder(subfolderId, event) {
-            event.stopPropagation();
-            
-            const subfolder = document.getElementById(subfolderId);
-            const header = event.currentTarget;
-            
-            // Toggle the clicked subfolder
-            subfolder.classList.toggle('active');
-            header.classList.toggle('active');
-        }
+    </div>
+  </section>
 
-        // Prevent menu links from toggling the card
-        document.querySelectorAll('.file-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        });
-    </script>
+  <!-- ═══ BTS ═══ -->
+  <section class="category" style="--cc:#00ff88;--cr:0,255,136">
+    <div class="cat-header">
+      <div class="cat-badge">📚</div>
+      <div class="cat-info"><div class="cat-name">BTS SIO</div><div class="cat-count">5 documents · 1ère &amp; 2ème Année</div></div>
+      <div class="cat-idx">[ 02 / 05 ]</div>
+    </div>
+    <div class="icons-grid">
+
+      <!-- Active Directory - BTS -->
+      <div class="fc" style="--cc:#00ff88;--cr:0,255,136" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/ACTIVE DIRECTORY.webp" alt="Active Directory BTS">
+            </div>
+            <div class="cl">Active Directory</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Active Directory</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Étude et déploiement d'un Active Directory en BTS. Arborescence LDAP, rôles FSMO, réplication inter-sites et gestion fine des permissions.</div>
+            <div class="btags"><span class="btag">Windows</span><span class="btag">FSMO</span><span class="btag">LDAP</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/AD.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- DMZ -->
+      <div class="fc" style="--cc:#00ff88;--cr:0,255,136" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/DMZ.webp" alt="DMZ">
+            </div>
+            <div class="cl">DMZ</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Zone Démilitarisée</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Conception et déploiement d'une architecture DMZ. Cloisonnement réseau, pare-feu double, exposition sécurisée des services publics et règles de filtrage.</div>
+            <div class="btags"><span class="btag">Réseau</span><span class="btag">Firewall</span><span class="btag">DMZ</span><span class="btag">1A</span></div>
+            <a class="bcta" href="assets/docs/dmz.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- GLPI -->
+      <div class="fc" style="--cc:#00ff88;--cr:0,255,136" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/OIP.webp" alt="GLPI">
+            </div>
+            <div class="cl">GLPI</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">GLPI</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Installation et configuration de GLPI sur un serveur et un poste client.</div>
+            <div class="btags"><span class="btag">Inventaire</span><span class="btag">agent</span></div>
+            <a class="bcta" href="assets/docs/BTS-Annee2-E4.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PFsense -->
+      <div class="fc" style="--cc:#00ff88;--cr:0,255,136" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/pfsense.webp" alt="PFsense">
+            </div>
+            <div class="cl">PFsense</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Pfsense</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Conception d'une DMZ en utilisant la solution PFsense.</div>
+            <div class="btags"><span class="btag">routing</span><span class="btag">firewall</span><span class="btag">services</span><span class="btag">sécurité</span></div>
+            <a class="bcta" href="assets/docs/BTS-Annee2-E5.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rapport de Stage -->
+      <div class="fc" style="--cc:#00ff88;--cr:0,255,136" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/Untitled-design-2.png" alt="Rapport de Stage">
+            </div>
+            <div class="cl">Wireshark</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Détection d'intrusion</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">On a testé des attaques avec une machine distante et on à regarder tout ça avec Wireshark</div>
+            <div class="btags"><span class="btag">Stage</span><span class="btag">E6</span><span class="btag">Bilan</span><span class="btag">2A</span></div>
+            <a class="bcta" href="assets/docs/BTS-Annee2-E6.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ APRES ═══ -->
+  <section class="category" style="--cc:#ffaa00;--cr:255,170,0">
+    <div class="cat-header">
+      <div class="cat-badge">🔍</div>
+      <div class="cat-info"><div class="cat-name">APRES</div><div class="cat-count">3 documents · Audits &amp; Tests d'intrusion</div></div>
+      <div class="cat-idx">[ 03 / 05 ]</div>
+    </div>
+    <div class="icons-grid">
+
+      <!-- Audit Infrastructure -->
+      <div class="fc" style="--cc:#ffaa00;--cr:255,170,0" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/audit-infra.png" alt="Audit Infrastructure">
+            </div>
+            <div class="cl">Audit Infrastructure</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Audit Infra</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Audit complet de l'infrastructure réseau et système. Identification des failles critiques, scoring CVSS et recommandations de remédiation priorisées.</div>
+            <div class="btags"><span class="btag">Audit</span><span class="btag">CVSS</span><span class="btag">Réseau</span></div>
+            <a class="bcta" href="assets/docs/APRES-Audit-Infrastructure.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit App Web -->
+      <div class="fc" style="--cc:#ffaa00;--cr:255,170,0" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/audit-web.png" alt="Audit App Web">
+            </div>
+            <div class="cl">Audit App Web</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Audit App Web</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Audit sécurité application web selon OWASP Top 10 — SQLi, XSS, CSRF, IDOR, misconfigurations et rapport de vulnérabilités avec PoC.</div>
+            <div class="btags"><span class="btag">OWASP</span><span class="btag">XSS</span><span class="btag">SQLi</span></div>
+            <a class="bcta" href="assets/docs/APRES-Audit-Application.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pentest Final -->
+      <div class="fc" style="--cc:#ffaa00;--cr:255,170,0" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/pentest.png" alt="Pentest Final">
+            </div>
+            <div class="cl">Pentest Final</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Pentest Final</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Rapport de test d'intrusion complet — mission Red Team, chaîne d'exploitation, preuves et plan de remédiation hiérarchisé par criticité.</div>
+            <div class="btags"><span class="btag">Red Team</span><span class="btag">Exploit</span><span class="btag">Rapport</span></div>
+            <a class="bcta" href="assets/docs/APRES-Pentest-Final.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ ADES ═══ -->
+  <section class="category" style="--cc:#a855f7;--cr:168,85,247">
+    <div class="cat-header">
+      <div class="cat-badge">🏆</div>
+      <div class="cat-info"><div class="cat-name">ADES</div><div class="cat-count">4 documents · Certifications &amp; Projets Avancés</div></div>
+      <div class="cat-idx">[ 04 / 05 ]</div>
+    </div>
+    <div class="icons-grid">
+
+      <!-- Mesh -->
+      <div class="fc" style="--cc:#a855f7;--cr:168,85,247" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/mesh centrale.png" alt="OSCP">
+            </div>
+            <div class="cl">Mesh Centrale</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Certificat OSCP</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Offensive Security Certified Professional — certif obtenue après 24h d'examen pratique sur machines réelles. Exploitation, pivoting, post-exploitation.</div>
+            <div class="btags"><span class="btag">OffSec</span><span class="btag">Certif.</span><span class="btag">Pentest</span></div>
+            <a class="bcta" href="assets/docs/ADES-OSCP.pdf" target="_blank" onclick="event.stopPropagation()">↗ Voir le certificat</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CEH -->
+      <div class="fc" style="--cc:#a855f7;--cr:168,85,247" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/ceh.png" alt="CEH">
+            </div>
+            <div class="cl">CEH</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Certificat CEH</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Certified Ethical Hacker EC-Council — maîtrise des techniques de hacking éthique, des outils offensifs majeurs et des contre-mesures défensives.</div>
+            <div class="btags"><span class="btag">EC-Council</span><span class="btag">CEH</span><span class="btag">Certif.</span></div>
+            <a class="bcta" href="assets/docs/ADES-CEH.pdf" target="_blank" onclick="event.stopPropagation()">↗ Voir le certificat</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Threat Hunting -->
+      <div class="fc" style="--cc:#a855f7;--cr:168,85,247" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/threat-hunting.png" alt="Threat Hunting">
+            </div>
+            <div class="cl">Threat Hunting</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Threat Hunting</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Projet avancé de chasse aux menaces — corrélation de logs SIEM, détection d'anomalies comportementales, IOCs et playbooks de réponse.</div>
+            <div class="btags"><span class="btag">SIEM</span><span class="btag">Blue Team</span><span class="btag">IOC</span></div>
+            <a class="bcta" href="assets/docs/ADES-Threat-Hunting.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incident Response -->
+      <div class="fc" style="--cc:#a855f7;--cr:168,85,247" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/incident-response.png" alt="Incident Response">
+            </div>
+            <div class="cl">Incident Response</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">IR Plan</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Plan de réponse aux incidents — procédures confinement, éradication, récupération, communication de crise et analyse post-mortem complète.</div>
+            <div class="btags"><span class="btag">CSIRT</span><span class="btag">IR</span><span class="btag">Post-mortem</span></div>
+            <a class="bcta" href="assets/docs/ADES-IR-Plan.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ PROJETS PERSO ═══ -->
+  <section class="category" style="--cc:#ff3c6e;--cr:255,60,110">
+    <div class="cat-header">
+      <div class="cat-badge">🚀</div>
+      <div class="cat-info"><div class="cat-name">Projets Perso</div><div class="cat-count">6 documents · Homelab · CTF · Outils</div></div>
+      <div class="cat-idx">[ 05 / 05 ]</div>
+    </div>
+    <div class="icons-grid">
+
+      <!-- Homelab Setup -->
+      <div class="fc" style="--cc:#ff3c6e;--cr:255,60,110" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/homelab.webp" alt="Homelab Setup">
+            </div>
+            <div class="cl">Homelab Setup</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Homelab Setup</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Architecture complète de mon homelab — hyperviseur Proxmox, VLANs segmentés, services auto-hébergés, monitoring Grafana et haute disponibilité.</div>
+            <div class="btags"><span class="btag">Proxmox</span><span class="btag">VLAN</span><span class="btag">Grafana</span></div>
+            <a class="bcta" href="assets/docs/Perso-Homelab-Setup.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sécurisation -->
+      <div class="fc" style="--cc:#ff3c6e;--cr:255,60,110" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">DOCX</span>
+            <div class="ciw has-img">
+              <img src="assets/image/KALI.jpg" alt="Sécurisation">
+            </div>
+            <div class="cl">Pentest</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Sécurisation</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Durcissement du homelab — OS hardening, IDS/IPS Suricata, MFA, TLS Let's Encrypt, gestion des accès PAM et scan de vulnérabilités continu.</div>
+            <div class="btags"><span class="btag">Hardening</span><span class="btag">IDS/IPS</span><span class="btag">PAM</span></div>
+            <a class="bcta" href="assets/docs/Perso-Homelab-Security.docx" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTF Writeups -->
+      <div class="fc" style="--cc:#ff3c6e;--cr:255,60,110" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/ctf.png" alt="CTF Writeups">
+            </div>
+            <div class="cl">CTF Writeups</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">CTF Writeups 2025</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Writeups détaillés des CTF 2025 — crypto, pwn, web, forensics et reverse engineering avec méthodologie complète et outils utilisés.</div>
+            <div class="btags"><span class="btag">CTF</span><span class="btag">Pwn</span><span class="btag">Rev.</span><span class="btag">2025</span></div>
+            <a class="bcta" href="assets/docs/Perso-CTF-Writeups.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- HackTheBox -->
+      <div class="fc" style="--cc:#ff3c6e;--cr:255,60,110" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/hackthebox.png" alt="HackTheBox">
+            </div>
+            <div class="cl">HackTheBox</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">HTB Solutions</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Solutions commentées de machines HTB — exploitation, élévation de privilèges, lateral movement et post-exploitation avec screenshots.</div>
+            <div class="btags"><span class="btag">HTB</span><span class="btag">Privesc</span><span class="btag">LM</span></div>
+            <a class="bcta" href="assets/docs/Perso-HackTheBox.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vuln Scanner -->
+      <div class="fc" style="--cc:#ff3c6e;--cr:255,60,110" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/vuln-scanner.png" alt="Vuln Scanner">
+            </div>
+            <div class="cl">Vuln Scanner</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Vuln Scanner</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Scanner de vulnérabilités Python — détection automatique CVE, scoring CVSS, reporting HTML et intégration pipeline CI/CD GitHub Actions.</div>
+            <div class="btags"><span class="btag">Python</span><span class="btag">CVE</span><span class="btag">CI/CD</span></div>
+            <a class="bcta" href="assets/docs/Perso-Scanner-Doc.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scripts Auto -->
+      <div class="fc" style="--cc:#ff3c6e;--cr:255,60,110" onclick="flip(this)">
+        <div class="fci">
+          <div class="ff">
+            <span class="ctype">PDF</span>
+            <div class="ciw has-img">
+              <img src="assets/image/scripts.png" alt="Scripts Auto">
+            </div>
+            <div class="cl">Scripts Auto.</div>
+            <span class="fhint">↻ flip</span>
+          </div>
+          <div class="fb">
+            <div class="bh"><span class="bn">Scripts Auto.</span><button class="bx" onclick="closeCard(event)">✕</button></div>
+            <div class="bd">Collection Bash &amp; Python pour automatiser l'administration, surveillance et réponse aux incidents — déploiement Ansible inclus.</div>
+            <div class="btags"><span class="btag">Bash</span><span class="btag">Python</span><span class="btag">Ansible</span></div>
+            <a class="bcta" href="assets/docs/Perso-Automation-Scripts.pdf" target="_blank" onclick="event.stopPropagation()">↗ Ouvrir le fichier</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <p>© 2026 – Kylian Laurent – Portfolio Cybersécurité</p>
+</footer>
+
+<script>
+// ── BURGER ──
+const burger = document.getElementById('burger');
+const nav    = document.getElementById('nav');
+burger.addEventListener('click', () => { burger.classList.toggle('active'); nav.classList.toggle('nav-open'); });
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { burger.classList.remove('active'); nav.classList.remove('nav-open'); }));
+document.addEventListener('click', e => { if(!nav.contains(e.target) && !burger.contains(e.target)) { burger.classList.remove('active'); nav.classList.remove('nav-open'); } });
+
+// ── FLIP CARDS — auto-close ──
+let current = null;
+
+function flip(card) {
+  if (card === current) { card.classList.remove('open'); current = null; return; }
+  if (current) current.classList.remove('open');
+  const wasOpen = !!current;
+  current = null;
+  setTimeout(() => { card.classList.add('open'); current = card; }, wasOpen ? 80 : 0);
+}
+
+function closeCard(e) {
+  e.stopPropagation();
+  const card = e.target.closest('.fc');
+  if (card) { card.classList.remove('open'); if(current === card) current = null; }
+}
+
+document.addEventListener('click', e => {
+  if (current && !current.contains(e.target)) { current.classList.remove('open'); current = null; }
+});
+</script>
 </body>
 </html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Tracker - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, 0.03) 2px, rgba(0, 212, 255, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px);
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Bouton Retour */
+        .btn-back {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 255, 136, 0.15));
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 50px;
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .btn-back:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 255, 136, 0.25));
+            transform: translateX(-5px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-back .arrow {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-back:hover .arrow {
+            transform: translateX(-3px);
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            padding: 80px 40px 60px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #00d4ff, #00ff88, transparent);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            animation: pulse-line 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.5; width: 300px; }
+            50% { opacity: 1; width: 500px; }
+        }
+
+        .page-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 255, 136, 0.08));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            animation: rotate-gradient 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        @keyframes rotate-gradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+            border-color: rgba(0, 212, 255, 0.6);
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Missions List */
+        .missions-list {
+            display: grid;
+            gap: 30px;
+        }
+
+        .missions-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .missions-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00d4ff, #00ff88, transparent);
+        }
+
+        .mission-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 212, 255, 0.25);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            animation: slideInUp 0.6s ease backwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(180deg, #00d4ff, #00ff88);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mission-card:hover::before {
+            opacity: 1;
+        }
+
+        .mission-card:hover {
+            transform: translateX(10px);
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .mission-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #00d4ff;
+            font-weight: 700;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .mission-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-status {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.3));
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+
+        .badge-status.terminee {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.3));
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+
+        .badge-status.en-cours {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.3));
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            color: #00d4ff;
+        }
+
+        .badge-status.en-attente {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.3));
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            color: #ffd54f;
+        }
+
+        .badge-priority {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.3));
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            color: #ffd54f;
+        }
+
+        .badge-priority.haute {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 69, 58, 0.3));
+            border: 1px solid rgba(255, 59, 48, 0.5);
+            color: #ff6b6b;
+        }
+
+        .badge-priority.moyenne {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.3));
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            color: #ffd54f;
+        }
+
+        .badge-priority.basse {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.3));
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+
+        .mission-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .meta-value {
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .mission-description {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(0, 255, 136, 0.03));
+            border: 2px dashed rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-back {
+                top: 20px;
+                left: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .page-header p {
+                font-size: 1rem;
+            }
+
+            .mission-card {
+                padding: 25px 20px;
+            }
+
+            .mission-header {
+                flex-direction: column;
+            }
+
+            .mission-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .mission-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <!-- Bouton Retour -->
+    <a href="#" class="btn-back" onclick="window.history.back(); return false;">
+        <span class="arrow">←</span>
+        <span>Retour</span>
+    </a>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Mission Tracker</h1>
+            <p>Mes missions d'alternance - Centre APRES</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-number" id="totalMissions">0</div>
+                <div class="stat-label">Missions Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedMissions">0</div>
+                <div class="stat-label">Terminées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="inProgressMissions">0</div>
+                <div class="stat-label">En Cours</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgDuration">0</div>
+                <div class="stat-label">Durée Moy. (jours)</div>
+            </div>
+        </div>
+
+        <!-- Missions List -->
+        <section>
+            <h2 class="missions-header">📋 Mes Missions</h2>
+            <div class="missions-list" id="missionsList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🚀</div>
+                    <div class="empty-state-text">Aucune mission enregistrée pour le moment.</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Missions pré-chargées
+        const missions = [
+            {
+                id: 1,
+                title: "Assurer le support technique aux utilisateurs",
+                status: "Terminée",
+                startDate: "2024-08-15",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Support technique à distance et sur site pour l'ensemble des utilisateurs de l'entreprise.",
+                technologies: "TeamViewer / Support Téléphonique",
+                createdAt: new Date("2024-08-15").toISOString()
+            },
+            {
+                id: 2,
+                title: "Diagnostiquer et résoudre les incidents matériels et logiciels",
+                status: "Terminée",
+                startDate: "2024-08-15",
+                endDate: "2025-08-31",
+                priority: "Moyenne",
+                description: "Diagnostic et résolution des problèmes techniques rencontrés par les utilisateurs, qu'ils soient d'ordre matériel ou logiciel.",
+                technologies: "Outils de diagnostic / Windows / Hardware",
+                createdAt: new Date("2024-08-15").toISOString()
+            },
+            {
+                id: 3,
+                title: "Gérer les demandes via un outil de ticketing",
+                status: "Terminée",
+                startDate: "2024-08-15",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Réception, traitement et suivi des demandes utilisateurs via le système de ticketing de l'entreprise.",
+                technologies: "RT / Système de ticketing",
+                createdAt: new Date("2024-08-15").toISOString()
+            },
+            {
+                id: 4,
+                title: "Installer, configurer et maintenir les postes de travail",
+                status: "Terminée",
+                startDate: "2024-08-15",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Installation complète et configuration des postes de travail pour les nouveaux utilisateurs et maintenance préventive du parc informatique.",
+                technologies: "Windows 10/11 / Déploiement / Configuration",
+                createdAt: new Date("2024-08-15").toISOString()
+            },
+            {
+                id: 5,
+                title: "Paramétrer et dépanner les messageries",
+                status: "Terminée",
+                startDate: "2024-09-01",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Configuration et dépannage des messageries électroniques, notamment Microsoft Outlook et clients de messagerie.",
+                technologies: "Microsoft Outlook / Exchange / IMAP/SMTP",
+                createdAt: new Date("2024-09-01").toISOString()
+            },
+            {
+                id: 6,
+                title: "Gérer les comptes et droits utilisateurs (Active Directory)",
+                status: "Terminée",
+                startDate: "2024-09-15",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Administration des comptes utilisateurs, gestion des droits d'accès et des permissions dans Active Directory.",
+                technologies: "Active Directory / NTFS / GPO",
+                createdAt: new Date("2024-09-15").toISOString()
+            },
+            {
+                id: 7,
+                title: "Assister les utilisateurs sur les connexions VPN",
+                status: "Terminée",
+                startDate: "2024-10-01",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Configuration et assistance pour les connexions VPN permettant l'accès distant sécurisé aux ressources de l'entreprise.",
+                technologies: "VPN / OpenVPN / Accès distant",
+                createdAt: new Date("2024-10-01").toISOString()
+            },
+            {
+                id: 8,
+                title: "Configurer et reconnecter les imprimantes réseau",
+                status: "Terminée",
+                startDate: "2024-10-10",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Installation, configuration et dépannage des imprimantes réseau pour l'ensemble des utilisateurs.",
+                technologies: "Imprimantes réseau / Pilotes / Serveur d'impression",
+                createdAt: new Date("2024-10-10").toISOString()
+            },
+            {
+                id: 9,
+                title: "Participer au déploiement de nouveaux équipements informatiques",
+                status: "Terminée",
+                startDate: "2024-11-01",
+                endDate: "2025-08-31",
+                priority: "Basse",
+                description: "Participation active au déploiement et à la mise en service de nouveaux équipements informatiques (PC, portables, périphériques).",
+                technologies: "Déploiement / Installation matériel / Configuration",
+                createdAt: new Date("2024-11-01").toISOString()
+            },
+            {
+                id: 10,
+                title: "Assurer le suivi et la clôture des incidents",
+                status: "Terminée",
+                startDate: "2024-08-15",
+                endDate: "2025-02-10",
+                priority: "Basse",
+                description: "Suivi rigoureux des incidents déclarés jusqu'à leur résolution complète et clôture dans le système de ticketing.",
+                technologies: "RT / Ticketing / Gestion des incidents",
+                createdAt: new Date("2024-08-15").toISOString()
+            },
+            {
+                id: 11,
+                title: "Rédiger des procédures et documentations techniques",
+                status: "Terminée",
+                startDate: "2024-12-01",
+                endDate: "2025-08-10",
+                priority: "Moyenne",
+                description: "Création et mise à jour de la documentation technique et des procédures pour faciliter la résolution d'incidents récurrents.",
+                technologies: "Documentation / Procédures / Knowledge Base",
+                createdAt: new Date("2024-12-01").toISOString()
+            },
+            {
+                id: 12,
+                title: "Escalader les incidents complexes vers le niveau supérieur",
+                status: "Terminée",
+                startDate: "2024-08-15",
+                endDate: "2025-02-10",
+                priority: "Haute",
+                description: "Identification des incidents nécessitant une expertise supérieure et transmission aux équipes de niveau 2 ou 3 avec toutes les informations nécessaires.",
+                technologies: "Gestion des escalades / Communication",
+                createdAt: new Date("2024-08-15").toISOString()
+            },
+            {
+                id: 13,
+                title: "Support sur environnement Microsoft 365",
+                status: "Terminée",
+                startDate: "2025-01-15",
+                endDate: "2025-02-10",
+                priority: "Moyenne",
+                description: "Assistance aux utilisateurs sur l'ensemble des outils Microsoft 365 (Teams, OneDrive, SharePoint, etc.).",
+                technologies: "Microsoft 365 / Teams / OneDrive / SharePoint",
+                createdAt: new Date("2025-01-15").toISOString()
+            },
+            {
+                id: 14,
+                title: "Intervention sur serveurs Windows",
+                status: "Terminée",
+                startDate: "2025-01-20",
+                endDate: "2025-02-10",
+                priority: "Moyenne",
+                description: "Interventions de maintenance et de dépannage sur les serveurs Windows de l'infrastructure.",
+                technologies: "Windows Server / Administration serveur",
+                createdAt: new Date("2025-01-20").toISOString()
+            },
+            {
+                id: 15,
+                title: "Préparation de postes utilisateurs",
+                status: "Terminée",
+                startDate: "2023-02-01",
+                endDate: "2025-08-10",
+                priority: "Basse",
+                description: "Préparation des postes utilisateurs : mettre en place l'ordinateur avec logiciels, MAJ et transfert de données afin que l'utilisateur puisse travailler directement.",
+                technologies: "Windows / Installation logiciels / Migration de données",
+                createdAt: new Date("2023-02-01").toISOString()
+            },
+            {
+                id: 16,
+                title: "Diagnostic réseau (IP, DNS, DHCP)",
+                status: "Terminée",
+                startDate: "2024-11-15",
+                endDate: "2025-08-10",
+                priority: "Moyenne",
+                description: "Diagnostic et résolution des problèmes réseau liés à la configuration IP, DNS et DHCP.",
+                technologies: "TCP/IP / DNS / DHCP / Diagnostic réseau",
+                createdAt: new Date("2024-11-15").toISOString()
+            },
+            {
+                id: 17,
+                title: "Support télétravail et accès distant",
+                status: "Terminée",
+                startDate: "2024-10-01",
+                endDate: "2025-08-10",
+                priority: "Moyenne",
+                description: "Assistance complète pour les utilisateurs en télétravail : VPN, accès aux ressources, configuration des outils de collaboration.",
+                technologies: "VPN / Bureau à distance / Teams / Accès distant",
+                createdAt: new Date("2024-10-01").toISOString()
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            displayMissions();
+            updateStats();
+        });
+
+        // Display missions
+        function displayMissions() {
+            const container = document.getElementById('missionsList');
+            
+            if (missions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🚀</div>
+                        <div class="empty-state-text">Aucune mission enregistrée pour le moment.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = missions.map((mission, index) => {
+                const duration = calculateDuration(mission.startDate, mission.endDate);
+                const statusClass = mission.status.toLowerCase().replace(/é/g, 'e').replace(/ /g, '-');
+                const priorityClass = mission.priority.toLowerCase();
+                
+                return `
+                    <div class="mission-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="mission-header">
+                            <h3 class="mission-title">${mission.title}</h3>
+                            <div class="mission-badges">
+                                <span class="badge badge-status ${statusClass}">${mission.status}</span>
+                                <span class="badge badge-priority ${priorityClass}">${mission.priority}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Date de début</span>
+                                <span class="meta-value">${formatDate(mission.startDate)}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Date de fin</span>
+                                <span class="meta-value">${mission.endDate ? formatDate(mission.endDate) : 'En cours'}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Durée</span>
+                                <span class="meta-value">${duration} jour${duration > 1 ? 's' : ''}</span>
+                            </div>
+                            ${mission.technologies ? `
+                            <div class="meta-item">
+                                <span class="meta-label">Technologies</span>
+                                <span class="meta-value">${mission.technologies}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <p class="mission-description">${mission.description}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = missions.length;
+            const completed = missions.filter(m => m.status === 'Terminée').length;
+            const inProgress = missions.filter(m => m.status === 'En cours').length;
+            
+            let totalDuration = 0;
+            let missionCount = 0;
+            missions.forEach(m => {
+                if (m.endDate) {
+                    totalDuration += calculateDuration(m.startDate, m.endDate);
+                    missionCount++;
+                }
+            });
+            const avgDuration = missionCount > 0 ? Math.round(totalDuration / missionCount) : 0;
+
+            animateNumber('totalMissions', total);
+            animateNumber('completedMissions', completed);
+            animateNumber('inProgressMissions', inProgress);
+            animateNumber('avgDuration', avgDuration);
+        }
+
+        // Animate numbers
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent) || 0;
+            const increment = targetValue > currentValue ? 1 : -1;
+            const duration = 500;
+            const steps = Math.abs(targetValue - currentValue);
+            const stepDuration = steps > 0 ? duration / steps : 0;
+
+            let current = currentValue;
+            const timer = setInterval(() => {
+                if ((increment > 0 && current >= targetValue) || (increment < 0 && current <= targetValue)) {
+                    element.textContent = targetValue;
+                    clearInterval(timer);
+                } else {
+                    current += increment;
+                    element.textContent = current;
+                }
+            }, stepDuration);
+        }
+
+        // Helper functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        function calculateDuration(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = endDate ? new Date(endDate) : new Date();
+            const diffTime = Math.abs(end - start);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+    </script>
+</body>
+</html>
