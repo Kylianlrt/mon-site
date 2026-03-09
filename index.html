@@ -1,6 +1,3 @@
-Index · HTML
-Copier
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,14 +6,176 @@ Copier
     <title>Kylian Laurent - Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ===================== LOADER ===================== */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', Courier, monospace;
+            transition: opacity 0.6s ease;
         }
 
+        #loader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-scanlines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 100000;
+            background: repeating-linear-gradient(
+                0deg, transparent, transparent 2px,
+                rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px
+            );
+        }
+
+        .loader-glow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse at 50% 50%, rgba(0,212,255,0.04) 0%, transparent 70%);
+        }
+
+        .loader-box {
+            width: min(700px, 95vw);
+            border: 1px solid #00d4ff;
+            box-shadow: 0 0 30px rgba(0,212,255,0.3), inset 0 0 30px rgba(0,0,0,0.8);
+            padding: 28px 32px;
+            background: rgba(0, 4, 10, 0.97);
+        }
+
+        .loader-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0,212,255,0.2);
+            padding-bottom: 14px;
+        }
+
+        .loader-dots { display: flex; gap: 6px; }
+        .loader-dots span {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+
+        .loader-title {
+            color: #00d4ff;
+            font-size: 13px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            flex: 1;
+            text-align: center;
+        }
+
+        .loader-log {
+            height: 240px;
+            overflow-y: auto;
+            margin-bottom: 22px;
+            scrollbar-width: none;
+        }
+        .loader-log::-webkit-scrollbar { display: none; }
+
+        .loader-log-line {
+            font-size: 12px;
+            line-height: 1.8;
+            letter-spacing: 0.04em;
+        }
+
+        .loader-log-line .line-idx {
+            color: rgba(0,212,255,0.35);
+            margin-right: 8px;
+        }
+
+        .log-ok      { color: #00d4ff; }
+        .log-detect  { color: #00cfff; }
+        .log-warn    { color: #ffee00; }
+        .log-active  { color: #00ffaa; }
+        .log-default { color: #77bbcc; }
+        .log-dim     { opacity: 0.7; }
+
+        .loader-cursor {
+            display: inline-block;
+            color: #00d4ff;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        .loader-bar-label {
+            display: flex;
+            justify-content: space-between;
+            color: #00d4ff;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+
+        .loader-bar-track {
+            height: 18px;
+            background: rgba(0,40,60,0.8);
+            border: 1px solid rgba(0,212,255,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #004466, #00d4ff);
+            box-shadow: 0 0 12px #00d4ff;
+            transition: width 0.04s linear;
+            position: relative;
+        }
+
+        .loader-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 20px; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+        }
+
+        .loader-bar-ticks {
+            position: absolute;
+            inset: 0;
+            display: flex;
+        }
+        .loader-bar-ticks span {
+            flex: 1;
+            border-right: 1px solid rgba(0,0,0,0.4);
+        }
+
+        .loader-status {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 14px;
+            color: #ffee00;
+            transition: all 0.5s;
+        }
+
+        .loader-status.done {
+            color: #00d4ff;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 0 12px #00d4ff;
+        }
+
+        /* ===================== SITE (caché au départ) ===================== */
+        #site { display: none; }
+
+        /* ===================== STYLES DU SITE ===================== */
         :root {
-            /* Mode Sombre (par défaut) */
             --bg-primary: #0a0e27;
             --bg-secondary: #1a1f3a;
             --text-primary: #ffffff;
@@ -30,7 +189,6 @@ Copier
         }
 
         body.light-mode {
-            /* Mode Clair */
             --bg-primary: #f0f4f8;
             --bg-secondary: #ffffff;
             --text-primary: #1a202c;
@@ -53,13 +211,10 @@ Copier
             transition: all 0.5s ease;
         }
 
-        /* Animated Background */
         .animated-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: -1;
             background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
             transition: all 0.5s ease;
@@ -68,9 +223,8 @@ Copier
         .animated-bg::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: 
+            width: 200%; height: 200%;
+            background-image:
                 repeating-linear-gradient(0deg, transparent, transparent 2px, var(--grid-color) 2px, var(--grid-color) 4px),
                 repeating-linear-gradient(90deg, transparent, transparent 2px, var(--grid-color) 2px, var(--grid-color) 4px);
             animation: grid-move 20s linear infinite;
@@ -81,11 +235,9 @@ Copier
             100% { transform: translate(50px, 50px); }
         }
 
-        /* Particules flottantes */
         .particle {
             position: fixed;
-            width: 3px;
-            height: 3px;
+            width: 3px; height: 3px;
             background: var(--accent-1);
             border-radius: 50%;
             box-shadow: 0 0 10px var(--accent-1);
@@ -95,27 +247,15 @@ Copier
         }
 
         @keyframes float {
-            0% {
-                transform: translateY(100vh) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(100px);
-                opacity: 0;
-            }
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
         }
 
-        /* Header */
         header {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 100%;
             padding: 20px 50px;
             display: flex;
@@ -140,16 +280,10 @@ Copier
             letter-spacing: 3px;
         }
 
-        .header-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
 
-        /* Bouton Mode Clair/Sombre */
         .theme-toggle {
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             cursor: pointer;
             background: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -162,38 +296,15 @@ Copier
             overflow: hidden;
         }
 
-        .theme-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px var(--accent-1);
-        }
+        .theme-toggle:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--accent-1); }
+        .theme-toggle svg { width: 24px; height: 24px; fill: var(--accent-1); transition: all 0.3s ease; }
+        .theme-toggle .moon { display: block; }
+        .theme-toggle .sun { display: none; }
+        body.light-mode .theme-toggle .moon { display: none; }
+        body.light-mode .theme-toggle .sun { display: block; }
 
-        .theme-toggle svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--accent-1);
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle .moon {
-            display: block;
-        }
-
-        .theme-toggle .sun {
-            display: none;
-        }
-
-        body.light-mode .theme-toggle .moon {
-            display: none;
-        }
-
-        body.light-mode .theme-toggle .sun {
-            display: block;
-        }
-
-        /* Burger Menu */
         .burger {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -208,38 +319,16 @@ Copier
             z-index: 1001;
         }
 
-        .burger:hover {
-            background: var(--card-bg);
-            box-shadow: 0 0 20px var(--accent-1);
-        }
+        .burger:hover { box-shadow: 0 0 20px var(--accent-1); }
+        .burger span { width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); border-radius: 10px; transition: all 0.3s ease; }
+        .burger.active span:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+        .burger.active span:nth-child(2) { opacity: 0; }
+        .burger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
 
-        .burger span {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .burger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
-        }
-
-        .burger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Navigation */
         nav {
             position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100vh;
+            top: 0; right: -350px;
+            width: 350px; height: 100vh;
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             padding: 120px 40px 40px;
@@ -249,9 +338,7 @@ Copier
             border-left: 2px solid var(--border-color);
         }
 
-        nav.nav-open {
-            right: 0;
-        }
+        nav.nav-open { right: 0; }
 
         nav a {
             display: block;
@@ -272,27 +359,15 @@ Copier
         nav a::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, var(--border-color), transparent);
             transition: left 0.5s ease;
         }
 
-        nav a:hover::before {
-            left: 100%;
-        }
+        nav a:hover::before { left: 100%; }
+        nav a:hover { background: var(--border-color); border-left-color: var(--accent-1); padding-left: 30px; box-shadow: 0 5px 15px var(--shadow-color); color: var(--accent-1); }
 
-        nav a:hover {
-            background: var(--border-color);
-            border-left-color: var(--accent-1);
-            padding-left: 30px;
-            box-shadow: 0 5px 15px var(--shadow-color);
-            color: var(--accent-1);
-        }
-
-        /* Contenu Principal */
         main {
             min-height: 100vh;
             display: flex;
@@ -305,10 +380,7 @@ Copier
             z-index: 1;
         }
 
-        .name-container {
-            position: relative;
-            padding: 40px;
-        }
+        .name-container { position: relative; padding: 40px; }
 
         .name {
             font-family: 'Orbitron', sans-serif;
@@ -328,10 +400,8 @@ Copier
         .name::before {
             content: 'KYLIAN LAURENT';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -366,10 +436,8 @@ Copier
         .profession::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
             background: linear-gradient(45deg, transparent, var(--border-color), transparent);
             animation: shine 3s linear infinite;
         }
@@ -379,161 +447,295 @@ Copier
             100% { transform: rotate(360deg); }
         }
 
-        .subtitle {
-            display: block;
-            font-size: clamp(0.8rem, 1.5vw, 1rem);
-            margin-top: 10px;
-            color: var(--accent-2);
-            font-weight: 300;
-        }
+        .subtitle { display: block; font-size: clamp(0.8rem, 1.5vw, 1rem); margin-top: 10px; color: var(--accent-2); font-weight: 300; }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            header h1 {
-                font-size: 1.3rem;
-            }
-
-            .theme-toggle {
-                width: 40px;
-                height: 40px;
-            }
-
-            nav {
-                width: 100%;
-                right: -100%;
-                padding: 100px 30px 30px;
-            }
-
-            .name {
-                letter-spacing: 4px;
-            }
-
-            .profession {
-                letter-spacing: 2px;
-                padding: 15px 25px;
-            }
+            header { padding: 15px 20px; }
+            header h1 { font-size: 1.3rem; }
+            .theme-toggle { width: 40px; height: 40px; }
+            nav { width: 100%; right: -100%; padding: 100px 30px 30px; }
+            .name { letter-spacing: 4px; }
+            .profession { letter-spacing: 2px; padding: 15px 25px; }
         }
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
 
-    <!-- Header -->
-    <header>
-        <h1>PORTFOLIO</h1>
-        <div class="header-controls">
-            <!-- Bouton Mode Clair/Sombre -->
-            <div class="theme-toggle" id="themeToggle">
-                <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                </svg>
-                <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="5"/>
-                    <line x1="12" y1="1" x2="12" y2="3"/>
-                    <line x1="12" y1="21" x2="12" y2="23"/>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                    <line x1="1" y1="12" x2="3" y2="12"/>
-                    <line x1="21" y1="12" x2="23" y2="12"/>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                </svg>
+    <!-- ===================== LOADER ===================== -->
+    <div class="loader-scanlines"></div>
+    <div class="loader-glow"></div>
+    <div id="loader">
+        <div class="loader-box">
+            <!-- Barre de titre -->
+            <div class="loader-titlebar">
+                <div class="loader-dots">
+                    <span style="background:#ff5f56"></span>
+                    <span style="background:#ffbd2e"></span>
+                    <span style="background:#27c93f"></span>
+                </div>
+                <span class="loader-title">▶ kylianlaurent.exe</span>
             </div>
-            
-            <!-- Menu Burger -->
-            <div class="burger" id="burger">
-                <span></span>
-                <span></span>
-                <span></span>
+
+            <!-- Log de démarrage -->
+            <div class="loader-log" id="loaderLog">
+                <span class="loader-cursor">█</span>
             </div>
+
+            <!-- Barre de progression -->
+            <div class="loader-bar-label">
+                <span>CHARGEMENT DU SYSTÈME</span>
+                <span id="loaderPercent">0%</span>
+            </div>
+            <div class="loader-bar-track">
+                <div class="loader-bar-fill" id="loaderFill"></div>
+                <div class="loader-bar-ticks">
+                    <span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
+            <!-- Statut -->
+            <div class="loader-status" id="loaderStatus">▸ Initialisation en cours, veuillez patienter...</div>
         </div>
-    </header>
+    </div>
 
-    <!-- Navigation -->
-    <nav id="nav">
-        <a href="index.html">Accueil</a>
-        <a href="about-me.html">À propos</a>
-        <a href="enterprise.html">Entreprise</a>
-        <a href="projects.html">Projets</a>
-        <a href="database.html">Base de connaissances</a>
-        <a href="formations.html">Formations</a>
-        <a href="logiciels.html">Logiciels</a>
-        <a href="reviews.html">Avis</a>
-        <a href="contact.html">Contact</a>
-    </nav>
+    <!-- ===================== SITE ===================== -->
+    <div id="site">
+        <div class="animated-bg"></div>
 
-    <!-- Contenu Principal -->
-    <main>
-        <div class="name-container">
-            <h1 class="name">KYLIAN LAURENT</h1>
-            <div class="profession">
-                Étudiant en Bachelor
-                <span class="subtitle">Option Infrastructure Réseaux et Cybersécurité</span>
+        <header>
+            <h1>PORTFOLIO</h1>
+            <div class="header-controls">
+                <div class="theme-toggle" id="themeToggle">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </div>
+                <div class="burger" id="burger">
+                    <span></span><span></span><span></span>
+                </div>
             </div>
-        </div>
-    </main>
+        </header>
+
+        <nav id="nav">
+            <a href="index.html">Accueil</a>
+            <a href="about-me.html">À propos</a>
+            <a href="enterprise.html">Entreprise</a>
+            <a href="projects.html">Projets</a>
+            <a href="database.html">Base de connaissances</a>
+            <a href="formations.html">Formations</a>
+            <a href="logiciels.html">Logiciels</a>
+            <a href="reviews.html">Avis</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+        <main>
+            <div class="name-container">
+                <h1 class="name">KYLIAN LAURENT</h1>
+                <div class="profession">
+                    Étudiant en Bachelor
+                    <span class="subtitle">Option Infrastructure Réseaux et Cybersécurité</span>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
-        // Créer des particules flottantes
-        for (let i = 0; i < 30; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 10 + 's';
-            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-            document.body.appendChild(particle);
+    // ===================== LOADER LOGIC =====================
+    const bootMessages = [
+        { text: "Initialisation du système KylianLaurent v2.7.4...", type: "default" },
+        { text: "Chargement du noyau principal... [OK]", type: "ok" },
+        { text: "Lancement du protocole d'embarquement... [OK]", type: "ok" },
+        { text: "Vérification de l'intégrité des données personnelles...", type: "warn" },
+        { text: "Intégrité vérifiée — aucune corruption détectée. [OK]", type: "ok" },
+        { text: "Calibration des capteurs de charme... [OK]", type: "ok" },
+        { text: "Chargement du module SWAG_ENGINE.dll... [OK]", type: "ok" },
+        { text: "Détection du matériel: Cerveau Ultra-Pro MAX... [DÉTECTÉ]", type: "detect" },
+        { text: "Synchronisation de l'horloge interne... [OK]", type: "ok" },
+        { text: "Initialisation du protocole de séduction... [EN COURS]", type: "warn" },
+        { text: "Chargement des talents cachés v3.1... [OK]", type: "ok" },
+        { text: "Activation du module anti-haters.exe... [OK]", type: "ok" },
+        { text: "Démarrage du service AMBITION_CORE... [OK]", type: "ok" },
+        { text: "Connexion au réseau neuronal KL... [ÉTABLIE]", type: "detect" },
+        { text: "Chargement de la bibliothèque de moves.lib... [OK]", type: "ok" },
+        { text: "Vérification des permissions administrateur... [ACCORDÉES]", type: "detect" },
+        { text: "Activation du turbo-boost mode... [EN LIGNE]", type: "active" },
+        { text: "Montage du système de fichiers /home/kylianlaurent... [OK]", type: "ok" },
+        { text: "Démarrage du service CONFIANCE_EN_SOI... [ACTIF]", type: "active" },
+        { text: "Lancement du daemon background_glow.service... [OK]", type: "ok" },
+        { text: "Chargement du protocole BONNE_HUMEUR_v9... [OK]", type: "ok" },
+        { text: "Analyse des objectifs journaliers... [CHARGEMENT]", type: "warn" },
+        { text: "Optimisation des performances cognitives... [OK]", type: "ok" },
+        { text: "Activation du mode LÉGENDAIRE... [STANDBY]", type: "warn" },
+        { text: "Compilation des souvenirs épiques... [OK]", type: "ok" },
+        { text: "Initialisation du moteur de motivation... [OK]", type: "ok" },
+        { text: "Démarrage du processus GRIND_FOREVER.exe... [OK]", type: "ok" },
+        { text: "Chargement de la personnalité principale... [100%]", type: "active" },
+        { text: "Système prêt. Bienvenue, KylianLaurent.", type: "ok" },
+    ];
+
+    const logEl      = document.getElementById('loaderLog');
+    const fillEl     = document.getElementById('loaderFill');
+    const percentEl  = document.getElementById('loaderPercent');
+    const statusEl   = document.getElementById('loaderStatus');
+    const loaderEl   = document.getElementById('loader');
+    const siteEl     = document.getElementById('site');
+
+    const colorMap = {
+        ok:      'log-ok',
+        detect:  'log-detect',
+        warn:    'log-warn',
+        active:  'log-active',
+        default: 'log-default',
+    };
+
+    const DURATION = 7000;
+    const msgInterval = DURATION / bootMessages.length;
+    let msgIndex = 0;
+    let progress = 0;
+    let startTime = null;
+
+    function addMessage(msg, index) {
+        // Remove cursor first
+        const cursor = logEl.querySelector('.loader-cursor');
+        if (cursor) cursor.remove();
+
+        const line = document.createElement('div');
+        line.className = 'loader-log-line ' + colorMap[msg.type];
+
+        const idx = document.createElement('span');
+        idx.className = 'line-idx';
+        idx.textContent = '[' + String(index).padStart(2, '0') + ']';
+
+        line.appendChild(idx);
+        line.appendChild(document.createTextNode(msg.text));
+        logEl.appendChild(line);
+
+        // Re-add cursor
+        const cur = document.createElement('span');
+        cur.className = 'loader-cursor';
+        cur.textContent = '█';
+        logEl.appendChild(cur);
+
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function animateProgress(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const raw = Math.min(elapsed / DURATION, 1);
+        // Easing
+        const eased = raw < 0.5 ? 2 * raw * raw : -1 + (4 - 2 * raw) * raw;
+        progress = Math.floor(eased * 100);
+
+        fillEl.style.width = progress + '%';
+        percentEl.textContent = progress + '%';
+
+        if (raw < 1) {
+            requestAnimationFrame(animateProgress);
         }
+    }
 
-        // Gestion du menu burger
-        const burger = document.getElementById('burger');
-        const nav = document.getElementById('nav');
+    // Lancer les messages
+    function scheduleMessages() {
+        bootMessages.forEach((msg, i) => {
+            setTimeout(() => {
+                addMessage(msg, i);
+                if (i === bootMessages.length - 1) {
+                    // Tout est chargé
+                    setTimeout(() => {
+                        fillEl.style.width = '100%';
+                        percentEl.textContent = '100%';
+                        statusEl.textContent = '✓ KYLIANLAURENT CHARGÉ AVEC SUCCÈS';
+                        statusEl.classList.add('done');
 
-        burger.addEventListener('click', () => {
-            burger.classList.toggle('active');
-            nav.classList.toggle('nav-open');
+                        // Transition vers le site après 1 seconde
+                        setTimeout(() => {
+                            loaderEl.classList.add('fade-out');
+                            document.querySelector('.loader-scanlines').style.opacity = '0';
+                            document.querySelector('.loader-glow').style.opacity = '0';
+                            setTimeout(() => {
+                                loaderEl.style.display = 'none';
+                                document.querySelector('.loader-scanlines').style.display = 'none';
+                                document.querySelector('.loader-glow').style.display = 'none';
+                                siteEl.style.display = 'block';
+                            }, 600);
+                        }, 1000);
+                    }, 200);
+                }
+            }, i * msgInterval);
         });
+    }
 
-        // Fermer le menu en cliquant sur un lien
-        const navLinks = document.querySelectorAll('nav a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                burger.classList.remove('active');
-                nav.classList.remove('nav-open');
-            });
+    if (!localStorage.getItem('loaderSeen')) {
+        localStorage.setItem('loaderSeen', 'true');
+        requestAnimationFrame(animateProgress);
+        scheduleMessages();
+    } else {
+        loaderEl.style.display = 'none';
+        document.querySelector('.loader-scanlines').style.display = 'none';
+        document.querySelector('.loader-glow').style.display = 'none';
+        siteEl.style.display = 'block';
+    }
+
+    // ===================== SITE LOGIC =====================
+    // Particules
+    for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        document.getElementById('site').appendChild(particle);
+    }
+
+    // Menu burger
+    const burger = document.getElementById('burger');
+    const nav    = document.getElementById('nav');
+
+    burger.addEventListener('click', () => {
+        burger.classList.toggle('active');
+        nav.classList.toggle('nav-open');
+    });
+
+    document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            burger.classList.remove('active');
+            nav.classList.remove('nav-open');
         });
+    });
 
-        // Fermer le menu en cliquant en dehors
-        document.addEventListener('click', (e) => {
-            if (!burger.contains(e.target) && !nav.contains(e.target)) {
-                burger.classList.remove('active');
-                nav.classList.remove('nav-open');
-            }
-        });
-
-        // Gestion du mode Clair/Sombre
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-
-        // Vérifier si un mode est déjà enregistré
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            body.classList.add('light-mode');
+    document.addEventListener('click', (e) => {
+        if (!burger.contains(e.target) && !nav.contains(e.target)) {
+            burger.classList.remove('active');
+            nav.classList.remove('nav-open');
         }
+    });
 
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('light-mode');
-            
-            // Sauvegarder la préférence
-            if (body.classList.contains('light-mode')) {
-                localStorage.setItem('theme', 'light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-            }
-        });
+    // Mode clair/sombre
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'light') body.classList.add('light-mode');
+
+    themeToggle.addEventListener('click', () => {
+        body.classList.toggle('light-mode');
+        localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+    });
     </script>
 </body>
 </html>
