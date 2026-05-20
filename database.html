@@ -4,782 +4,416 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Base de Connaissances - Kylian Laurent</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --glass-bg: rgba(255,255,255,0.08);
+            --glass-border: rgba(255,255,255,0.18);
+            --blur: blur(24px);
+            --text: rgba(255,255,255,0.92);
+            --text-muted: rgba(255,255,255,0.5);
+            --orb-1: #a78bfa;
+            --orb-2: #67e8f9;
+            --orb-3: #f0abfc;
+            --orb-4: #6ee7b7;
+            --orb-5: #fbbf24;
+        }
+        body.light-mode {
+            --glass-bg: rgba(255,255,255,0.55);
+            --glass-border: rgba(255,255,255,0.85);
+            --text: rgba(30,20,60,0.95);
+            --text-muted: rgba(60,40,100,0.55);
         }
 
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background: #0a0e27;
-            color: #fff;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh; overflow-x: hidden;
+            background: #0d0818; color: var(--text);
+            transition: color 0.5s ease; position: relative;
+        }
+        body.light-mode { background: #ede9fe; }
+
+        /* BACKGROUND */
+        .bg-scene { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(100px);
+            opacity: 0.28; animation: orbFloat 14s ease-in-out infinite;
+            pointer-events: none; transition: opacity 0.5s;
+        }
+        body.light-mode .orb { opacity: 0.18; }
+        .orb-1 { width:600px;height:600px;background:var(--orb-1);top:-15%;left:-10%;animation-delay:0s; }
+        .orb-2 { width:500px;height:500px;background:var(--orb-2);bottom:-10%;right:-8%;animation-delay:-5s; }
+        .orb-3 { width:350px;height:350px;background:var(--orb-3);top:30%;right:5%;animation-delay:-9s; }
+        .orb-4 { width:280px;height:280px;background:var(--orb-4);bottom:20%;left:15%;animation-delay:-3s; }
+        .orb-5 { width:200px;height:200px;background:var(--orb-5);top:60%;right:30%;animation-delay:-7s; }
+        @keyframes orbFloat {
+            0%,100% { transform:translate(0,0) scale(1); }
+            25%      { transform:translate(40px,-30px) scale(1.04); }
+            50%      { transform:translate(-20px,40px) scale(0.96); }
+            75%      { transform:translate(-40px,-20px) scale(1.02); }
+        }
+        .bg-grain {
+            position:fixed;inset:0;z-index:1;opacity:0.04;pointer-events:none;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-size:200px;
         }
 
-        /* Animated Background */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
-        }
-
-        .animated-bg::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, 0.03) 2px, rgba(0, 212, 255, 0.03) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px);
-            animation: grid-move 20s linear infinite;
-        }
-
-        @keyframes grid-move {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        /* Floating Particles */
-        .particle {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% {
-                transform: translateY(-100vh) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Header */
+        /* HEADER */
         header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
-            z-index: 1000;
-            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.1);
+            position:fixed;top:0;left:0;width:100%;padding:28px 56px;
+            display:flex;justify-content:space-between;align-items:center;
+            z-index:1000;transition:padding 0.3s ease,background 0.3s ease;
         }
-
-        header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
+        header.scrolled {
+            padding:18px 56px;background:rgba(13,8,24,0.85);
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border-bottom:1px solid var(--glass-border);
         }
-
-        /* Burger Menu */
+        body.light-mode header.scrolled { background:rgba(237,233,254,0.85); }
+        .logo {
+            font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;
+            color:var(--text);text-decoration:none;letter-spacing:0.04em;
+        }
+        .logo sup {
+            font-family:'DM Sans',sans-serif;font-size:0.42rem;letter-spacing:0.22em;
+            text-transform:uppercase;color:rgba(167,139,250,0.9);
+            vertical-align:super;margin-left:5px;font-weight:500;
+        }
+        .header-controls { display:flex;gap:20px;align-items:center; }
+        .theme-btn {
+            width:32px;height:32px;cursor:pointer;background:transparent;border:none;
+            display:flex;align-items:center;justify-content:center;
+            color:var(--text-muted);transition:color 0.3s;padding:0;
+        }
+        .theme-btn:hover { color:var(--text); }
+        .theme-btn svg { width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round; }
+        .theme-btn .sun-icon { display:none; }
+        body.light-mode .theme-btn .moon-icon { display:none; }
+        body.light-mode .theme-btn .sun-icon  { display:block; }
         .burger {
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1001;
+            width:44px;height:32px;cursor:pointer;
+            display:flex;flex-direction:column;justify-content:space-between;
+            padding:4px 0;background:none;border:none;
         }
+        .burger span { display:block;height:1px;background:var(--text);transition:all 0.35s cubic-bezier(0.76,0,0.24,1); }
+        .burger span:nth-child(2) { width:65%;align-self:flex-end; }
+        .burger.active span:nth-child(1) { transform:rotate(45deg) translate(8px,8px);width:100%; }
+        .burger.active span:nth-child(2) { opacity:0;transform:translateX(10px); }
+        .burger.active span:nth-child(3) { transform:rotate(-45deg) translate(8px,-8px); }
 
-        .burger:hover {
-            background: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        /* NAV */
+        .nav-overlay {
+            position:fixed;inset:0;z-index:998;
+            background:rgba(8,5,16,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+            opacity:0;pointer-events:none;transition:opacity 0.4s ease;
         }
-
-        .burger span {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #00d4ff, #00ff88);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-
-        .burger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
-        }
-
-        .burger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Navigation */
+        .nav-overlay.show { opacity:1;pointer-events:auto; }
         nav {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(0, 10, 30, 0.98), rgba(0, 30, 60, 0.98));
-            backdrop-filter: blur(20px);
-            padding: 120px 40px 40px;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 999;
-            box-shadow: -10px 0 30px rgba(0, 212, 255, 0.2);
-            border-left: 2px solid rgba(0, 212, 255, 0.3);
+            position:fixed;top:0;right:-100%;
+            width:min(500px,100vw);height:100vh;z-index:999;
+            padding:110px 64px 60px;background:rgba(10,6,20,0.97);
+            border-left:1px solid var(--glass-border);
+            transition:right 0.55s cubic-bezier(0.76,0,0.24,1);
+            display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
         }
-
-        nav.nav-open {
-            right: 0;
+        nav::before {
+            content:'';position:absolute;top:-100px;right:-100px;
+            width:400px;height:400px;
+            background:radial-gradient(circle,rgba(167,139,250,0.13),transparent 65%);
+            pointer-events:none;
         }
-
+        body.light-mode nav { background:rgba(237,233,254,0.98); }
+        nav.open { right:0; }
+        .nav-links { display:flex;flex-direction:column; }
         nav a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            padding: 18px 20px;
-            margin-bottom: 8px;
-            border-left: 3px solid transparent;
-            background: rgba(0, 212, 255, 0.05);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            display:flex;align-items:center;gap:18px;
+            color:rgba(245,240,235,0.35);text-decoration:none;
+            font-family:'Syne',sans-serif;font-weight:700;font-size:1.9rem;
+            line-height:1;letter-spacing:-0.02em;padding:16px 0;
+            border-bottom:1px solid rgba(255,255,255,0.05);
+            transition:color 0.25s ease,padding-left 0.35s cubic-bezier(0.76,0,0.24,1);
+            position:relative;
         }
+        body.light-mode nav a { border-bottom-color:rgba(100,80,180,0.1);color:rgba(60,40,120,0.35); }
+        nav a::after {
+            content:'';position:absolute;bottom:-1px;left:0;width:0;height:1px;
+            background:linear-gradient(90deg,var(--orb-1),var(--orb-2));transition:width 0.4s ease;
+        }
+        nav a:hover { color:rgba(255,255,255,0.92);padding-left:10px; }
+        body.light-mode nav a:hover { color:rgba(30,20,60,0.95); }
+        nav a:hover::after { width:100%; }
+        .nav-num {
+            font-family:'DM Sans',sans-serif;font-size:0.58rem;font-weight:400;
+            letter-spacing:0.18em;color:rgba(167,139,250,0.5);min-width:22px;flex-shrink:0;margin-top:2px;
+        }
+        .nav-footer {
+            font-family:'DM Sans',sans-serif;font-size:0.6rem;
+            letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.25);
+        }
+        body.light-mode .nav-footer { color:rgba(60,40,120,0.35); }
 
-        nav a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        nav a:hover::before {
-            left: 100%;
-        }
-
-        nav a:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-left-color: #00d4ff;
-            padding-left: 30px;
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-            color: #00d4ff;
-        }
-
-        /* Main Content */
-        main {
-            margin-top: 100px;
-            padding: 40px 20px 80px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .knowledge-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        /* MAIN */
+        main { margin-top: 100px; padding: 40px 20px 80px; position: relative; z-index: 2; }
+        .knowledge-container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
 
         .knowledge-container > h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            text-align: center;
-            margin-bottom: 60px;
-            background: linear-gradient(135deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            position: relative;
+            font-family: 'Syne', sans-serif; font-weight: 800;
+            font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.02em;
+            text-align: center; margin-bottom: 50px; color: var(--text); position: relative;
         }
-
+        .knowledge-container > h1 span {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(167,139,250,0.85) 50%, rgba(103,232,249,0.8) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
         .knowledge-container > h1::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+            content: ''; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+            width: 48px; height: 2px;
+            background: linear-gradient(90deg, var(--orb-1), var(--orb-2)); border-radius: 2px;
         }
 
-        /* Search Bar */
-        .search-container {
-            margin: 40px 0;
-            position: relative;
-        }
-
+        /* SEARCH */
+        .search-container { margin: 50px 0 40px; position: relative; }
         .search-bar {
-            width: 100%;
-            padding: 18px 50px 18px 25px;
-            background: rgba(0, 212, 255, 0.05);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 50px;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.1rem;
-            outline: none;
+            width: 100%; padding: 16px 50px 16px 20px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; color: var(--text);
+            font-family: 'DM Sans', sans-serif; font-size: 1rem; outline: none;
+            backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
             transition: all 0.3s ease;
         }
-
         .search-bar:focus {
-            border-color: rgba(0, 212, 255, 0.6);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-            background: rgba(0, 212, 255, 0.08);
+            border-color: rgba(167,139,250,0.5);
+            box-shadow: 0 0 0 3px rgba(167,139,250,0.1);
+            background: rgba(255,255,255,0.11);
         }
-
-        .search-bar::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
+        .search-bar::placeholder { color: var(--text-muted); }
         .search-icon {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.3rem;
-            color: #00d4ff;
+            position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+            color: rgba(167,139,250,0.6); pointer-events: none; font-size: 1.1rem;
         }
 
-        /* Tabs */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 60px 0 40px;
-            flex-wrap: wrap;
-        }
-
+        /* TABS */
+        .tabs { display: flex; justify-content: center; gap: 10px; margin: 40px 0; flex-wrap: wrap; }
         .tab-button {
-            padding: 15px 35px;
-            background: rgba(0, 212, 255, 0.08);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 50px;
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 26px; background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; color: var(--text-muted);
+            font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.03em;
+            cursor: pointer; backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            transition: all 0.25s ease;
         }
-
         .tab-button:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-color: rgba(0, 212, 255, 0.5);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+            background: rgba(255,255,255,0.12); color: var(--text);
+            transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
-
         .tab-button.active {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 255, 136, 0.3));
-            border-color: #00d4ff;
-            color: #00ff88;
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            background: linear-gradient(135deg, rgba(167,139,250,0.3), rgba(103,232,249,0.2));
+            border-color: rgba(167,139,250,0.5); color: white;
+            box-shadow: 0 8px 24px rgba(167,139,250,0.2);
         }
 
-        /* Tab Content */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
+        /* TAB CONTENT */
+        .tab-content { display: none; animation: fadeUp 0.45s ease both; }
+        .tab-content.active { display: block; }
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(16px); }
+            to   { opacity:1; transform:translateY(0); }
         }
 
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Term Cards */
+        /* TERM CARDS */
         .term-card {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 22px 24px; margin-bottom: 14px;
+            backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            transition: all 0.25s ease; position: relative; overflow: hidden;
         }
-
         .term-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            transition: left 0.5s ease;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
         }
-
-        .term-card:hover::before {
-            left: 100%;
-        }
-
         .term-card:hover {
-            border-color: rgba(0, 212, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
-            transform: translateY(-5px);
+            border-color: rgba(167,139,250,0.4);
+            box-shadow: 0 12px 36px rgba(167,139,250,0.12);
+            transform: translateY(-3px); background: rgba(255,255,255,0.1);
         }
-
         .term-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            color: #00d4ff;
-            margin-bottom: 10px;
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem;
+            color: var(--text); margin-bottom: 8px;
         }
+        .term-description { font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); }
 
-        .term-description {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-
-        /* Command Blocks */
-        .command-section {
-            margin-bottom: 40px;
-        }
-
-        .command-section h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            color: #00ff88;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 255, 136, 0.3);
-        }
-
-        .command-item {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .command-item:hover {
-            border-color: rgba(0, 212, 255, 0.5);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
-        }
-
-        .command-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .command-name {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.2rem;
-            color: #00d4ff;
-            font-weight: 600;
-        }
-
-        .copy-btn {
-            padding: 8px 20px;
-            background: rgba(0, 212, 255, 0.2);
-            border: 1px solid rgba(0, 212, 255, 0.4);
-            border-radius: 20px;
-            color: #00ff88;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .copy-btn:hover {
-            background: rgba(0, 212, 255, 0.3);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .copy-btn.copied {
-            background: rgba(0, 255, 136, 0.3);
-            border-color: rgba(0, 255, 136, 0.5);
-        }
-
-        .command-code {
-            font-family: 'Fira Code', monospace;
-            font-size: 1rem;
-            color: #00ff88;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px 15px;
-            border-radius: 8px;
-            border-left: 3px solid #00d4ff;
-            margin-bottom: 10px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-
-        .command-description {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        /* Article Cards */
-        .article-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-        }
-
+        /* ARTICLE GRID */
+        .article-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(340px,1fr)); gap: 20px; }
         .article-card {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 255, 136, 0.05));
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            border-radius: 15px;
-            padding: 30px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 30px;
+            backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden;
         }
-
         .article-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            transform: rotate(0deg);
-            transition: transform 0.6s ease;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
         }
-
-        .article-card:hover::before {
-            transform: rotate(180deg);
-        }
-
         .article-card:hover {
-            border-color: rgba(0, 212, 255, 0.5);
-            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
-            transform: translateY(-8px);
+            border-color: rgba(167,139,250,0.45);
+            box-shadow: 0 20px 50px rgba(167,139,250,0.18);
+            transform: translateY(-6px); background: rgba(255,255,255,0.1);
         }
-
         .article-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            color: #00ff88;
-            margin-bottom: 10px;
-            font-weight: 600;
+            font-family: 'Fira Code', monospace; font-size: 0.75rem;
+            color: rgba(167,139,250,0.7); margin-bottom: 12px; letter-spacing: 0.08em;
         }
-
         .article-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: #00d4ff;
-            margin-bottom: 15px;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
+            font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem;
+            color: var(--text); margin-bottom: 12px; line-height: 1.3;
         }
+        .article-preview { font-size: 0.88rem; line-height: 1.65; color: var(--text-muted); }
 
-        .article-preview {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1rem;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
+        /* COMMANDS */
+        .command-section { margin-bottom: 48px; }
+        .command-section h3 {
+            font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.15rem;
+            color: var(--text); margin-bottom: 18px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
+        .command-item {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 18px 20px; margin-bottom: 10px;
+            backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            transition: all 0.25s ease;
+        }
+        .command-item:hover {
+            border-color: rgba(103,232,249,0.35);
+            box-shadow: 0 8px 24px rgba(103,232,249,0.08);
+            background: rgba(255,255,255,0.09);
+        }
+        .command-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; gap: 12px; flex-wrap: wrap;
+        }
+        .command-name { font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 600; color: #67e8f9; }
+        .copy-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 16px; border-radius: 8px;
+            background: rgba(103,232,249,0.1); border: 1px solid rgba(103,232,249,0.25);
+            color: #67e8f9; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+        }
+        .copy-btn:hover { background: rgba(103,232,249,0.2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(103,232,249,0.15); }
+        .copy-btn.copied { background: rgba(110,231,183,0.2); border-color: rgba(110,231,183,0.4); color: #6ee7b7; }
+        .command-code {
+            font-family: 'Fira Code', monospace; font-size: 0.9rem;
+            color: #a78bfa; background: rgba(0,0,0,0.25);
+            padding: 10px 14px; border-radius: 8px;
+            border-left: 2px solid rgba(167,139,250,0.4);
+            margin-bottom: 8px; overflow-x: auto; white-space: pre-wrap;
+            word-break: break-all; display: block;
+        }
+        .command-description { font-size: 0.87rem; line-height: 1.6; color: var(--text-muted); }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            header h1 {
-                font-size: 1.3rem;
-            }
-
-            nav {
-                width: 100%;
-                right: -100%;
-                padding: 100px 30px 30px;
-            }
-
-            .tabs {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .tab-button {
-                width: 100%;
-            }
-
-            .article-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .command-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .copy-btn {
-                width: 100%;
-                justify-content: center;
-            }
+            header { padding: 20px 20px; }
+            header.scrolled { padding: 14px 20px; }
+            nav { padding: 90px 32px 48px; }
+            nav a { font-size: 1.5rem; padding: 13px 0; }
+            .article-grid { grid-template-columns: 1fr; }
+            .command-header { flex-direction: column; align-items: flex-start; }
+            .copy-btn { width: 100%; justify-content: center; }
+            .tabs { gap: 8px; }
+            .tab-button { font-size: 0.78rem; padding: 9px 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
 
-    <!-- Particles -->
-    <script>
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.width = Math.random() * 3 + 1 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.background = Math.random() > 0.5 ? '#00d4ff' : '#00ff88';
-            particle.style.opacity = Math.random() * 0.5;
-            particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
-            particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
-            particle.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(particle);
-        }
-    </script>
+    <div class="bg-scene">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="orb orb-5"></div>
+    </div>
+    <div class="bg-grain"></div>
 
-    <header>
-        <h1>KYLIAN LAURENT</h1>
-        <div class="burger" id="burger">
-            <span></span>
-            <span></span>
-            <span></span>
+    <header id="header">
+        <a href="index.html" class="logo">Kylian Laurent<sup>Portfolio</sup></a>
+        <div class="header-controls">
+            <button class="theme-btn" id="themeToggle" title="Changer le thème">
+                <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg class="sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
+            <div class="burger" id="burger">
+                <span></span><span></span><span></span>
+            </div>
         </div>
-        <nav id="nav-links">
-            <a href="index.html">Accueil</a>
-            <a href="about-me.html">À propos</a>
-            <a href="enterprise.html">Entreprise</a>
-            <a href="projects.html">Projets</a>
-            <a href="database.html">Base de connaissances</a>
-            <a href="formations.html">Formations</a>
-            <a href="logiciels.html">Logiciels</a>
-            <a href="reviews.html">Avis</a>
-            <a href="contact.html">Contact</a>
-        </nav>
     </header>
+
+    <div class="nav-overlay" id="navOverlay"></div>
+    <nav id="nav">
+        <div class="nav-links">
+            <a href="index.html"><span class="nav-num">01</span> Accueil</a>
+            <a href="about-me.html"><span class="nav-num">02</span> À propos</a>
+            <a href="enterprise.html"><span class="nav-num">03</span> Entreprise</a>
+            <a href="projects.html"><span class="nav-num">04</span> Projets</a>
+            <a href="database.html"><span class="nav-num">05</span> Base de connaissances</a>
+            <a href="formations.html"><span class="nav-num">06</span> Formations</a>
+            <a href="logiciels.html"><span class="nav-num">07</span> Logiciels</a>
+            <a href="reviews.html"><span class="nav-num">08</span> Avis</a>
+            <a href="contact.html"><span class="nav-num">09</span> Contact</a>
+        </div>
+        <div class="nav-footer">Kylian Laurent · Bachelor IT · 2025</div>
+    </nav>
 
     <main>
         <section class="knowledge-container">
-            <h1>Base de Connaissances</h1>
+            <h1>Base de <span>Connaissances</span></h1>
 
-            <!-- Search Bar -->
             <div class="search-container">
                 <input type="text" class="search-bar" id="searchBar" placeholder="🔍 Rechercher un terme, une commande ou un article...">
-                <span class="search-icon">⚡</span>
+                <span class="search-icon">⌘</span>
             </div>
 
-            <!-- Tabs -->
             <div class="tabs">
-                <button class="tab-button active" onclick="openTab('lexique')">📚 Lexique</button>
-                <button class="tab-button" onclick="openTab('article')">📰 Articles</button>
-                <button class="tab-button" onclick="openTab('commande')">⌨️ Commandes</button>
+                <button class="tab-button active" onclick="openTab(event,'lexique')">📚 Lexique</button>
+                <button class="tab-button" onclick="openTab(event,'article')">📰 Articles</button>
+                <button class="tab-button" onclick="openTab(event,'commande')">⌨️ Commandes</button>
             </div>
 
-            <!-- Lexique Tab -->
+            <!-- LEXIQUE -->
             <div id="lexique" class="tab-content active">
-                <div class="term-card">
-                    <div class="term-title">Adresse IP</div>
-                    <div class="term-description">Identifiant unique attribué à chaque appareil connecté à un réseau (IPv4/IPv6).</div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">MAC Address</div>
-                    <div class="term-description">Adresse physique unique d'une interface réseau (couche liaison).</div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">DNS</div>
-                    <div class="term-description">Système de résolution qui traduit des noms de domaine en adresses IP.</div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">DHCP</div>
-                    <div class="term-description">Protocole attribuant dynamiquement des adresses IP aux clients.</div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">TCP</div>
-                    <div class="term-description">Protocole de transport fiable et orienté connexion.</div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">UDP</div>
-                    <div class="term-description">Protocole de transport non connecté et sans garantie de livraison.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">Firewall</div>
-                    <div class="term-description">Système de sécurité réseau qui contrôle le trafic entrant et sortant selon des règles prédéfinies.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">VPN</div>
-                    <div class="term-description">Réseau privé virtuel permettant une connexion sécurisée et chiffrée sur Internet.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">SSH</div>
-                    <div class="term-description">Protocole de communication sécurisé pour l'accès distant à un système.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">SSL/TLS</div>
-                    <div class="term-description">Protocoles cryptographiques assurant la sécurité des communications sur Internet.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">IPv4</div>
-                    <div class="term-description">Version 4 du protocole IP utilisant des adresses sur 32 bits.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">IPv6</div>
-                    <div class="term-description">Version 6 du protocole IP utilisant des adresses sur 128 bits pour pallier la pénurie d’IPv4.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">Masque de sous-réseau</div>
-                    <div class="term-description">Permet de diviser un réseau en sous-réseaux plus petits en déterminant la partie réseau et la partie hôte d’une IP.</div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">Gateway</div>
-                    <div class="term-description">Appareil qui connecte différents réseaux et transmet les paquets.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">NAT</div>
-                    <div class="term-description">Technique modifiant les adresses IP des paquets pour permettre la communication entre réseaux privés et publics.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">ARP</div>
-                    <div class="term-description">Protocole qui associe une adresse IP à une adresse MAC sur un réseau local.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">ICMP</div>
-                    <div class="term-description">Protocole utilisé pour envoyer des messages de contrôle et de diagnostic dans les réseaux IP.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">HTTP</div>
-                    <div class="term-description">Protocole de communication pour transférer des pages web.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">HTTPS</div>
-                    <div class="term-description">Version sécurisée de HTTP utilisant le chiffrement SSL/TLS.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">FTP</div>
-                    <div class="term-description">Protocole pour transférer des fichiers entre un client et un serveur.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">SFTP</div>
-                    <div class="term-description">Version sécurisée de FTP utilisant SSH.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">SMTP</div>
-                    <div class="term-description">Protocole pour l’envoi d’e-mails.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">IMAP</div>
-                    <div class="term-description">Protocole pour consulter et gérer des e-mails sur un serveur.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">POP3</div>
-                    <div class="term-description">Protocole pour récupérer les e-mails et les stocker localement.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">SNMP</div>
-                    <div class="term-description">Protocole pour surveiller et gérer les équipements réseau.</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">Telnet</div>
-                    <div class="term-description">Protocole pour accéder à distance à un appareil, non sécurisé</div>
-                </div>
-
-                <div class="term-card">
-                    <div class="term-title">SSL</div>
-                    <div class="term-description">Protocole assurant la sécurité des communications sur Internet.</div>
-                </div>
+                <div class="term-card"><div class="term-title">Adresse IP</div><div class="term-description">Identifiant unique attribué à chaque appareil connecté à un réseau (IPv4/IPv6).</div></div>
+                <div class="term-card"><div class="term-title">MAC Address</div><div class="term-description">Adresse physique unique d'une interface réseau (couche liaison).</div></div>
+                <div class="term-card"><div class="term-title">DNS</div><div class="term-description">Système de résolution qui traduit des noms de domaine en adresses IP.</div></div>
+                <div class="term-card"><div class="term-title">DHCP</div><div class="term-description">Protocole attribuant dynamiquement des adresses IP aux clients.</div></div>
+                <div class="term-card"><div class="term-title">TCP</div><div class="term-description">Protocole de transport fiable et orienté connexion.</div></div>
+                <div class="term-card"><div class="term-title">UDP</div><div class="term-description">Protocole de transport non connecté et sans garantie de livraison.</div></div>
+                <div class="term-card"><div class="term-title">Firewall</div><div class="term-description">Système de sécurité réseau qui contrôle le trafic entrant et sortant selon des règles prédéfinies.</div></div>
+                <div class="term-card"><div class="term-title">VPN</div><div class="term-description">Réseau privé virtuel permettant une connexion sécurisée et chiffrée sur Internet.</div></div>
+                <div class="term-card"><div class="term-title">SSH</div><div class="term-description">Protocole de communication sécurisé pour l'accès distant à un système.</div></div>
+                <div class="term-card"><div class="term-title">SSL/TLS</div><div class="term-description">Protocoles cryptographiques assurant la sécurité des communications sur Internet.</div></div>
+                <div class="term-card"><div class="term-title">IPv4</div><div class="term-description">Version 4 du protocole IP utilisant des adresses sur 32 bits.</div></div>
+                <div class="term-card"><div class="term-title">IPv6</div><div class="term-description">Version 6 du protocole IP utilisant des adresses sur 128 bits pour pallier la pénurie d'IPv4.</div></div>
+                <div class="term-card"><div class="term-title">Masque de sous-réseau</div><div class="term-description">Permet de diviser un réseau en sous-réseaux plus petits en déterminant la partie réseau et la partie hôte d'une IP.</div></div>
+                <div class="term-card"><div class="term-title">Gateway</div><div class="term-description">Appareil qui connecte différents réseaux et transmet les paquets.</div></div>
+                <div class="term-card"><div class="term-title">NAT</div><div class="term-description">Technique modifiant les adresses IP des paquets pour permettre la communication entre réseaux privés et publics.</div></div>
+                <div class="term-card"><div class="term-title">ARP</div><div class="term-description">Protocole qui associe une adresse IP à une adresse MAC sur un réseau local.</div></div>
+                <div class="term-card"><div class="term-title">ICMP</div><div class="term-description">Protocole utilisé pour envoyer des messages de contrôle et de diagnostic dans les réseaux IP.</div></div>
+                <div class="term-card"><div class="term-title">HTTP</div><div class="term-description">Protocole de communication pour transférer des pages web.</div></div>
+                <div class="term-card"><div class="term-title">HTTPS</div><div class="term-description">Version sécurisée de HTTP utilisant le chiffrement SSL/TLS.</div></div>
+                <div class="term-card"><div class="term-title">FTP</div><div class="term-description">Protocole pour transférer des fichiers entre un client et un serveur.</div></div>
+                <div class="term-card"><div class="term-title">SFTP</div><div class="term-description">Version sécurisée de FTP utilisant SSH.</div></div>
+                <div class="term-card"><div class="term-title">SMTP</div><div class="term-description">Protocole pour l'envoi d'e-mails.</div></div>
+                <div class="term-card"><div class="term-title">IMAP</div><div class="term-description">Protocole pour consulter et gérer des e-mails sur un serveur.</div></div>
+                <div class="term-card"><div class="term-title">POP3</div><div class="term-description">Protocole pour récupérer les e-mails et les stocker localement.</div></div>
+                <div class="term-card"><div class="term-title">SNMP</div><div class="term-description">Protocole pour surveiller et gérer les équipements réseau.</div></div>
+                <div class="term-card"><div class="term-title">Telnet</div><div class="term-description">Protocole pour accéder à distance à un appareil, non sécurisé.</div></div>
+                <div class="term-card"><div class="term-title">SSL</div><div class="term-description">Protocole assurant la sécurité des communications sur Internet.</div></div>
             </div>
 
-            <!-- Articles Tab -->
+            <!-- ARTICLES -->
             <div id="article" class="tab-content">
                 <div class="article-grid">
                     <div class="article-card">
@@ -787,334 +421,193 @@
                         <div class="article-title">Introduction à la Cybersécurité</div>
                         <div class="article-preview">Découvrez les fondamentaux de la cybersécurité, les menaces courantes et les bonnes pratiques pour protéger vos systèmes informatiques.</div>
                     </div>
-
                     <div class="article-card">
                         <div class="article-number">Article #2</div>
                         <div class="article-title">Bonnes Pratiques Réseau</div>
                         <div class="article-preview">Guide complet pour sécuriser efficacement votre infrastructure réseau et mettre en place des règles de sécurité robustes.</div>
                     </div>
-
                     <div class="article-card">
                         <div class="article-number">Article #3</div>
                         <div class="article-title">Analyse de Menaces Avancées</div>
                         <div class="article-preview">Techniques d'analyse et de détection des menaces sophistiquées, incluant les APT et les attaques zero-day.</div>
                     </div>
-
                     <div class="article-card">
                         <div class="article-number">Article #4</div>
                         <div class="article-title">Sécurité Cloud & Virtualisation</div>
                         <div class="article-preview">Stratégies de sécurisation des environnements cloud et des infrastructures virtualisées modernes.</div>
                     </div>
-
                     <div class="article-card">
                         <div class="article-number">Article #5</div>
                         <div class="article-title">Protection Anti-Ransomware</div>
                         <div class="article-preview">Méthodes de prévention, détection et récupération face aux attaques par ransomware et malware.</div>
                     </div>
-
                     <div class="article-card">
                         <div class="article-number">Article #6</div>
                         <div class="article-title">Pentest & Red Team</div>
-                        <div class="article-description">Méthodologies de tests d'intrusion et exercices Red Team pour évaluer la sécurité de vos systèmes.</div>
+                        <div class="article-preview">Méthodologies de tests d'intrusion et exercices Red Team pour évaluer la sécurité de vos systèmes.</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Commandes Tab -->
+            <!-- COMMANDES -->
             <div id="commande" class="tab-content">
+
                 <div class="command-section">
-                    <h3>🐧 Commandes Linux/Debian</h3>
-                    
+                    <h3>🐧 Commandes Linux / Debian</h3>
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">ls</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'ls')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">ls</div>
-                        <div class="command-description">Lister les fichiers et dossiers du répertoire courant</div>
+                        <div class="command-header"><span class="command-name">ls</span><button class="copy-btn" onclick="copyCommand(this,'ls')">📋 Copier</button></div>
+                        <code class="command-code">ls</code>
+                        <div class="command-description">Lister les fichiers et dossiers du répertoire courant.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">cd</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'cd /chemin/vers/dossier')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">cd /chemin/vers/dossier</div>
-                        <div class="command-description">Changer de répertoire</div>
+                        <div class="command-header"><span class="command-name">cd</span><button class="copy-btn" onclick="copyCommand(this,'cd /chemin/vers/dossier')">📋 Copier</button></div>
+                        <code class="command-code">cd /chemin/vers/dossier</code>
+                        <div class="command-description">Changer de répertoire.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">pwd</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'pwd')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">pwd</div>
-                        <div class="command-description">Afficher le chemin absolu du répertoire courant</div>
+                        <div class="command-header"><span class="command-name">pwd</span><button class="copy-btn" onclick="copyCommand(this,'pwd')">📋 Copier</button></div>
+                        <code class="command-code">pwd</code>
+                        <div class="command-description">Afficher le chemin absolu du répertoire courant.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">mkdir</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'mkdir nom_du_dossier')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">mkdir nom_du_dossier</div>
-                        <div class="command-description">Créer un nouveau dossier</div>
+                        <div class="command-header"><span class="command-name">mkdir</span><button class="copy-btn" onclick="copyCommand(this,'mkdir nom_du_dossier')">📋 Copier</button></div>
+                        <code class="command-code">mkdir nom_du_dossier</code>
+                        <div class="command-description">Créer un nouveau dossier.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">rm</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'rm fichier.txt')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">rm fichier.txt</div>
-                        <div class="command-description">Supprimer un fichier</div>
+                        <div class="command-header"><span class="command-name">rm</span><button class="copy-btn" onclick="copyCommand(this,'rm fichier.txt')">📋 Copier</button></div>
+                        <code class="command-code">rm fichier.txt</code>
+                        <div class="command-description">Supprimer un fichier.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">cp</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'cp source.txt destination.txt')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">cp source.txt destination.txt</div>
-                        <div class="command-description">Copier un fichier ou dossier</div>
+                        <div class="command-header"><span class="command-name">cp</span><button class="copy-btn" onclick="copyCommand(this,'cp source.txt destination.txt')">📋 Copier</button></div>
+                        <code class="command-code">cp source.txt destination.txt</code>
+                        <div class="command-description">Copier un fichier ou dossier.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">mv</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'mv ancien.txt nouveau.txt')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">mv ancien.txt nouveau.txt</div>
-                        <div class="command-description">Déplacer ou renommer un fichier</div>
+                        <div class="command-header"><span class="command-name">mv</span><button class="copy-btn" onclick="copyCommand(this,'mv ancien.txt nouveau.txt')">📋 Copier</button></div>
+                        <code class="command-code">mv ancien.txt nouveau.txt</code>
+                        <div class="command-description">Déplacer ou renommer un fichier.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">chmod</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'chmod 755 script.sh')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">chmod 755 script.sh</div>
-                        <div class="command-description">Modifier les permissions d'un fichier</div>
+                        <div class="command-header"><span class="command-name">chmod</span><button class="copy-btn" onclick="copyCommand(this,'chmod 755 script.sh')">📋 Copier</button></div>
+                        <code class="command-code">chmod 755 script.sh</code>
+                        <div class="command-description">Modifier les permissions d'un fichier.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">sudo apt update</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'sudo apt update && sudo apt upgrade -y')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">sudo apt update && sudo apt upgrade -y</div>
-                        <div class="command-description">Mettre à jour les paquets système</div>
+                        <div class="command-header"><span class="command-name">sudo apt update</span><button class="copy-btn" onclick="copyCommand(this,'sudo apt update && sudo apt upgrade -y')">📋 Copier</button></div>
+                        <code class="command-code">sudo apt update && sudo apt upgrade -y</code>
+                        <div class="command-description">Mettre à jour les paquets système.</div>
                     </div>
                 </div>
 
                 <div class="command-section">
                     <h3>🪟 Commandes Windows</h3>
-                    
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">dir</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'dir')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">dir</div>
-                        <div class="command-description">Lister les fichiers et dossiers</div>
+                        <div class="command-header"><span class="command-name">dir</span><button class="copy-btn" onclick="copyCommand(this,'dir')">📋 Copier</button></div>
+                        <code class="command-code">dir</code>
+                        <div class="command-description">Lister les fichiers et dossiers.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">cd</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'cd C:\\Users\\Documents')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">cd C:\Users\Documents</div>
-                        <div class="command-description">Changer de répertoire</div>
+                        <div class="command-header"><span class="command-name">cd</span><button class="copy-btn" onclick="copyCommand(this,'cd C:\\Users\\Documents')">📋 Copier</button></div>
+                        <code class="command-code">cd C:\Users\Documents</code>
+                        <div class="command-description">Changer de répertoire.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">mkdir</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'mkdir nouveau_dossier')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">mkdir nouveau_dossier</div>
-                        <div class="command-description">Créer un nouveau dossier</div>
+                        <div class="command-header"><span class="command-name">mkdir</span><button class="copy-btn" onclick="copyCommand(this,'mkdir nouveau_dossier')">📋 Copier</button></div>
+                        <code class="command-code">mkdir nouveau_dossier</code>
+                        <div class="command-description">Créer un nouveau dossier.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">del</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'del fichier.txt')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">del fichier.txt</div>
-                        <div class="command-description">Supprimer un fichier</div>
+                        <div class="command-header"><span class="command-name">del</span><button class="copy-btn" onclick="copyCommand(this,'del fichier.txt')">📋 Copier</button></div>
+                        <code class="command-code">del fichier.txt</code>
+                        <div class="command-description">Supprimer un fichier.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">ipconfig</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'ipconfig /all')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">ipconfig /all</div>
-                        <div class="command-description">Afficher la configuration réseau</div>
+                        <div class="command-header"><span class="command-name">ipconfig</span><button class="copy-btn" onclick="copyCommand(this,'ipconfig /all')">📋 Copier</button></div>
+                        <code class="command-code">ipconfig /all</code>
+                        <div class="command-description">Afficher la configuration réseau.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">netstat</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'netstat -ano')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">netstat -ano</div>
-                        <div class="command-description">Afficher les connexions réseau actives</div>
+                        <div class="command-header"><span class="command-name">netstat</span><button class="copy-btn" onclick="copyCommand(this,'netstat -ano')">📋 Copier</button></div>
+                        <code class="command-code">netstat -ano</code>
+                        <div class="command-description">Afficher les connexions réseau actives.</div>
                     </div>
-
                     <div class="command-item">
-                        <div class="command-header">
-                            <span class="command-name">tasklist</span>
-                            <button class="copy-btn" onclick="copyCommand(this, 'tasklist')">
-                                <span>📋</span> Copier
-                            </button>
-                        </div>
-                        <div class="command-code">tasklist</div>
-                        <div class="command-description">Lister tous les processus en cours</div>
+                        <div class="command-header"><span class="command-name">tasklist</span><button class="copy-btn" onclick="copyCommand(this,'tasklist')">📋 Copier</button></div>
+                        <code class="command-code">tasklist</code>
+                        <div class="command-description">Lister tous les processus en cours.</div>
                     </div>
                 </div>
+
             </div>
         </section>
     </main>
 
     <script>
-        // Burger Menu Toggle
-        const burger = document.getElementById('burger');
-        const navLinks = document.getElementById('nav-links');
+    // Header scroll
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+        header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
 
-        burger.addEventListener('click', () => {
-            burger.classList.toggle('active');
-            navLinks.classList.toggle('nav-open');
+    // Burger / Nav
+    const burger = document.getElementById('burger');
+    const nav    = document.getElementById('nav');
+    const navOverlay = document.getElementById('navOverlay');
+    function closeNav() {
+        burger.classList.remove('active');
+        nav.classList.remove('open');
+        navOverlay.classList.remove('show');
+    }
+    burger.addEventListener('click', () => {
+        const isOpen = nav.classList.toggle('open');
+        burger.classList.toggle('active', isOpen);
+        navOverlay.classList.toggle('show', isOpen);
+    });
+    navOverlay.addEventListener('click', closeNav);
+    document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', closeNav));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+
+    // Thème
+    const themeToggle = document.getElementById('themeToggle');
+    if (localStorage.getItem('kl_theme') === 'light') document.body.classList.add('light-mode');
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        localStorage.setItem('kl_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    });
+
+    // Tabs
+    function openTab(event, tabName) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // Copy
+    function copyCommand(button, command) {
+        navigator.clipboard.writeText(command).then(() => {
+            const orig = button.innerHTML;
+            button.innerHTML = '✅ Copié !';
+            button.classList.add('copied');
+            setTimeout(() => { button.innerHTML = orig; button.classList.remove('copied'); }, 2000);
         });
+    }
 
-        // Close menu when clicking on a link
-        const links = navLinks.querySelectorAll('a');
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                burger.classList.remove('active');
-                navLinks.classList.remove('nav-open');
-            });
+    // Search
+    document.getElementById('searchBar').addEventListener('input', function () {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.term-card').forEach(c => {
+            c.style.display = (!q || c.textContent.toLowerCase().includes(q)) ? '' : 'none';
         });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navLinks.contains(e.target) && !burger.contains(e.target)) {
-                burger.classList.remove('active');
-                navLinks.classList.remove('nav-open');
-            }
+        document.querySelectorAll('.command-item').forEach(c => {
+            c.style.display = (!q || c.textContent.toLowerCase().includes(q)) ? '' : 'none';
         });
-
-        // Tab Switching
-        function openTab(tabName) {
-            // Hide all tabs
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Remove active class from all buttons
-            const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
-
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
-
-        // Copy Command Function
-        function copyCommand(button, command) {
-            navigator.clipboard.writeText(command).then(() => {
-                const originalText = button.innerHTML;
-                button.innerHTML = '<span>✅</span> Copié !';
-                button.classList.add('copied');
-                
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.classList.remove('copied');
-                }, 2000);
-            });
-        }
-
-        // Search Functionality
-        const searchBar = document.getElementById('searchBar');
-        searchBar.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            
-            // Search in lexique
-            const termCards = document.querySelectorAll('.term-card');
-            termCards.forEach(card => {
-                const title = card.querySelector('.term-title').textContent.toLowerCase();
-                const description = card.querySelector('.term-description').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            // Search in commands
-            const commandItems = document.querySelectorAll('.command-item');
-            commandItems.forEach(item => {
-                const name = item.querySelector('.command-name').textContent.toLowerCase();
-                const description = item.querySelector('.command-description').textContent.toLowerCase();
-                
-                if (name.includes(searchTerm) || description.includes(searchTerm)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            // Search in articles
-            const articleCards = document.querySelectorAll('.article-card');
-            articleCards.forEach(card => {
-                const title = card.querySelector('.article-title').textContent.toLowerCase();
-                const preview = card.querySelector('.article-preview').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || preview.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        document.querySelectorAll('.article-card').forEach(c => {
+            c.style.display = (!q || c.textContent.toLowerCase().includes(q)) ? '' : 'none';
         });
+    });
     </script>
 </body>
 </html>
