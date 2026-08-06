@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BADSMASH - Administration</title>
+    <style>
+        :root { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --green: #10b981; 
+            --green-hover: #059669;
+            --text: #f8fafc; 
+            --sub: #94a3b8; 
+            --border: #334155; 
+            --accent: #3b82f6; 
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        .card { 
+            background: var(--card); 
+            padding: 24px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 { color: var(--green); margin-bottom: 20px; text-align: center; font-size: 1.8rem; }
+        h2 { color: var(--accent); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 1.3rem; }
+        h3 { color: var(--sub); margin: 16px 0 10px 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .form-group { margin-bottom: 14px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+
+        label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: var(--sub); font-weight: 500; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px 12px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            background: var(--bg); 
+            color: var(--text); 
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+        button { 
+            width: 100%; 
+            background: var(--green); 
+            color: var(--bg); 
+            border: none; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            transition: background 0.2s;
+        }
+        button:hover { background: var(--green-hover); }
+
+        .btn-home {
+            display: inline-block;
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+        .btn-home:hover { border-color: var(--green); }
+
+        #admin-panel { display: none; }
+        
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-tabs button { 
+            width: auto; 
+            background: var(--card); 
+            color: var(--text); 
+            border: 1px solid var(--border); 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            margin: 0; 
+        }
+        .nav-tabs button.active { background: var(--green); color: var(--bg); border-color: var(--green); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .checklist { 
+            max-height: 180px; 
+            overflow-y: auto; 
+            background: var(--bg); 
+            border: 1px solid var(--border); 
+            padding: 10px; 
+            border-radius: 8px; 
+        }
+        .checklist label { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            color: var(--text); 
+            cursor: pointer; 
+            margin-bottom: 8px; 
+            font-weight: normal;
+        }
+        .checklist input[type="checkbox"] { width: auto; cursor: pointer; }
+
+        /* Styles spécifique à la liste des joueurs */
+        .player-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .btn-edit {
+            width: auto;
+            margin-top: 0;
+            padding: 6px 12px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.85rem;
+        }
+        .btn-edit:hover { background: #2563eb; }
+        .btn-cancel {
+            background: var(--sub);
+            margin-top: 5px;
+        }
+
+        /* Styles spécifiques aux tableaux (draws) */
+        .count-badge {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .count-badge.ok { color: var(--green); }
+        .draws-select-row { margin-bottom: 10px; }
+        .bracket-wrap {
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        .bracket {
+            display: flex;
+            gap: 24px;
+            min-width: max-content;
+        }
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            min-width: 230px;
+            gap: 18px;
+        }
+        .bracket-round-title {
+            text-align: center;
+            color: var(--sub);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .bracket-match {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .bracket-entry {
+            padding: 8px 10px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        .bracket-entry:last-child { border-bottom: none; }
+        .bracket-entry:hover:not(.bye):not(.empty) { background: rgba(59, 130, 246, 0.15); }
+        .bracket-entry.winner { background: rgba(16, 185, 129, 0.15); color: var(--green); font-weight: bold; cursor: default; }
+        .bracket-entry.bye { color: var(--sub); font-style: italic; cursor: default; }
+        .bracket-entry.empty { color: var(--sub); cursor: default; opacity: 0.85; }
+        .bracket-entry select.slot-select {
+            width: 100%;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 0.82rem;
+        }
+        .bracket-entry select.slot-select:focus { border: none; outline: none; }
+        .empty-state { color: var(--sub); font-size: 0.9rem; padding: 10px 0; }
+
+        /* Saisie du score directement dans le tableau */
+        .score-entry {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            margin-top: -18px;
+            padding: 8px;
+            font-size: 0.8rem;
+        }
+        .score-entry-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .score-input {
+            padding: 6px 7px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .btn-save-score {
+            width: 100%;
+            margin: 0;
+            padding: 8px;
+            font-size: 0.82rem;
+            background: var(--accent);
+            color: white;
+        }
+        .btn-save-score:hover { background: #2563eb; }
+        .score-entry-wo {
+            margin-top: 8px;
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--sub);
+        }
+        .score-entry-wo .declare-link {
+            cursor: pointer;
+            text-decoration: underline;
+            color: var(--sub);
+        }
+        .score-entry-wo .declare-link:hover { color: var(--text); }
+        .score-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--sub);
+            padding: 4px 0 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .btn-reset-score {
+            cursor: pointer;
+            opacity: 0.7;
+            font-size: 0.78rem;
+        }
+        .btn-reset-score:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="btn-home">🏠 Accueil</a>
+
+    <!-- CONNEXION -->
+    <div class="card" id="login-box">
+        <h1>Connexion Administration</h1>
+        <form id="form-login">
+            <div class="form-group">
+                <label for="admin-pass">Mot de passe</label>
+                <input type="password" id="admin-pass" placeholder="Entrez le mot de passe" required>
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+
+    <!-- PANNEAU ADMIN -->
+    <div id="admin-panel">
+        <h1>Gestion BADSMASH</h1>
+
+        <div class="nav-tabs">
+            <button type="button" class="btn-tab active" data-tab="tab-clubs">Clubs</button>
+            <button type="button" class="btn-tab" data-tab="tab-joueurs">Joueurs</button>
+            <button type="button" class="btn-tab" data-tab="tab-tournois">Tournois & Séries</button>
+            <button type="button" class="btn-tab" data-tab="tab-draws">Tableaux</button>
+            <button type="button" class="btn-tab" data-tab="tab-matchs">Matchs</button>
+        </div>
+
+        <!-- ONGLET CLUBS -->
+        <div id="tab-clubs" class="tab-content card active">
+            <h2>🏢 Ajouter un Club</h2>
+            <form id="form-club">
+                <div class="form-group">
+                    <label for="club-nom">Nom du Club</label>
+                    <input type="text" id="club-nom" required placeholder="ex: BC Toulouse">
+                </div>
+                <div class="form-group">
+                    <label for="club-ville">Ville</label>
+                    <input type="text" id="club-ville" required placeholder="ex: Toulouse">
+                </div>
+                <button type="submit">Enregistrer le Club</button>
+            </form>
+        </div>
+
+        <!-- ONGLET JOUEURS -->
+        <div id="tab-joueurs" class="tab-content card">
+            <h2 id="joueur-form-title">🏸 Ajouter un Joueur</h2>
+            <form id="form-joueur">
+                <input type="hidden" id="edit-joueur-id" value="">
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="joueur-type">Type de Compte</label>
+                        <select id="joueur-type">
+                            <option value="externe">Adversaire / Joueur Externe (Sans connexion)</option>
+                            <option value="compte">Joueur du Club (Avec connexion)</option>
+                            <option value="pro">⭐ Joueur Professionnel (Sans connexion)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="joueur-genre">Sexe / Genre</label>
+                        <select id="joueur-genre" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="H">Homme</option>
+                            <option value="F">Femme</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="joueur-nom">Nom</label>
+                        <input type="text" id="joueur-nom" required placeholder="ex: Dupont">
+                    </div>
+                    <div class="form-group">
+                        <label for="joueur-prenom">Prénom</label>
+                        <input type="text" id="joueur-prenom" required placeholder="ex: Jean">
+                    </div>
+                </div>
+
+                <!-- Champs espace membre -->
+                <div class="grid-2" id="box-compte-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="joueur-email">Email (Identifiant de connexion)</label>
+                        <input type="email" id="joueur-email" placeholder="joueur@badsmash.fr">
+                    </div>
+                    <div class="form-group">
+                        <label for="joueur-pass">Mot de Passe Espace Perso</label>
+                        <input type="password" id="joueur-pass" placeholder="Mot de passe">
+                    </div>
+                </div>
+
+                <!-- Champ Club -->
+                <div class="form-group" id="box-joueur-club">
+                    <label for="joueur-club">Club</label>
+                    <select id="joueur-club" required>
+                        <option value="">Sélectionnez un club...</option>
+                    </select>
+                </div>
+
+                <!-- Champ Pays (Pros) -->
+                <div class="form-group" id="box-joueur-pays" style="display: none;">
+                    <label for="joueur-pays">Pays (Nationalité)</label>
+                    <input type="text" id="joueur-pays" placeholder="ex: France, Danemark, Indonésie...">
+                </div>
+
+                <h3>Points par Tableau</h3>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label for="pts-simple">Points Simple</label>
+                        <input type="number" id="pts-simple" value="0" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pts-double">Points Double</label>
+                        <input type="number" id="pts-double" value="0" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pts-mixte">Points Mixte</label>
+                        <input type="number" id="pts-mixte" value="0" min="0" step="0.01" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-submit-joueur">Enregistrer le Joueur</button>
+                <button type="button" id="btn-cancel-edit" class="btn-cancel" style="display: none;">Annuler la modification</button>
+            </form>
+
+            <h3 style="margin-top: 30px;">📋 Liste & Modification des Joueurs Existants</h3>
+            <div id="liste-joueurs-edit"></div>
+        </div>
+
+        <!-- ONGLET TOURNOIS ET SÉRIES -->
+        <div id="tab-tournois" class="tab-content card">
+            <h2>🏆 Créer un Tournoi avec Séries</h2>
+            <form id="form-tournoi">
+                <div class="form-group">
+                    <label for="tournoi-nom">Nom du Tournoi</label>
+                    <input type="text" id="tournoi-nom" placeholder="ex: Tournoi de Printemps" required>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="tournoi-date">Date</label>
+                        <input type="date" id="tournoi-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tournoi-lieu">Lieu</label>
+                        <input type="text" id="tournoi-lieu" placeholder="ex: Gymnase Central" required>
+                    </div>
+                </div>
+
+                <h3>Paramètres de la Série / Tableau</h3>
+                <div class="form-group">
+                    <label for="serie-nom">Nom de la Série</label>
+                    <input type="text" id="serie-nom" placeholder="ex: Simple Homme - Série 1" required>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="serie-pts-min">Points Min requis</label>
+                        <input type="number" id="serie-pts-min" value="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="serie-pts-max">Points Max autorisés</label>
+                        <input type="number" id="serie-pts-max" value="100" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Inscrire des Joueurs dans cette série</label>
+                    <div class="checklist" id="tournoi-joueurs-list"></div>
+                </div>
+
+                <button type="submit">Créer le Tournoi & la Série</button>
+            </form>
+        </div>
+
+        <!-- ONGLET TABLEAUX (DRAWS) -->
+        <div id="tab-draws" class="tab-content card">
+            <h2>🗂️ Générer un Tableau</h2>
+            <form id="form-draw">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="draw-tournoi">Tournoi</label>
+                        <select id="draw-tournoi" required>
+                            <option value="">Sélectionner un tournoi...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="draw-type">Tableau</label>
+                        <select id="draw-type" required>
+                            <option value="simple">Simple</option>
+                            <option value="double">Double</option>
+                            <option value="mixte">Mixte</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="draw-taille">Nombre de joueurs dans le tableau (4 à 64)</label>
+                    <input type="number" id="draw-taille" min="4" max="64" value="8" required>
+                </div>
+
+                <p class="empty-state">Le tableau sera créé vide : vous choisirez ensuite directement qui affronte qui ci-dessous.</p>
+
+                <button type="submit">🎲 Créer le Tableau Vide</button>
+            </form>
+
+            <h3 style="margin-top: 30px;">📊 Consulter / Remplir un Tableau</h3>
+            <div class="grid-2 draws-select-row">
+                <div class="form-group">
+                    <label for="view-draw-tournoi">Tournoi</label>
+                    <select id="view-draw-tournoi">
+                        <option value="">Sélectionner un tournoi...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="view-draw-select">Tableau</label>
+                    <select id="view-draw-select">
+                        <option value="">Sélectionner un tableau...</option>
+                    </select>
+                </div>
+            </div>
+            <p class="empty-state">Placez les joueurs dans les cases, puis saisissez directement le score de chaque match (ex: 21-18) pour enregistrer le résultat et faire avancer le vainqueur au tour suivant. Le résultat est aussi ajouté automatiquement au fil des matchs (visible côté spectateurs et dans l'espace du joueur).</p>
+            <div id="bracket-display"><p class="empty-state">Sélectionnez un tournoi puis un tableau pour l'afficher.</p></div>
+        </div>
+
+        <!-- ONGLET MATCHS -->
+        <div id="tab-matchs" class="tab-content card">
+            <h2>⚔️ Enregistrer un Match</h2>
+            <form id="form-match">
+                <div class="form-group">
+                    <label for="match-type">Type de Match</label>
+                    <select id="match-type">
+                        <option value="tournoi">Match de Tournoi</option>
+                        <option value="club">Match de Club / Interne</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="box-tournoi">
+                    <label for="match-tournoi">Tournoi Associé</label>
+                    <select id="match-tournoi">
+                        <option value="">Sélectionner un tournoi...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="box-club" style="display: none;">
+                    <label for="match-club">Club Associé</label>
+                    <select id="match-club">
+                        <option value="">Sélectionner un club...</option>
+                    </select>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="match-j1">Joueur 1</label>
+                        <select id="match-j1" required>
+                            <option value="">Choisir un cadre...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="match-j2">Joueur 2</label>
+                        <select id="match-j2" required>
+                            <option value="">Choisir un cadre...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3>Scores des Sets</h3>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label for="set1">Set 1</label>
+                        <input type="text" id="set1" placeholder="21-18">
+                    </div>
+                    <div class="form-group">
+                        <label for="set2">Set 2</label>
+                        <input type="text" id="set2" placeholder="19-21">
+                    </div>
+                    <div class="form-group">
+                        <label for="set3">Set 3 (Optionnel)</label>
+                        <input type="text" id="set3" placeholder="21-15">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="match-vainqueur">Vainqueur</label>
+                    <select id="match-vainqueur" required>
+                        <option value="">Choisir le vainqueur...</option>
+                    </select>
+                </div>
+
+                <button type="submit">Enregistrer le Match</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD5qiseJI4b-CwIGzKi8XYA6pSPqiMRV24",
+        authDomain: "badsmash-a5580.firebaseapp.com",
+        projectId: "badsmash-a5580",
+        storageBucket: "badsmash-a5580.firebasestorage.app",
+        messagingSenderId: "9725882238",
+        appId: "1:9725882238:web:1c1cdb40da0218f2828d2f",
+        databaseURL: "https://badsmash-a5580-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let cacheJoueurs = {};
+    let cacheTournois = {};
+    let cacheDraws = {};        // tableaux du tournoi actuellement consulté (id -> draw)
+    let unsubscribeDraws = null;
+
+    // --- Connexion ---
+    document.getElementById('form-login').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const pass = document.getElementById('admin-pass').value;
+        if(pass === "kylian123") {
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            loadData();
+        } else { 
+            alert("❌ Mot de passe incorrect !"); 
+        }
+    });
+
+    // --- Onglets ---
+    document.querySelectorAll('.btn-tab').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById(e.target.dataset.tab).classList.add('active');
+        });
+    });
+
+    // --- Changement dynamiques des formulaires ---
+    const joueurTypeSelect = document.getElementById('joueur-type');
+    joueurTypeSelect.addEventListener('change', () => {
+        const type = joueurTypeSelect.value;
+        const needAccount = (type === 'compte');
+        const isPro = (type === 'pro');
+
+        document.getElementById('box-compte-fields').style.display = needAccount ? 'grid' : 'none';
+        document.getElementById('joueur-email').required = needAccount;
+        document.getElementById('joueur-pass').required = needAccount;
+
+        if (isPro) {
+            document.getElementById('box-joueur-club').style.display = 'none';
+            document.getElementById('joueur-club').required = false;
+            document.getElementById('box-joueur-pays').style.display = 'block';
+            document.getElementById('joueur-pays').required = true;
+        } else {
+            document.getElementById('box-joueur-club').style.display = 'block';
+            document.getElementById('joueur-club').required = true;
+            document.getElementById('box-joueur-pays').style.display = 'none';
+            document.getElementById('joueur-pays').required = false;
+        }
+    });
+
+    const matchTypeSelect = document.getElementById('match-type');
+    matchTypeSelect.addEventListener('change', () => {
+        const isTournoi = (matchTypeSelect.value === 'tournoi');
+        document.getElementById('box-tournoi').style.display = isTournoi ? 'block' : 'none';
+        document.getElementById('box-club').style.display = isTournoi ? 'none' : 'block';
+        updateMatchJoueursList();
+    });
+
+    document.getElementById('match-tournoi').addEventListener('change', updateMatchJoueursList);
+    document.getElementById('match-club').addEventListener('change', updateMatchJoueursList);
+
+    // --- Chargement Temps Réel ---
+    function loadData() {
+        // Clubs
+        onValue(ref(db, 'clubs'), (snapshot) => {
+            const selectJoueurClub = document.getElementById('joueur-club');
+            const selectMatchClub = document.getElementById('match-club');
+            selectJoueurClub.innerHTML = '<option value="">Sélectionnez un club...</option>';
+            selectMatchClub.innerHTML = '<option value="">Sélectionner un club...</option>';
+            
+            const data = snapshot.val();
+            if(data) {
+                Object.keys(data).forEach(id => {
+                    const opt = `<option value="${id}">${data[id].nom} (${data[id].ville})</option>`;
+                    selectJoueurClub.innerHTML += opt;
+                    selectMatchClub.innerHTML += opt;
+                });
+            }
+        });
+
+        // Joueurs
+        onValue(ref(db, 'joueurs'), (snapshot) => {
+            cacheJoueurs = snapshot.val() || {};
+            const tournoiList = document.getElementById('tournoi-joueurs-list');
+            const editList = document.getElementById('liste-joueurs-edit');
+            
+            tournoiList.innerHTML = '';
+            editList.innerHTML = '';
+            
+            Object.keys(cacheJoueurs).forEach(id => {
+                const j = cacheJoueurs[id];
+                const genreTag = j.genre ? `[${j.genre}] ` : '⚠️ [Genre non renseigné] ';
+                const tag = j.isPro ? `⭐ [PRO - ${j.pays || 'International'}]` : (j.hasAccount ? '[COMPTE]' : '[EXTERNE]');
+                const label = `${genreTag}${j.prenom} ${j.nom} ${tag}`;
+                
+                // Remplissage tournois
+                tournoiList.innerHTML += `
+                    <label>
+                        <input type="checkbox" name="tournoi-joueur" value="${id}"> ${label}
+                    </label>`;
+
+                // Remplissage liste édition
+                const pItem = document.createElement('div');
+                pItem.className = 'player-item';
+                pItem.innerHTML = `
+                    <span><strong>${label}</strong></span>
+                    <button type="button" class="btn-edit" data-id="${id}">✏️ Modifier</button>
+                `;
+                editList.appendChild(pItem);
+            });
+
+            // Attacher les événements d'édition
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', (e) => editPlayer(e.target.dataset.id));
+            });
+
+            updateMatchJoueursList();
+            renderDrawJoueursList();
+            renderBracket(); // les labels des joueurs peuvent avoir changé
+        });
+
+        // Tournois
+        onValue(ref(db, 'tournois'), (snapshot) => {
+            cacheTournois = snapshot.val() || {};
+            const select = document.getElementById('match-tournoi');
+            const selectDraw = document.getElementById('draw-tournoi');
+            const selectViewDraw = document.getElementById('view-draw-tournoi');
+
+            select.innerHTML = '<option value="">Sélectionner un tournoi...</option>';
+            selectDraw.innerHTML = '<option value="">Sélectionner un tournoi...</option>';
+            selectViewDraw.innerHTML = '<option value="">Sélectionner un tournoi...</option>';
+            
+            Object.keys(cacheTournois).forEach(id => {
+                const opt = `<option value="${id}">${cacheTournois[id].nom}</option>`;
+                select.innerHTML += opt;
+                selectDraw.innerHTML += opt;
+                selectViewDraw.innerHTML += opt;
+            });
+            updateMatchJoueursList();
+        });
+    }
+
+    // --- Editer un joueur ---
+    function editPlayer(id) {
+        const j = cacheJoueurs[id];
+        if (!j) return;
+
+        document.getElementById('edit-joueur-id').value = id;
+        document.getElementById('joueur-nom').value = j.nom || '';
+        document.getElementById('joueur-prenom').value = j.prenom || '';
+        document.getElementById('joueur-genre').value = j.genre || '';
+        document.getElementById('joueur-type').value = j.typeCompte || (j.isPro ? 'pro' : (j.hasAccount ? 'compte' : 'externe'));
+        
+        document.getElementById('joueur-email').value = j.email || '';
+        document.getElementById('joueur-pass').value = j.password || '';
+        document.getElementById('joueur-club').value = j.clubId || '';
+        document.getElementById('joueur-pays').value = j.pays || '';
+
+        document.getElementById('pts-simple').value = j.ptsSimple || 0;
+        document.getElementById('pts-double').value = j.ptsDouble || 0;
+        document.getElementById('pts-mixte').value = j.ptsMixte || 0;
+
+        joueurTypeSelect.dispatchEvent(new Event('change'));
+
+        document.getElementById('joueur-form-title').innerText = "✏️ Modifier le Joueur";
+        document.getElementById('btn-submit-joueur').innerText = "Mettre à jour le Joueur";
+        document.getElementById('btn-cancel-edit').style.display = 'block';
+
+        window.scrollTo({ top: document.getElementById('tab-joueurs').offsetTop, behavior: 'smooth' });
+    }
+
+    function resetJoueurForm() {
+        document.getElementById('form-joueur').reset();
+        document.getElementById('edit-joueur-id').value = "";
+        document.getElementById('joueur-form-title').innerText = "🏸 Ajouter un Joueur";
+        document.getElementById('btn-submit-joueur').innerText = "Enregistrer le Joueur";
+        document.getElementById('btn-cancel-edit').style.display = 'none';
+        joueurTypeSelect.dispatchEvent(new Event('change'));
+    }
+
+    document.getElementById('btn-cancel-edit').addEventListener('click', resetJoueurForm);
+
+    // --- Mise à jour sélecteurs de matchs ---
+    function updateMatchJoueursList() {
+        const type = matchTypeSelect.value;
+        const j1 = document.getElementById('match-j1');
+        const j2 = document.getElementById('match-j2');
+        
+        j1.innerHTML = '<option value="">Choisir Joueur 1...</option>';
+        j2.innerHTML = '<option value="">Choisir Joueur 2...</option>';
+        
+        let filteredJoueurIds = [];
+
+        if (type === 'tournoi') {
+            const tournoiId = document.getElementById('match-tournoi').value;
+            if (tournoiId && cacheTournois[tournoiId] && cacheTournois[tournoiId].serie) {
+                filteredJoueurIds = cacheTournois[tournoiId].serie.joueurs || [];
+            }
+        } else if (type === 'club') {
+            const clubId = document.getElementById('match-club').value;
+            if (clubId) {
+                filteredJoueurIds = Object.keys(cacheJoueurs).filter(id => cacheJoueurs[id].clubId === clubId);
+            }
+        }
+
+        filteredJoueurIds.forEach(id => {
+            if (cacheJoueurs[id]) {
+                const j = cacheJoueurs[id];
+                const genreTag = j.genre ? `[${j.genre}] ` : '';
+                const tag = j.isPro ? `⭐ [PRO]` : (j.hasAccount ? '[COMPTE]' : '[EXTERNE]');
+                const label = `${genreTag}${j.prenom} ${j.nom} ${tag}`;
+                
+                j1.innerHTML += `<option value="${id}">${label}</option>`;
+                j2.innerHTML += `<option value="${id}">${label}</option>`;
+            }
+        });
+
+        updateVainqueurs();
+    }
+
+    function updateVainqueurs() {
+        const v1 = document.getElementById('match-j1').value;
+        const v2 = document.getElementById('match-j2').value;
+        const select = document.getElementById('match-vainqueur');
+        select.innerHTML = '<option value="">Choisir le vainqueur...</option>';
+
+        if (v1 && v2 && v1 === v2) {
+            alert("⚠️ Un joueur ne peut pas jouer contre lui-même !");
+            document.getElementById('match-j2').value = "";
+            return;
+        }
+
+        if(v1 && cacheJoueurs[v1]) select.innerHTML += `<option value="${v1}">${cacheJoueurs[v1].prenom} ${cacheJoueurs[v1].nom}</option>`;
+        if(v2 && cacheJoueurs[v2]) select.innerHTML += `<option value="${v2}">${cacheJoueurs[v2].prenom} ${cacheJoueurs[v2].nom}</option>`;
+    }
+    
+    document.getElementById('match-j1').addEventListener('change', updateVainqueurs);
+    document.getElementById('match-j2').addEventListener('change', updateVainqueurs);
+
+    // ============================================================
+    //                    GESTION DES TABLEAUX (DRAWS)
+    // ============================================================
+
+    const drawTypeSelect = document.getElementById('draw-type');
+    const drawTailleInput = document.getElementById('draw-taille');
+
+    // Conservé pour compatibilité (ré-appelé lors du chargement des joueurs) : plus rien à faire ici,
+    // la sélection des joueurs se fait désormais directement dans le tableau affiché.
+    function renderDrawJoueursList() {}
+
+    // --- Création d'un tableau VIDE (bracket à élimination directe) ---
+    function buildEmptyBracket(taille) {
+        let size = 1;
+        while (size < taille) size *= 2;
+
+        const totalRounds = Math.log2(size);
+        const rounds = [];
+        let matchesInRound = size / 2;
+        for (let r = 0; r < totalRounds; r++) {
+            const round = [];
+            for (let i = 0; i < matchesInRound; i++) round.push({ a: "", b: "", vainqueur: "" });
+            rounds.push(round);
+            matchesInRound = matchesInRound / 2;
+        }
+        return rounds;
+    }
+
+    document.getElementById('form-draw').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const tournoiId = document.getElementById('draw-tournoi').value;
+        const type = drawTypeSelect.value;
+        const taille = parseInt(drawTailleInput.value, 10);
+
+        if (!tournoiId) { alert("⚠️ Merci de sélectionner un tournoi."); return; }
+        if (!taille || taille < 4 || taille > 64) {
+            alert("⚠️ Le nombre de joueurs doit être compris entre 4 et 64.");
+            return;
+        }
+
+        const rounds = buildEmptyBracket(taille);
+
+        push(ref(db, `tournois/${tournoiId}/draws`), {
+            type: type,
+            taille: taille,
+            rounds: rounds,
+            createdAt: Date.now()
+        }).then(() => {
+            alert("✅ Tableau vide créé ! Rendez-vous dans « Consulter / Remplir un Tableau » pour placer les joueurs.");
+            e.target.reset();
+            drawTailleInput.value = 8;
+        }).catch((error) => {
+            console.error("Erreur création tableau :", error);
+            alert("❌ Le tableau n'a pas pu être créé.\n\nErreur Firebase : " + error.message + "\n\nCela vient probablement des règles de sécurité de la base de données qui n'autorisent pas encore l'écriture du champ « draws » sous « tournois ».");
+        });
+    });
+
+    // --- Consultation d'un tableau ---
+    const viewDrawTournoiSelect = document.getElementById('view-draw-tournoi');
+    const viewDrawSelect = document.getElementById('view-draw-select');
+    const bracketDisplay = document.getElementById('bracket-display');
+    const typeLabels = { simple: 'Simple', double: 'Double', mixte: 'Mixte' };
+
+    viewDrawTournoiSelect.addEventListener('change', () => {
+        if (unsubscribeDraws) { unsubscribeDraws(); unsubscribeDraws = null; }
+        cacheDraws = {};
+        viewDrawSelect.innerHTML = '<option value="">Sélectionner un tableau...</option>';
+        bracketDisplay.innerHTML = '<p class="empty-state">Sélectionnez un tournoi puis un tableau pour l\'afficher.</p>';
+
+        const tournoiId = viewDrawTournoiSelect.value;
+        if (!tournoiId) return;
+
+        unsubscribeDraws = onValue(ref(db, `tournois/${tournoiId}/draws`), (snapshot) => {
+            cacheDraws = snapshot.val() || {};
+            const currentSelection = viewDrawSelect.value;
+            viewDrawSelect.innerHTML = '<option value="">Sélectionner un tableau...</option>';
+            Object.keys(cacheDraws).forEach(id => {
+                const d = cacheDraws[id];
+                const date = d.createdAt ? new Date(d.createdAt).toLocaleDateString('fr-FR') : '';
+                viewDrawSelect.innerHTML += `<option value="${id}">${typeLabels[d.type] || d.type} - ${d.taille} joueurs (${date})</option>`;
+            });
+            if (currentSelection && cacheDraws[currentSelection]) {
+                viewDrawSelect.value = currentSelection;
+            }
+            renderBracket();
+        });
+    });
+
+    viewDrawSelect.addEventListener('change', renderBracket);
+
+    function playerLabel(id) {
+        const j = cacheJoueurs[id];
+        if (!j) return '?';
+        return `${j.prenom} ${j.nom}`;
+    }
+
+    function renderBracket() {
+        const tournoiId = viewDrawTournoiSelect.value;
+        const drawId = viewDrawSelect.value;
+
+        if (!tournoiId || !drawId || !cacheDraws[drawId]) {
+            bracketDisplay.innerHTML = '<p class="empty-state">Sélectionnez un tournoi puis un tableau pour l\'afficher.</p>';
+            return;
+        }
+
+        const draw = cacheDraws[drawId];
+        const rounds = draw.rounds || [];
+        const totalRounds = rounds.length;
+
+        const roundNames = (count) => {
+            const names = [];
+            for (let i = 0; i < count; i++) {
+                const remaining = count - i;
+                if (remaining === 1) names.push('Finale');
+                else if (remaining === 2) names.push('Demi-finales');
+                else if (remaining === 3) names.push('Quarts de finale');
+                else names.push(`Tour ${i + 1}`);
+            }
+            return names;
+        };
+        const names = roundNames(totalRounds);
+
+        // Joueurs déjà placés quelque part dans le tableau (pour éviter les doublons dans les menus)
+        const usedPlayerIds = new Set();
+        rounds.forEach(round => round.forEach(match => {
+            if (match.a) usedPlayerIds.add(match.a);
+            if (match.b) usedPlayerIds.add(match.b);
+        }));
+
+        function buildSelectOptions(currentValue) {
+            let opts = `<option value="">— Choisir un joueur —</option>`;
+            Object.keys(cacheJoueurs).forEach(id => {
+                if (usedPlayerIds.has(id) && id !== currentValue) return; // déjà utilisé ailleurs
+                const j = cacheJoueurs[id];
+                const genreTag = j.genre ? `[${j.genre}] ` : '';
+                const tag = j.isPro ? '⭐' : (j.hasAccount ? '[COMPTE]' : '[EXTERNE]');
+                const selectedAttr = id === currentValue ? 'selected' : '';
+                opts += `<option value="${id}" ${selectedAttr}>${genreTag}${j.prenom} ${j.nom} ${tag}</option>`;
+            });
+            return opts;
+        }
+
+        let html = '<div class="bracket-wrap"><div class="bracket">';
+        rounds.forEach((round, rIndex) => {
+            html += `<div class="bracket-round"><div class="bracket-round-title">${names[rIndex]}</div>`;
+            round.forEach((match, mIndex) => {
+                const decided = !!match.vainqueur;
+                const aIsWinner = match.vainqueur === 'a';
+                const bIsWinner = match.vainqueur === 'b';
+                const canDeclare = !!match.a && !!match.b && !decided;
+                const scoreLabel = [match.set1, match.set2, match.set3].filter(Boolean).join('  ');
+
+                function slotHtml(slot, value, isWinner) {
+                    if (decided) {
+                        const cls = isWinner ? 'winner' : '';
+                        return `<div class="bracket-entry ${cls}">${value ? playerLabel(value) : '—'}</div>`;
+                    }
+                    // Emplacement modifiable tant que le match n'est pas joué
+                    return `<div class="bracket-entry ${canDeclare ? '' : 'empty'}" data-round="${rIndex}" data-match="${mIndex}" data-slot="${slot}" ${canDeclare ? 'data-clickable="true"' : ''}>
+                        <select class="slot-select" data-round="${rIndex}" data-match="${mIndex}" data-slot="${slot}">
+                            ${buildSelectOptions(value)}
+                        </select>
+                    </div>`;
+                }
+
+                html += `<div class="bracket-match">
+                    ${slotHtml('a', match.a, aIsWinner)}
+                    ${slotHtml('b', match.b, bIsWinner)}
+                </div>`;
+
+                if (decided) {
+                    html += `<div class="score-row">
+                        <span>${scoreLabel ? scoreLabel : 'Sans score (forfait)'}</span>
+                        <span class="btn-reset-score" data-round="${rIndex}" data-match="${mIndex}" title="Corriger ce résultat">✏️</span>
+                    </div>`;
+                } else if (canDeclare) {
+                    html += `<div class="score-entry">
+                        <div class="score-entry-inputs">
+                            <input type="text" class="score-input" id="score-${rIndex}-${mIndex}-1" placeholder="21-18">
+                            <input type="text" class="score-input" id="score-${rIndex}-${mIndex}-2" placeholder="19-21">
+                            <input type="text" class="score-input" id="score-${rIndex}-${mIndex}-3" placeholder="21-15">
+                        </div>
+                        <button type="button" class="btn-save-score" data-round="${rIndex}" data-match="${mIndex}">✅ Enregistrer le score</button>
+                        <div class="score-entry-wo">
+                            Sans score (forfait) :
+                            <span class="declare-link" data-round="${rIndex}" data-match="${mIndex}" data-slot="a">${playerLabel(match.a)}</span>
+                            /
+                            <span class="declare-link" data-round="${rIndex}" data-match="${mIndex}" data-slot="b">${playerLabel(match.b)}</span>
+                        </div>
+                    </div>`;
+                }
+            });
+            html += '</div>';
+        });
+        html += '</div></div>';
+
+        bracketDisplay.innerHTML = html;
+
+        // Choix direct du joueur pour un emplacement
+        bracketDisplay.querySelectorAll('.slot-select').forEach(sel => {
+            sel.addEventListener('change', (e) => {
+                const r = parseInt(e.target.dataset.round, 10);
+                const m = parseInt(e.target.dataset.match, 10);
+                const slot = e.target.dataset.slot;
+                assignPlayer(tournoiId, drawId, r, m, slot, e.target.value || "");
+            });
+        });
+
+        // Enregistrement du score d'un match
+        bracketDisplay.querySelectorAll('.btn-save-score').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const r = parseInt(btn.dataset.round, 10);
+                const m = parseInt(btn.dataset.match, 10);
+                saveMatchScore(tournoiId, drawId, r, m);
+            });
+        });
+
+        // Déclaration du vainqueur sans score (forfait / walkover)
+        bracketDisplay.querySelectorAll('.declare-link').forEach(el => {
+            el.addEventListener('click', () => {
+                const r = parseInt(el.dataset.round, 10);
+                const m = parseInt(el.dataset.match, 10);
+                const slot = el.dataset.slot;
+                const currentMatch = cacheDraws[drawId].rounds[r][m];
+                const who = playerLabel(slot === 'a' ? currentMatch.a : currentMatch.b);
+                if (!confirm(`Confirmer la victoire de ${who} SANS score (forfait) ?`)) return;
+                finalizeMatch(tournoiId, drawId, r, m, slot, null);
+            });
+        });
+
+        // Correction d'un résultat déjà enregistré
+        bracketDisplay.querySelectorAll('.btn-reset-score').forEach(el => {
+            el.addEventListener('click', () => {
+                const r = parseInt(el.dataset.round, 10);
+                const m = parseInt(el.dataset.match, 10);
+                resetMatchResult(tournoiId, drawId, r, m);
+            });
+        });
+    }
+
+    function assignPlayer(tournoiId, drawId, roundIndex, matchIndex, slot, playerId) {
+        const path = `tournois/${tournoiId}/draws/${drawId}/rounds/${roundIndex}/${matchIndex}/${slot}`;
+        update(ref(db), { [path]: playerId }).catch((error) => {
+            console.error("Erreur assignation joueur :", error);
+            alert("❌ Impossible d'assigner ce joueur.\n\nErreur Firebase : " + error.message);
+        });
+    }
+
+    // --- Saisie du score d'un match directement dans le tableau ---
+    function saveMatchScore(tournoiId, drawId, roundIndex, matchIndex) {
+        const draw = cacheDraws[drawId];
+        if (!draw) return;
+        const match = draw.rounds[roundIndex][matchIndex];
+        if (!match.a || !match.b || match.vainqueur) return;
+
+        const s1 = (document.getElementById(`score-${roundIndex}-${matchIndex}-1`).value || '').trim();
+        const s2 = (document.getElementById(`score-${roundIndex}-${matchIndex}-2`).value || '').trim();
+        const s3 = (document.getElementById(`score-${roundIndex}-${matchIndex}-3`).value || '').trim();
+
+        const sets = [s1, s2, s3].filter(Boolean);
+        if (sets.length === 0) {
+            alert("⚠️ Merci de renseigner au moins un score de set (ex: 21-18).");
+            return;
+        }
+
+        let aWins = 0, bWins = 0;
+        for (const s of sets) {
+            const parts = s.split(/[-–]/).map(x => parseInt(x.trim(), 10));
+            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1]) || parts[0] === parts[1]) {
+                alert(`⚠️ Score invalide : "${s}". Utilisez un format comme "21-18".`);
+                return;
+            }
+            if (parts[0] > parts[1]) aWins++; else bWins++;
+        }
+
+        if (aWins === bWins) {
+            alert("⚠️ Impossible de déterminer un vainqueur avec ces scores (égalité de sets). Ajoutez un set décisif.");
+            return;
+        }
+
+        const slot = aWins > bWins ? 'a' : 'b';
+        finalizeMatch(tournoiId, drawId, roundIndex, matchIndex, slot, { set1: s1, set2: s2, set3: s3 });
+    }
+
+    // --- Enregistre le vainqueur (avec ou sans score), fait avancer le tableau et alimente le fil des matchs ---
+    function finalizeMatch(tournoiId, drawId, roundIndex, matchIndex, slot, scores) {
+        const draw = cacheDraws[drawId];
+        if (!draw) return;
+        const match = draw.rounds[roundIndex][matchIndex];
+        if (!match.a || !match.b || match.vainqueur) return;
+
+        const winnerEntry = slot === 'a' ? match.a : match.b;
+        const basePath = `tournois/${tournoiId}/draws/${drawId}/rounds/${roundIndex}/${matchIndex}`;
+        const updates = {};
+        updates[`${basePath}/vainqueur`] = slot;
+        updates[`${basePath}/set1`] = scores ? (scores.set1 || '') : '';
+        updates[`${basePath}/set2`] = scores ? (scores.set2 || '') : '';
+        updates[`${basePath}/set3`] = scores ? (scores.set3 || '') : '';
+
+        if (roundIndex < draw.rounds.length - 1) {
+            const nextIndex = Math.floor(matchIndex / 2);
+            const nextSlot = matchIndex % 2 === 0 ? 'a' : 'b';
+            updates[`tournois/${tournoiId}/draws/${drawId}/rounds/${roundIndex + 1}/${nextIndex}/${nextSlot}`] = winnerEntry;
+        }
+
+        update(ref(db), updates).then(() => {
+            // Alimente aussi la collection "matchs" (fil live spectateurs + stats joueur)
+            const matchData = {
+                type: 'tournoi',
+                tournoiId: tournoiId,
+                drawId: drawId,
+                roundIndex: roundIndex,
+                matchIndex: matchIndex,
+                j1: match.a,
+                j2: match.b,
+                set1: scores ? (scores.set1 || '') : '',
+                set2: scores ? (scores.set2 || '') : '',
+                set3: scores ? (scores.set3 || '') : '',
+                vainqueur: winnerEntry,
+                timestamp: Date.now()
+            };
+            if (match.matchRecordId) {
+                update(ref(db, `matchs/${match.matchRecordId}`), matchData).catch((err) => console.error("Erreur mise à jour du fil des matchs :", err));
+            } else {
+                push(ref(db, 'matchs'), matchData).then((newRef) => {
+                    update(ref(db), { [`${basePath}/matchRecordId`]: newRef.key }).catch((err) => console.error("Erreur liaison fil des matchs :", err));
+                }).catch((err) => console.error("Erreur ajout au fil des matchs :", err));
+            }
+        }).catch((error) => {
+            console.error("Erreur enregistrement résultat :", error);
+            alert("❌ Impossible d'enregistrer le résultat.\n\nErreur Firebase : " + error.message);
+        });
+    }
+
+    // --- Corrige / réinitialise un résultat déjà enregistré ---
+    function resetMatchResult(tournoiId, drawId, roundIndex, matchIndex) {
+        const draw = cacheDraws[drawId];
+        if (!draw) return;
+        const match = draw.rounds[roundIndex][matchIndex];
+        if (!match.vainqueur) return;
+        if (!confirm("Réinitialiser le résultat de ce match pour le corriger ?")) return;
+
+        const winnerEntry = match.vainqueur === 'a' ? match.a : match.b;
+        const basePath = `tournois/${tournoiId}/draws/${drawId}/rounds/${roundIndex}/${matchIndex}`;
+        const updates = {};
+        updates[`${basePath}/vainqueur`] = '';
+        updates[`${basePath}/set1`] = '';
+        updates[`${basePath}/set2`] = '';
+        updates[`${basePath}/set3`] = '';
+
+        // Si le tour suivant n'a pas encore été joué et pointe toujours vers ce vainqueur, on le vide aussi
+        if (roundIndex < draw.rounds.length - 1) {
+            const nextIndex = Math.floor(matchIndex / 2);
+            const nextSlot = matchIndex % 2 === 0 ? 'a' : 'b';
+            const nextMatch = draw.rounds[roundIndex + 1] && draw.rounds[roundIndex + 1][nextIndex];
+            if (nextMatch && nextMatch[nextSlot] === winnerEntry && !nextMatch.vainqueur) {
+                updates[`tournois/${tournoiId}/draws/${drawId}/rounds/${roundIndex + 1}/${nextIndex}/${nextSlot}`] = '';
+            }
+        }
+
+        update(ref(db), updates).then(() => {
+            if (match.matchRecordId) {
+                update(ref(db, `matchs/${match.matchRecordId}`), { vainqueur: '', set1: '', set2: '', set3: '' }).catch((err) => console.error("Erreur mise à jour fil des matchs :", err));
+            }
+        }).catch((error) => {
+            console.error("Erreur réinitialisation :", error);
+            alert("❌ Impossible de corriger ce match.\n\nErreur Firebase : " + error.message);
+        });
+    }
+
+    // ============================================================
+    //                    FIN GESTION DES TABLEAUX
+    // ============================================================
+
+    // --- SOUMISSIONS FORMULAIRES ---
+
+    // Club
+    document.getElementById('form-club').addEventListener('submit', (e) => {
+        e.preventDefault();
+        push(ref(db, 'clubs'), {
+            nom: document.getElementById('club-nom').value.trim(),
+            ville: document.getElementById('club-ville').value.trim()
+        }).then(() => { 
+            alert("✅ Club créé avec succès !"); 
+            e.target.reset();
+        });
+    });
+
+    // Joueur (Création OU Modification)
+    document.getElementById('form-joueur').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const editId = document.getElementById('edit-joueur-id').value;
+        const typeSelect = joueurTypeSelect.value;
+        const isPro = (typeSelect === 'pro');
+        const hasAccount = (typeSelect === 'compte');
+
+        const playerData = {
+            nom: document.getElementById('joueur-nom').value.trim(),
+            prenom: document.getElementById('joueur-prenom').value.trim(),
+            genre: document.getElementById('joueur-genre').value,
+            typeCompte: typeSelect,
+            hasAccount: hasAccount,
+            isPro: isPro,
+            email: hasAccount ? document.getElementById('joueur-email').value.trim() : null,
+            password: hasAccount ? document.getElementById('joueur-pass').value : null,
+            clubId: isPro ? null : document.getElementById('joueur-club').value,
+            pays: isPro ? document.getElementById('joueur-pays').value.trim() : null,
+            ptsSimple: parseFloat(document.getElementById('pts-simple').value) || 0,
+            ptsDouble: parseFloat(document.getElementById('pts-double').value) || 0,
+            ptsMixte: parseFloat(document.getElementById('pts-mixte').value) || 0
+        };
+
+        if (editId) {
+            // Mise à jour d'un joueur existant
+            update(ref(db, `joueurs/${editId}`), playerData).then(() => {
+                alert("✅ Joueur mis à jour avec succès !");
+                resetJoueurForm();
+            });
+        } else {
+            // Création d'un nouveau joueur
+            push(ref(db, 'joueurs'), playerData).then(() => { 
+                alert("✅ Joueur créé avec succès !"); 
+                resetJoueurForm();
+            });
+        }
+    });
+
+    // Tournoi
+    document.getElementById('form-tournoi').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const joueursInscrits = [];
+        document.querySelectorAll('input[name="tournoi-joueur"]:checked').forEach(box => {
+            joueursInscrits.push(box.value);
+        });
+
+        push(ref(db, 'tournois'), {
+            nom: document.getElementById('tournoi-nom').value.trim(),
+            date: document.getElementById('tournoi-date').value,
+            lieu: document.getElementById('tournoi-lieu').value.trim(),
+            serie: {
+                nom: document.getElementById('serie-nom').value.trim(),
+                ptsMin: parseFloat(document.getElementById('serie-pts-min').value) || 0,
+                ptsMax: parseFloat(document.getElementById('serie-pts-max').value) || 0,
+                joueurs: joueursInscrits
+            }
+        }).then(() => { 
+            alert("✅ Tournoi créé avec succès !"); 
+            e.target.reset();
+        });
+    });
+
+    // Match
+    document.getElementById('form-match').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const type = matchTypeSelect.value;
+        
+        push(ref(db, 'matchs'), {
+            type: type,
+            tournoiId: type === 'tournoi' ? document.getElementById('match-tournoi').value : null,
+            clubId: type === 'club' ? document.getElementById('match-club').value : null,
+            j1: document.getElementById('match-j1').value,
+            j2: document.getElementById('match-j2').value,
+            set1: document.getElementById('set1').value.trim(),
+            set2: document.getElementById('set2').value.trim(),
+            set3: document.getElementById('set3').value.trim(),
+            vainqueur: document.getElementById('match-vainqueur').value,
+            timestamp: Date.now()
+        }).then(() => { 
+            alert("✅ Match enregistré avec succès !"); 
+            e.target.reset();
+            matchTypeSelect.dispatchEvent(new Event('change'));
+        });
+    });
+</script>
+</body>
+</html>

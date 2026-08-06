@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BADSMASH - Mon Espace</title>
+    <style>
+        :root { 
+            --bg: #0f172a; --card: #1e293b; --green: #10b981; 
+            --text: #f8fafc; --sub: #94a3b8; --border: #334155; --accent: #3b82f6;
+            --danger: #ef4444; --gold: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 10px; flex-wrap: wrap; }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .btn-home {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: border-color 0.2s;
+        }
+        .btn-home:hover { border-color: var(--green); }
+        h1 { color: var(--green); }
+        .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
+        h2 { color: var(--accent); margin-bottom: 14px; font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+        .badge-pro { background: var(--gold); color: var(--bg); font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 800; text-transform: uppercase; }
+        .badge-amateur { background: var(--accent); color: white; font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 800; text-transform: uppercase; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+
+        .stat-box { background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .stat-box .title { font-size: 0.8rem; color: var(--sub); }
+        .stat-box .val { font-size: 1.4rem; font-weight: bold; color: var(--green); margin-top: 4px; }
+
+        ul { list-style: none; }
+        li { background: var(--bg); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; font-size: 0.9rem; }
+        .li-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .tag { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-left: 6px; }
+        .tag-win { background: rgba(16, 185, 129, 0.2); color: var(--green); }
+        .tag-loss { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .sub-ratio { font-size: 0.85rem; color: var(--sub); font-weight: normal; }
+
+        textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); resize: vertical; min-height: 80px; }
+        button.btn-save { background: var(--green); color: var(--bg); border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+
+        /* Pronostics */
+        .pronostic-tournoi { font-size: 0.78rem; color: var(--sub); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .pronostic-buttons { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+        .btn-pronostic {
+            flex: 1;
+            min-width: 120px;
+            width: auto;
+            margin: 0;
+            padding: 9px 10px;
+            font-size: 0.85rem;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            font-weight: 600;
+        }
+        .btn-pronostic:hover { border-color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+        .btn-pronostic.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .tag-pending { background: rgba(148, 163, 184, 0.15); color: var(--sub); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="btn-home">🏠 Accueil</a>
+            <div>
+                <h1 id="user-name">Chargement...</h1>
+                <p id="user-club" style="color: var(--sub); font-size: 0.9rem;">Club : -</p>
+            </div>
+        </div>
+        <button class="btn-logout" id="btn-logout">Déconnexion</button>
+    </header>
+
+    <!-- CLASSEMENT ET POINTS -->
+    <div class="card">
+        <h2>
+            📊 Mes Classements & Points
+            <span id="badge-statut" class="badge-amateur">Amateur</span>
+        </h2>
+        <div class="grid-3">
+            <div class="stat-box">
+                <div class="title">Simple</div>
+                <div class="val" id="pts-simple">0 pts</div>
+            </div>
+            <div class="stat-box">
+                <div class="title">Double</div>
+                <div class="val" id="pts-double">0 pts</div>
+            </div>
+            <div class="stat-box">
+                <div class="title">Mixte</div>
+                <div class="val" id="pts-mixte">0 pts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OBJECTIFS -->
+    <div class="card">
+        <h2>🎯 Mes Objectifs</h2>
+        <textarea id="user-objectifs" placeholder="Définissez vos objectifs personnels (ex: Passer D8 en Simple, gagner 3 matchs en Interclubs...)"></textarea>
+        <button class="btn-save" id="btn-save-obj">Enregistrer mes objectifs</button>
+    </div>
+
+    <!-- PRONOSTICS -->
+    <div class="card">
+        <h2>
+            🔮 Mes Pronostics
+            <span class="sub-ratio" id="pronostics-score">Aucun pronostic joué pour le moment</span>
+        </h2>
+        <ul id="list-pronostics"><li>Chargement…</li></ul>
+    </div>
+
+    <!-- PROCHAINS ÉVÉNEMENTS -->
+    <div class="grid-3">
+        <div class="card">
+            <h2>📅 Entraînements</h2>
+            <ul id="list-entrainements"><li>Aucun entraînement prévu</li></ul>
+        </div>
+        <div class="card">
+            <h2>🏆 Prochains Tournois</h2>
+            <ul id="list-tournois"><li>Aucun tournoi inscrit</li></ul>
+        </div>
+        <div class="card">
+            <h2>🛡️ Prochains Interclubs</h2>
+            <ul id="list-interclubs"><li>Aucun interclub prévu</li></ul>
+        </div>
+    </div>
+
+    <!-- DERNIERS MATCHS ET RATIOS -->
+    <div class="grid-2">
+        <div class="card">
+            <h2>
+                🥇 Derniers Matchs de Tournoi
+                <span class="sub-ratio" id="ratio-tournoi">Ratio : 0%</span>
+            </h2>
+            <ul id="list-matchs-tournoi"><li>Aucun match enregistré</li></ul>
+        </div>
+        <div class="card">
+            <h2>
+                🏸 Derniers Matchs de Club / Interne
+                <span class="sub-ratio" id="ratio-club">Ratio : 0%</span>
+            </h2>
+            <ul id="list-matchs-club"><li>Aucun match enregistré</li></ul>
+        </div>
+    </div>
+
+    <!-- HISTORIQUE ADVERSAIRES (H2H) -->
+    <div class="card">
+        <h2>🥊 Face-à-Face (Historique des Adversaires)</h2>
+        <ul id="list-opponents"><li>Aucun adversaire joué</li></ul>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD5qiseJI4b-CwIGzKi8XYA6pSPqiMRV24",
+        authDomain: "badsmash-a5580.firebaseapp.com",
+        projectId: "badsmash-a5580",
+        storageBucket: "badsmash-a5580.firebasestorage.app",
+        messagingSenderId: "9725882238",
+        appId: "1:9725882238:web:1c1cdb40da0218f2828d2f",
+        databaseURL: "https://badsmash-a5580-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const userId = localStorage.getItem('badsmash_user_id');
+
+    if (!userId) {
+        window.location.href = 'connexion.html';
+    }
+
+    document.getElementById('btn-logout').addEventListener('click', () => {
+        localStorage.removeItem('badsmash_user_id');
+        window.location.href = 'connexion.html';
+    });
+
+    let allPlayers = {};
+    let tournoisCache = {};
+    let pronosticsCache = {};
+
+    function escapeHtml(str) {
+        return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    onValue(ref(db, 'joueurs'), (snapshot) => {
+        allPlayers = snapshot.val() || {};
+        loadUserData();
+        renderPronostics();
+    });
+
+    function loadUserData() {
+        onValue(ref(db, `joueurs/${userId}`), (snapshot) => {
+            const user = snapshot.val();
+            if(!user) return;
+
+            document.getElementById('user-name').innerText = `${user.prenom} ${user.nom}`;
+            document.getElementById('pts-simple').innerText = `${user.ptsSimple || 0} pts`;
+            document.getElementById('pts-double').innerText = `${user.ptsDouble || 0} pts`;
+            document.getElementById('pts-mixte').innerText = `${user.ptsMixte || 0} pts`;
+            document.getElementById('user-objectifs').value = user.objectifs || '';
+
+            const badgeStatut = document.getElementById('badge-statut');
+            if (user.isPro) {
+                badgeStatut.className = 'badge-pro';
+                badgeStatut.innerText = '⭐ Circuit Pro';
+            } else {
+                badgeStatut.className = 'badge-amateur';
+                badgeStatut.innerText = 'Amateur / Club';
+            }
+
+            if (user.clubId) {
+                onValue(ref(db, `clubs/${user.clubId}`), (clubSnap) => {
+                    const club = clubSnap.val();
+                    if (club) document.getElementById('user-club').innerText = `Club : ${club.nom} (${club.ville})`;
+                });
+            }
+        });
+
+        onValue(ref(db, 'matchs'), (snapshot) => {
+            const matchs = snapshot.val();
+            const listTournoi = document.getElementById('list-matchs-tournoi');
+            const listClub = document.getElementById('list-matchs-club');
+            const listOpponents = document.getElementById('list-opponents');
+            
+            listTournoi.innerHTML = '';
+            listClub.innerHTML = '';
+            listOpponents.innerHTML = '';
+
+            let tournoiWins = 0, tournoiLosses = 0;
+            let clubWins = 0, clubLosses = 0;
+            const oppStats = {};
+
+            let hasTournoi = false;
+            let hasClub = false;
+
+            if (matchs) {
+                Object.keys(matchs).forEach(id => {
+                    const m = matchs[id];
+                    if (m.j1 === userId || m.j2 === userId) {
+                        const isJ1 = m.j1 === userId;
+                        const advId = isJ1 ? m.j2 : m.j1;
+                        const advName = allPlayers[advId] ? `${allPlayers[advId].prenom} ${allPlayers[advId].nom}` : 'Inconnu';
+                        const isWinner = m.vainqueur === userId;
+
+                        // Statistiques adversaires (H2H)
+                        if (!oppStats[advId]) {
+                            oppStats[advId] = { name: advName, wins: 0, losses: 0, count: 0 };
+                        }
+                        oppStats[advId].count++;
+                        if (isWinner) oppStats[advId].wins++;
+                        else oppStats[advId].losses++;
+
+                        const tagHtml = isWinner ? '<span class="tag tag-win">VICTOIRE</span>' : '<span class="tag tag-loss">DÉFAITE</span>';
+                        const score = `${m.set1 || ''} ${m.set2 || ''} ${m.set3 || ''}`.trim();
+                        const li = `<li>vs <b>${advName}</b> — ${score} ${tagHtml}</li>`;
+
+                        if (m.type === 'tournoi') {
+                            listTournoi.innerHTML += li;
+                            hasTournoi = true;
+                            if (isWinner) tournoiWins++; else tournoiLosses++;
+                        } else {
+                            listClub.innerHTML += li;
+                            hasClub = true;
+                            if (isWinner) clubWins++; else clubLosses++;
+                        }
+                    }
+                });
+            }
+
+            if (!hasTournoi) listTournoi.innerHTML = '<li>Aucun match de tournoi enregistré</li>';
+            if (!hasClub) listClub.innerHTML = '<li>Aucun match de club enregistré</li>';
+
+            // Affichage Ratios Tournois / Club
+            const formatRatio = (wins, losses) => {
+                const total = wins + losses;
+                if (total === 0) return 'Ratio : 0% (0V / 0D)';
+                const pct = Math.round((wins / total) * 100);
+                return `Ratio : ${pct}% (${wins}V / ${losses}D)`;
+            };
+
+            document.getElementById('ratio-tournoi').innerText = formatRatio(tournoiWins, tournoiLosses);
+            document.getElementById('ratio-club').innerText = formatRatio(clubWins, clubLosses);
+
+            // Génération de la liste des adversaires triée par nombre de matchs décroissant
+            const sortedOpponents = Object.keys(oppStats).sort((a, b) => oppStats[b].count - oppStats[a].count);
+
+            if (sortedOpponents.length > 0) {
+                sortedOpponents.forEach(advId => {
+                    const opp = oppStats[advId];
+                    const total = opp.count;
+                    const winPct = Math.round((opp.wins / total) * 100);
+                    const isPositive = opp.wins >= opp.losses;
+
+                    listOpponents.innerHTML += `
+                        <li class="li-flex">
+                            <div>
+                                <b>${opp.name}</b> 
+                                <span style="color: var(--sub); font-size: 0.8rem; margin-left: 8px;">
+                                    (${total} match${total > 1 ? 's' : ''})
+                                </span>
+                            </div>
+                            <div>
+                                <span class="tag ${isPositive ? 'tag-win' : 'tag-loss'}">
+                                    ${opp.wins}V / ${opp.losses}D (${winPct}%)
+                                </span>
+                            </div>
+                        </li>
+                    `;
+                });
+            } else {
+                listOpponents.innerHTML = '<li>Aucun adversaire joué</li>';
+            }
+        });
+
+        onValue(ref(db, 'tournois'), (snapshot) => {
+            const tournois = snapshot.val();
+            tournoisCache = tournois || {};
+
+            const list = document.getElementById('list-tournois');
+            list.innerHTML = '';
+            let count = 0;
+
+            if (tournois) {
+                Object.keys(tournois).forEach(id => {
+                    const t = tournois[id];
+                    if (t.serie && t.serie.joueurs && t.serie.joueurs.includes(userId)) {
+                        list.innerHTML += `<li><b>${t.nom}</b><br><small>📅 ${t.date} — 📍 ${t.lieu}</small></li>`;
+                        count++;
+                    }
+                });
+            }
+            if (count === 0) list.innerHTML = '<li>Aucun tournoi inscrit</li>';
+
+            renderPronostics();
+        });
+
+        onValue(ref(db, 'pronostics'), (snapshot) => {
+            pronosticsCache = snapshot.val() || {};
+            renderPronostics();
+        });
+
+        onValue(ref(db, 'evenements'), (snapshot) => {
+            const evs = snapshot.val();
+            const listEntr = document.getElementById('list-entrainements');
+            const listInter = document.getElementById('list-interclubs');
+            
+            listEntr.innerHTML = '';
+            listInter.innerHTML = '';
+            let countEntr = 0, countInter = 0;
+
+            if (evs) {
+                Object.keys(evs).forEach(id => {
+                    const ev = evs[id];
+                    const item = `<li><b>${ev.titre}</b><br><small>📅 ${ev.date} à ${ev.heure}</small></li>`;
+                    if (ev.type === 'entrainement') { listEntr.innerHTML += item; countEntr++; }
+                    if (ev.type === 'interclub') { listInter.innerHTML += item; countInter++; }
+                });
+            }
+            if (countEntr === 0) listEntr.innerHTML = '<li>Aucun entraînement prévu</li>';
+            if (countInter === 0) listInter.innerHTML = '<li>Aucun interclub prévu</li>';
+        });
+    }
+
+    document.getElementById('btn-save-obj').addEventListener('click', () => {
+        const text = document.getElementById('user-objectifs').value;
+        update(ref(db, `joueurs/${userId}`), { objectifs: text }).then(() => {
+            alert("✅ Objectifs enregistrés !");
+        });
+    });
+
+    // ============================================================
+    //                         PRONOSTICS
+    // ============================================================
+
+    function pronosticKey(tournoiId, drawId, roundIndex, matchIndex) {
+        return `${tournoiId}_${drawId}_${roundIndex}_${matchIndex}`;
+    }
+
+    function renderPronostics() {
+        const container = document.getElementById('list-pronostics');
+        const scoreEl = document.getElementById('pronostics-score');
+        if (!container) return;
+
+        if (!tournoisCache || Object.keys(tournoisCache).length === 0) {
+            container.innerHTML = '<li>Aucun match à pronostiquer pour le moment.</li>';
+            return;
+        }
+
+        // Rassemble tous les matchs de tous les tableaux où les 2 joueurs sont connus
+        const items = [];
+        Object.keys(tournoisCache).forEach(tId => {
+            const t = tournoisCache[tId];
+            if (!t.draws) return;
+            Object.keys(t.draws).forEach(dId => {
+                const draw = t.draws[dId];
+                (draw.rounds || []).forEach((round, rIndex) => {
+                    round.forEach((match, mIndex) => {
+                        if (match.a && match.b) {
+                            items.push({ tId, dId, rIndex, mIndex, match, tournoiNom: t.nom });
+                        }
+                    });
+                });
+            });
+        });
+
+        if (items.length === 0) {
+            container.innerHTML = '<li>Aucun match à pronostiquer pour le moment.</li>';
+            scoreEl.innerText = 'Aucun pronostic joué pour le moment';
+            return;
+        }
+
+        // Les matchs non joués d'abord, puis les plus récents résultats
+        items.sort((a, b) => (!!a.match.vainqueur) - (!!b.match.vainqueur));
+
+        const displayItems = items.slice(0, 25);
+
+        container.innerHTML = displayItems.map(it => {
+            const key = pronosticKey(it.tId, it.dId, it.rIndex, it.mIndex);
+            const myPick = pronosticsCache[key] && pronosticsCache[key][userId];
+            const decided = !!it.match.vainqueur;
+            const winnerId = decided ? (it.match.vainqueur === 'a' ? it.match.a : it.match.b) : null;
+
+            const playerA = allPlayers[it.match.a];
+            const playerB = allPlayers[it.match.b];
+            const nameA = playerA ? `${playerA.prenom} ${playerA.nom}` : 'Joueur inconnu';
+            const nameB = playerB ? `${playerB.prenom} ${playerB.nom}` : 'Joueur inconnu';
+
+            let statusHtml = '';
+            if (decided && myPick) {
+                const correct = myPick === winnerId;
+                statusHtml = `<span class="tag ${correct ? 'tag-win' : 'tag-loss'}">${correct ? '✅ Bon pronostic' : '❌ Raté'}</span>`;
+            } else if (decided && !myPick) {
+                statusHtml = `<span class="tag tag-pending">Match terminé</span>`;
+            } else if (!decided && myPick) {
+                statusHtml = `<span class="tag tag-pending">🔮 Pronostic enregistré</span>`;
+            }
+
+            return `
+                <li>
+                    <div class="pronostic-tournoi">${escapeHtml(it.tournoiNom)}</div>
+                    <div class="li-flex">
+                        <span><b>${escapeHtml(nameA)}</b> vs <b>${escapeHtml(nameB)}</b></span>
+                        ${statusHtml}
+                    </div>
+                    ${decided ? '' : `
+                    <div class="pronostic-buttons">
+                        <button type="button" class="btn-pronostic ${myPick === it.match.a ? 'active' : ''}" data-key="${key}" data-pick="${it.match.a}">${escapeHtml(nameA)}</button>
+                        <button type="button" class="btn-pronostic ${myPick === it.match.b ? 'active' : ''}" data-key="${key}" data-pick="${it.match.b}">${escapeHtml(nameB)}</button>
+                    </div>`}
+                </li>
+            `;
+        }).join('');
+
+        container.querySelectorAll('.btn-pronostic').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                const pick = btn.dataset.pick;
+                update(ref(db, `pronostics/${key}`), { [userId]: pick }).catch((error) => {
+                    console.error("Erreur enregistrement pronostic :", error);
+                    alert("❌ Impossible d'enregistrer votre pronostic.\n\nErreur Firebase : " + error.message + "\n\nCela vient probablement des règles de sécurité de la base de données qui n'autorisent pas encore l'écriture du nœud « pronostics ».");
+                });
+            });
+        });
+
+        // Tally des pronostics de l'utilisateur
+        let correctCount = 0, totalDecided = 0;
+        items.forEach(it => {
+            const key = pronosticKey(it.tId, it.dId, it.rIndex, it.mIndex);
+            const myPick = pronosticsCache[key] && pronosticsCache[key][userId];
+            if (it.match.vainqueur && myPick) {
+                totalDecided++;
+                const winnerId = it.match.vainqueur === 'a' ? it.match.a : it.match.b;
+                if (myPick === winnerId) correctCount++;
+            }
+        });
+        scoreEl.innerText = totalDecided > 0 ? `${correctCount}/${totalDecided} bons pronostics` : 'Aucun pronostic joué pour le moment';
+    }
+</script>
+
+</body>
+</html>

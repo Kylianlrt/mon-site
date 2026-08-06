@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BADSMASH - Se Connecter</title>
+    <style>
+        :root { 
+            --bg: #0f172a; --card: #1e293b; --green: #10b981; 
+            --text: #f8fafc; --sub: #94a3b8; --border: #334155; --accent: #3b82f6;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px; 
+        }
+        .login-card { 
+            background: var(--card); 
+            padding: 32px; 
+            border-radius: 16px; 
+            border: 1px solid var(--border); 
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+        .btn-home:hover { border-color: var(--green); }
+        .logo {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--green);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--sub);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: var(--sub); }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            background: var(--bg); 
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: var(--green); }
+        button { 
+            width: 100%; 
+            background: var(--green); 
+            color: var(--bg); 
+            border: none; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 1rem;
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+        .footer-links {
+            margin-top: 24px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            font-size: 0.85rem;
+        }
+        .footer-links a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .footer-links a:hover { text-decoration: underline; }
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <a href="index.html" class="btn-home">🏠 Accueil</a>
+    <div class="logo">BADSMASH</div>
+    <div class="subtitle">Espace Joueur</div>
+
+    <div class="error-message" id="error-box">Identifiants incorrects ou compte introuvable.</div>
+
+    <form id="form-login">
+        <div class="form-group">
+            <label for="login-email">Adresse Email</label>
+            <input type="email" id="login-email" required placeholder="joueur@exemple.com">
+        </div>
+        <div class="form-group">
+            <label for="login-pass">Mot de passe</label>
+            <input type="password" id="login-pass" required placeholder="••••••••">
+        </div>
+        <button type="submit" id="btn-submit">Se connecter</button>
+    </form>
+
+    <div class="footer-links">
+        <a href="admin.html">Accès Administrateur</a>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD5qiseJI4b-CwIGzKi8XYA6pSPqiMRV24",
+        authDomain: "badsmash-a5580.firebaseapp.com",
+        projectId: "badsmash-a5580",
+        storageBucket: "badsmash-a5580.firebasestorage.app",
+        messagingSenderId: "9725882238",
+        appId: "1:9725882238:web:1c1cdb40da0218f2828d2f",
+        databaseURL: "https://badsmash-a5580-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const form = document.getElementById('form-login');
+    const errorBox = document.getElementById('error-box');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorBox.style.display = 'none';
+
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-pass').value.trim();
+
+        onValue(ref(db, 'joueurs'), (snapshot) => {
+            const data = snapshot.val();
+            let loggedUserKey = null;
+
+            if (data) {
+                Object.keys(data).forEach(id => {
+                    const joueur = data[id];
+                    if (joueur.hasAccount && joueur.email === email && joueur.password === pass) {
+                        loggedUserKey = id;
+                    }
+                });
+            }
+
+            if (loggedUserKey) {
+                localStorage.setItem('badsmash_user_id', loggedUserKey);
+                window.location.href = 'mon-espace.html';
+            } else {
+                errorBox.style.display = 'block';
+            }
+        }, { onlyOnce: true });
+    });
+</script>
+
+</body>
+</html>
