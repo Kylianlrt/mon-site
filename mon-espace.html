@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Votre tableau de bord joueur BADSMASH : classements, matchs, objectifs et entraînements.">
+    <meta name="theme-color" content="#0f172a">
     <title>BADSMASH - Mon Espace</title>
     <style>
         :root { 
@@ -55,24 +57,181 @@
         textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); resize: vertical; min-height: 80px; }
         button.btn-save { background: var(--green); color: var(--bg); border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px; }
 
-        /* Pronostics */
-        .pronostic-tournoi { font-size: 0.78rem; color: var(--sub); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
-        .pronostic-buttons { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
-        .btn-pronostic {
-            flex: 1;
-            min-width: 120px;
-            width: auto;
-            margin: 0;
-            padding: 9px 10px;
-            font-size: 0.85rem;
+        /* Formulaire d'ajout d'entraînement */
+        input[type="date"], input[type="time"], input[type="text"] {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
             background: var(--bg);
             color: var(--text);
-            border: 1px solid var(--border);
-            font-weight: 600;
+            outline: none;
+            margin-bottom: 8px;
         }
-        .btn-pronostic:hover { border-color: var(--accent); background: rgba(59, 130, 246, 0.1); }
-        .btn-pronostic.active { background: var(--accent); border-color: var(--accent); color: white; }
-        .tag-pending { background: rgba(148, 163, 184, 0.15); color: var(--sub); }
+        input[type="date"]:focus, input[type="time"]:focus, input[type="text"]:focus { border-color: var(--accent); }
+        :focus-visible { outline: 3px solid rgba(16, 185, 129, 0.75); outline-offset: 3px; }
+        button:disabled { cursor: not-allowed; opacity: 0.55; }
+        .btn-delete-event {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 4px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            width: auto;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        /* Onglets Simple / Double / Mixte pour les listes de matchs */
+        .nav-tabs-mini { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+        .btn-tab-mini {
+            width: auto;
+            margin: 0;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            background: var(--bg);
+            color: var(--sub);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .btn-tab-mini.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* Onglets principaux de l'espace (Tableau de bord / Fiches Adversaires) */
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-tabs button {
+            width: auto;
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .nav-tabs button.active { background: var(--green); color: var(--bg); border-color: var(--green); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Onglet tournois */
+        .tournoi-select-card { background: linear-gradient(135deg, rgba(16, 185, 129, .12), rgba(59, 130, 246, .10)); }
+        .tournoi-select-card select { width: 100%; padding: 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit; }
+        .tournoi-showcase { overflow: hidden; }
+        .tournoi-showcase-head { padding: 22px; margin: -20px -20px 20px; background: linear-gradient(120deg, #0d3b32, #102b49); border-bottom: 1px solid var(--border); }
+        .tournoi-showcase-head h2 { color: white; border: 0; padding: 0; margin: 0 0 8px; }
+        .tournoi-meta { color: var(--sub); display: flex; gap: 14px; flex-wrap: wrap; font-size: .9rem; }
+        .tournoi-series { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .serie-card { padding: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
+        .serie-card h3 { color: var(--green); font-size: .95rem; margin-bottom: 6px; }
+        .serie-card p { color: var(--sub); font-size: .82rem; }
+        .tournoi-empty { text-align: center; color: var(--sub); padding: 30px 16px; }
+        .match-list-compact { max-height: 340px; overflow-y: auto; padding-right: 6px; scrollbar-color: var(--accent) var(--bg); }
+        .match-list-compact li { margin-right: 2px; }
+        .list-caption { color: var(--sub); font-size: .78rem; margin-top: 10px; text-align: right; }
+        .tab-hero { padding: 22px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(135deg, rgba(16,185,129,.14), rgba(59,130,246,.10)); }
+        .tab-hero h2 { border: 0; color: var(--text); padding: 0; margin: 0 0 6px; }
+        .tab-hero p { color: var(--sub); }
+        .planner-form { display: grid; gap: 10px; }
+        .planner-form textarea { min-height: 110px; }
+        .points-chart { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); overflow-x: auto; }
+        .points-chart svg { display: block; width: 100%; min-width: 580px; height: 285px; }
+        .points-chart-grid { stroke: #334155; stroke-width: 1; }
+        .points-chart-line { fill: none; stroke: #60a5fa; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .points-chart-dot { fill: #34d399; stroke: #0f172a; stroke-width: 3; }
+        .points-chart-label { fill: #cbd5e1; font-size: 11px; }
+        .points-chart-value { fill: #f8fafc; font-size: 11px; font-weight: 700; }
+        .calendar-form { display: grid; grid-template-columns: 140px 150px 1fr auto; gap: 10px; align-items: end; }
+        .calendar-form input, .calendar-form select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+        .calendar-entry { display: grid; grid-template-columns: 108px 1fr auto; gap: 12px; align-items: center; }
+        .calendar-date { color: var(--green); font-weight: 800; font-size: .85rem; }
+        .calendar-entry small { color: var(--sub); display: block; margin-top: 3px; }
+        .pool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .pool-card { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+        .pool-card h3 { margin-bottom: 12px; color: var(--green); }
+        .pool-card input { width: 100%; margin-bottom: 8px; padding: 9px; border: 1px solid var(--border); border-radius: 7px; background: var(--card); color: var(--text); }
+        .pool-card h4 { margin: 16px 0 8px; color: var(--sub); font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+        .standings-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+        .standings-table th, .standings-table td { padding: 8px 5px; border-bottom: 1px solid var(--border); text-align: center; }
+        .standings-table th:nth-child(2), .standings-table td:nth-child(2) { text-align: left; }
+        .standings-table tr:first-child td { color: #fde68a; font-weight: 800; }
+        .result-form { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+        .result-form input { width: 52px; padding: 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); text-align: center; }
+        .result-form button { width: auto; margin: 0; padding: 6px 9px; font-size: .75rem; }
+        @media (max-width: 700px) { .calendar-form { grid-template-columns: 1fr; } .pool-grid { grid-template-columns: 1fr; } .calendar-entry { grid-template-columns: 1fr auto; } .calendar-date { grid-column: 1/-1; } }
+
+        /* Recherche de joueur (Fiches Adversaires) */
+        .search-box { position: relative; margin-bottom: 10px; }
+        .search-box input { padding-left: 32px; }
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: var(--sub); font-weight: 500; }
+
+        .player-pick-item { cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+        .player-pick-item:hover { border-color: var(--accent); }
+        .player-pick-item.active { border-color: var(--green); background: rgba(16, 185, 129, 0.08); }
+
+        /* --- Lignes de match (listes de matchs + historique face-à-face) : plus lisibles --- */
+        .match-line {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px 12px;
+            border-left-width: 4px;
+            border-left-style: solid;
+        }
+        .match-line-win { border-left-color: var(--green); }
+        .match-line-loss { border-left-color: var(--danger); }
+        .match-line-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .match-line-opp { font-size: 0.95rem; }
+        .match-line-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .match-line-score { display: flex; gap: 6px; flex-wrap: wrap; }
+        .score-set {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2px 8px;
+        }
+        .score-set-wo {
+            font-family: system-ui, sans-serif;
+            font-weight: normal;
+            font-style: italic;
+            color: var(--sub);
+        }
+        .match-line-date { font-size: 0.78rem; color: var(--sub); white-space: nowrap; }
+        .tag-big {
+            font-size: 0.72rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            letter-spacing: 0.03em;
+        }
     </style>
 </head>
 <body>
@@ -89,88 +248,209 @@
         <button class="btn-logout" id="btn-logout">Déconnexion</button>
     </header>
 
-    <!-- CLASSEMENT ET POINTS -->
-    <div class="card">
-        <h2>
-            📊 Mes Classements & Points
-            <span id="badge-statut" class="badge-amateur">Amateur</span>
-        </h2>
+    <div class="nav-tabs">
+        <button type="button" class="btn-tab active" data-tab="tab-dashboard">📊 Tableau de bord</button>
+        <button type="button" class="btn-tab" data-tab="tab-tournois">🏆 Tournois</button>
+        <button type="button" class="btn-tab" data-tab="tab-interclubs">🛡️ Interclubs</button>
+        <button type="button" class="btn-tab" data-tab="tab-nutrition">🥗 Nutrition</button>
+        <button type="button" class="btn-tab" data-tab="tab-musculation">💪 Musculation</button>
+        <button type="button" class="btn-tab" data-tab="tab-fiches">🕵️ Fiches Adversaires</button>
+    </div>
+
+    <!-- ONGLET TABLEAU DE BORD -->
+    <div id="tab-dashboard" class="tab-content active">
+
+        <!-- CLASSEMENT ET POINTS -->
+        <div class="card">
+            <h2>
+                📊 Mes Classements & Points
+                <span id="badge-statut" class="badge-amateur">Amateur</span>
+            </h2>
+            <div class="grid-3">
+                <div class="stat-box">
+                    <div class="title">Simple</div>
+                    <div class="val" id="pts-simple">0 pts</div>
+                </div>
+                <div class="stat-box">
+                    <div class="title">Double</div>
+                    <div class="val" id="pts-double">0 pts</div>
+                </div>
+                <div class="stat-box">
+                    <div class="title">Mixte</div>
+                    <div class="val" id="pts-mixte">0 pts</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OBJECTIFS GÉNÉRAUX -->
+        <div class="card">
+            <h2>🎯 Mes Objectifs</h2>
+            <textarea id="user-objectifs" placeholder="Définissez vos objectifs personnels (ex: Passer D8 en Simple, gagner 3 matchs en Interclubs...)"></textarea>
+            <button class="btn-save" id="btn-save-obj">Enregistrer mes objectifs</button>
+        </div>
+
+        <!-- PROCHAINS ÉVÉNEMENTS -->
         <div class="grid-3">
-            <div class="stat-box">
-                <div class="title">Simple</div>
-                <div class="val" id="pts-simple">0 pts</div>
+            <div class="card">
+                <h2>📅 Entraînements</h2>
+                <form id="form-entrainement">
+                    <div class="grid-2">
+                        <input type="date" id="entrainement-date" required>
+                        <input type="time" id="entrainement-heure" required>
+                    </div>
+                    <input type="text" id="entrainement-titre" placeholder="Titre (ex: Entraînement libre)">
+                    <button type="submit" class="btn-save">➕ Ajouter un entraînement</button>
+                </form>
+                <ul id="list-entrainements"><li>Aucun entraînement prévu</li></ul>
             </div>
-            <div class="stat-box">
-                <div class="title">Double</div>
-                <div class="val" id="pts-double">0 pts</div>
+            <div class="card">
+                <h2>🏆 Prochain Tournoi</h2>
+                <div id="prochain-tournoi-info"><p>Aucun tournoi à venir.</p></div>
+                <div id="prochain-tournoi-objectif" style="display: none;">
+                    <label style="display: block; font-size: 0.8rem; color: var(--sub); margin: 12px 0 6px;">Objectif de résultat pour ce tournoi</label>
+                    <textarea id="tournoi-objectif" placeholder="ex: Atteindre les quarts de finale, gagner au moins 2 matchs..."></textarea>
+                    <button class="btn-save" id="btn-save-tournoi-objectif">Enregistrer mon objectif</button>
+                </div>
             </div>
-            <div class="stat-box">
-                <div class="title">Mixte</div>
-                <div class="val" id="pts-mixte">0 pts</div>
+            <div class="card">
+                <h2>🛡️ Prochains Interclubs</h2>
+                <form id="form-interclub">
+                    <input type="text" id="interclub-club" placeholder="Club adverse" required>
+                    <div class="grid-2">
+                        <input type="date" id="interclub-date" required>
+                        <input type="time" id="interclub-heure">
+                    </div>
+                    <input type="text" id="interclub-lieu" placeholder="Lieu (optionnel, ex: Domicile / Extérieur)">
+                    <button type="submit" class="btn-save">➕ Ajouter un interclub</button>
+                </form>
+                <ul id="list-interclubs"><li>Aucun interclub prévu</li></ul>
             </div>
         </div>
-    </div>
 
-    <!-- OBJECTIFS -->
-    <div class="card">
-        <h2>🎯 Mes Objectifs</h2>
-        <textarea id="user-objectifs" placeholder="Définissez vos objectifs personnels (ex: Passer D8 en Simple, gagner 3 matchs en Interclubs...)"></textarea>
-        <button class="btn-save" id="btn-save-obj">Enregistrer mes objectifs</button>
-    </div>
+        <!-- DERNIERS MATCHS ET RATIOS -->
+        <div class="grid-2">
+            <div class="card">
+                <h2>
+                    🥇 Derniers Matchs de Tournoi
+                    <span class="sub-ratio" id="ratio-tournoi">Ratio : 0%</span>
+                </h2>
+                <div class="nav-tabs-mini">
+                    <button type="button" class="btn-tab-mini active" data-scope="tournoi" data-type="simple">Simple</button>
+                    <button type="button" class="btn-tab-mini" data-scope="tournoi" data-type="double">Double</button>
+                    <button type="button" class="btn-tab-mini" data-scope="tournoi" data-type="mixte">Mixte</button>
+                </div>
+                <ul id="list-matchs-tournoi"><li>Aucun match enregistré</li></ul>
+            </div>
+            <div class="card">
+                <h2>
+                    🏸 Derniers Matchs de Club / Interne
+                    <span class="sub-ratio" id="ratio-club">Ratio : 0%</span>
+                </h2>
+                <div class="nav-tabs-mini">
+                    <button type="button" class="btn-tab-mini active" data-scope="club" data-type="simple">Simple</button>
+                    <button type="button" class="btn-tab-mini" data-scope="club" data-type="double">Double</button>
+                    <button type="button" class="btn-tab-mini" data-scope="club" data-type="mixte">Mixte</button>
+                </div>
+                <ul id="list-matchs-club" class="match-list-compact"><li>Aucun match enregistré</li></ul>
+                <p class="list-caption">Les matchs récents sont regroupés ici. Faites défiler pour voir l’historique.</p>
+            </div>
+        </div>
 
-    <!-- PRONOSTICS -->
-    <div class="card">
-        <h2>
-            🔮 Mes Pronostics
-            <span class="sub-ratio" id="pronostics-score">Aucun pronostic joué pour le moment</span>
-        </h2>
-        <ul id="list-pronostics"><li>Chargement…</li></ul>
-    </div>
-
-    <!-- PROCHAINS ÉVÉNEMENTS -->
-    <div class="grid-3">
+        <!-- HISTORIQUE ADVERSAIRES (H2H) -->
         <div class="card">
-            <h2>📅 Entraînements</h2>
-            <ul id="list-entrainements"><li>Aucun entraînement prévu</li></ul>
-        </div>
-        <div class="card">
-            <h2>🏆 Prochains Tournois</h2>
-            <ul id="list-tournois"><li>Aucun tournoi inscrit</li></ul>
-        </div>
-        <div class="card">
-            <h2>🛡️ Prochains Interclubs</h2>
-            <ul id="list-interclubs"><li>Aucun interclub prévu</li></ul>
-        </div>
-    </div>
-
-    <!-- DERNIERS MATCHS ET RATIOS -->
-    <div class="grid-2">
-        <div class="card">
-            <h2>
-                🥇 Derniers Matchs de Tournoi
-                <span class="sub-ratio" id="ratio-tournoi">Ratio : 0%</span>
-            </h2>
-            <ul id="list-matchs-tournoi"><li>Aucun match enregistré</li></ul>
-        </div>
-        <div class="card">
-            <h2>
-                🏸 Derniers Matchs de Club / Interne
-                <span class="sub-ratio" id="ratio-club">Ratio : 0%</span>
-            </h2>
-            <ul id="list-matchs-club"><li>Aucun match enregistré</li></ul>
+            <h2>🥊 Face-à-Face (Historique des Adversaires)</h2>
+            <ul id="list-opponents"><li>Aucun adversaire joué</li></ul>
         </div>
     </div>
 
-    <!-- HISTORIQUE ADVERSAIRES (H2H) -->
-    <div class="card">
-        <h2>🥊 Face-à-Face (Historique des Adversaires)</h2>
-        <ul id="list-opponents"><li>Aucun adversaire joué</li></ul>
+    <!-- ONGLET TOURNOIS -->
+    <div id="tab-tournois" class="tab-content">
+        <div class="card tournoi-select-card">
+            <h2>🏆 Explorer les tournois</h2>
+            <label for="tournoi-view-select">Choisissez un tournoi à consulter</label>
+            <select id="tournoi-view-select" aria-describedby="tournoi-view-help">
+                <option value="">Chargement des tournois…</option>
+            </select>
+            <p id="tournoi-view-help" style="color: var(--sub); font-size: .85rem; margin-top: 10px;">Retrouvez les informations, séries et votre inscription.</p>
+        </div>
+        <div class="card tournoi-showcase" id="tournoi-view-detail">
+            <div class="tournoi-empty">Sélectionnez un tournoi pour afficher ses informations.</div>
+        </div>
+    </div>
+
+    <!-- ONGLET INTERCLUB -->
+    <div id="tab-interclubs" class="tab-content">
+        <div class="tab-hero"><h2>🛡️ Interclubs</h2><p>Préparez vos rencontres de club et retrouvez votre calendrier.</p></div>
+        <div class="card">
+            <h2>🏁 Mes deux poules & Classement</h2>
+            <p style="color: var(--sub); font-size: .85rem; margin-bottom: 14px;">Saisissez jusqu’à 6 équipes par poule : le classement de chaque poule s’affiche juste en dessous et se met à jour automatiquement. Vos équipes sont conservées sur cet appareil.</p>
+            <div class="pool-grid" id="interclub-pools"></div>
+            <button class="btn-save" type="button" id="btn-save-pools">Enregistrer les poules</button>
+        </div>
+        <div class="card">
+            <h2>➕ Programmer une rencontre</h2>
+            <form id="form-pool-match" class="calendar-form">
+                <div><label for="pool-match-date">Date</label><input id="pool-match-date" type="date" required></div>
+                <div><label for="pool-match-pool">Poule</label><select id="pool-match-pool"><option value="A">Poule A</option><option value="B">Poule B</option></select></div>
+                <div><label for="pool-match-teams">Rencontre</label><select id="pool-match-teams" required><option value="">Renseignez les équipes ci-dessus</option></select></div>
+                <button class="btn-save" type="submit">Ajouter</button>
+            </form>
+            <ul id="list-pool-matchs" style="margin-top: 16px;"></ul>
+        </div>
+        <div class="card">
+            <h2>📅 Rencontres à venir</h2>
+            <ul id="list-interclubs-full"><li>Aucun interclub prévu</li></ul>
+        </div>
+    </div>
+
+    <!-- ONGLET NUTRITION -->
+    <div id="tab-nutrition" class="tab-content">
+        <div class="tab-hero"><h2>🥗 Calendrier nutrition</h2><p>Planifiez vos plats, vos collations et votre récupération jour par jour.</p></div>
+        <div class="card"><form id="form-nutrition" class="calendar-form"><div><label for="nutrition-date">Date</label><input id="nutrition-date" type="date" required></div><div><label for="nutrition-type">Moment</label><select id="nutrition-type"><option>Petit-déjeuner</option><option>Déjeuner</option><option>Dîner</option><option>Collation</option><option>Récupération</option></select></div><div><label for="nutrition-plat">Plat prévu</label><input id="nutrition-plat" type="text" placeholder="Ex. Riz, poulet et légumes" required></div><button class="btn-save" type="submit">Ajouter</button></form><ul id="list-nutrition" style="margin-top: 18px;"></ul></div>
+    </div>
+
+    <!-- ONGLET MUSCULATION -->
+    <div id="tab-musculation" class="tab-content">
+        <div class="tab-hero"><h2>💪 Calendrier musculation</h2><p>Planifiez vos séances et suivez les charges atteintes exercice par exercice.</p></div>
+        <div class="card"><form id="form-musculation" class="calendar-form"><div><label for="muscu-date">Date</label><input id="muscu-date" type="date" required></div><div><label for="muscu-exercice">Exercice</label><input id="muscu-exercice" type="text" placeholder="Ex. Squat" required></div><div><label for="muscu-details">Charge et répétitions</label><input id="muscu-details" type="text" placeholder="Ex. 70 kg · 4 × 8" required></div><button class="btn-save" type="submit">Ajouter</button></form><ul id="list-musculation" style="margin-top: 18px;"></ul></div>
+    </div>
+
+    <!-- ONGLET FICHES ADVERSAIRES -->
+    <div id="tab-fiches" class="tab-content">
+        <div class="card">
+            <h2>🔎 Rechercher un Joueur</h2>
+            <div class="search-box">
+                <input type="text" id="search-fiches-joueurs" placeholder="Rechercher un joueur (nom, prénom)...">
+            </div>
+            <ul id="list-fiches-joueurs"><li>Aucun joueur trouvé.</li></ul>
+        </div>
+
+        <div class="card" id="fiche-detail" style="display: none;">
+            <h2 id="fiche-detail-name">Joueur</h2>
+
+            <div class="form-group">
+                <label for="fiche-qualites">✅ Points forts / Qualités</label>
+                <textarea id="fiche-qualites" placeholder="ex: Smash puissant, très rapide au filet..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="fiche-faiblesses">⚠️ Points faibles</label>
+                <textarea id="fiche-faiblesses" placeholder="ex: Revers fragile, fatigue en fin de match..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="fiche-style">🎾 Style de jeu</label>
+                <textarea id="fiche-style" placeholder="ex: Joueur défensif, préfère les échanges longs..."></textarea>
+            </div>
+            <button class="btn-save" id="btn-save-fiche">Enregistrer la fiche</button>
+
+            <h3 style="margin-top: 24px; color: var(--sub); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); padding-bottom: 8px;">🥊 Historique face à ce joueur</h3>
+            <ul id="fiche-matchs-list" style="margin-top: 12px;"><li>Aucun match enregistré contre ce joueur.</li></ul>
+        </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyD5qiseJI4b-CwIGzKi8XYA6pSPqiMRV24",
@@ -196,18 +476,445 @@
         window.location.href = 'connexion.html';
     });
 
+    // Planificateurs personnels : toutes ces données restent sur l'appareil du joueur.
+    const localPlanKey = section => `badsmash_${section}_${userId}`;
+    const readLocalPlan = section => { try { return JSON.parse(localStorage.getItem(localPlanKey(section)) || '[]'); } catch { return []; } };
+    const writeLocalPlan = (section, value) => localStorage.setItem(localPlanKey(section), JSON.stringify(value));
+    const dateLabel = date => date ? new Date(`${date}T12:00:00`).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }) : 'Date à définir';
+
+    function renderPersonalCalendar(section, listId, detailLabel) {
+        const list = document.getElementById(listId);
+        const entries = readLocalPlan(section).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+        list.innerHTML = entries.length ? entries.map((entry, index) => `<li class="calendar-entry"><span class="calendar-date">${escapeHtml(dateLabel(entry.date))}</span><span><b>${escapeHtml(entry.title)}</b><small>${escapeHtml(detailLabel(entry))}</small></span><button class="btn-delete-event" type="button" data-section="${section}" data-index="${index}" aria-label="Supprimer">🗑️</button></li>`).join('') : '<li>Aucun élément planifié pour le moment.</li>';
+        list.querySelectorAll('.btn-delete-event').forEach(button => button.addEventListener('click', () => {
+            const items = readLocalPlan(button.dataset.section).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+            items.splice(Number(button.dataset.index), 1);
+            writeLocalPlan(button.dataset.section, items);
+            renderPersonalCalendar(section, listId, detailLabel);
+        }));
+    }
+
+    document.getElementById('form-nutrition').addEventListener('submit', event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const entries = readLocalPlan('nutrition');
+        entries.push({ date: document.getElementById('nutrition-date').value, title: document.getElementById('nutrition-plat').value.trim(), type: document.getElementById('nutrition-type').value });
+        writeLocalPlan('nutrition', entries); form.reset(); renderPersonalCalendar('nutrition', 'list-nutrition', e => e.type);
+    });
+    document.getElementById('form-musculation').addEventListener('submit', event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const entries = readLocalPlan('musculation');
+        entries.push({ date: document.getElementById('muscu-date').value, title: document.getElementById('muscu-exercice').value.trim(), details: document.getElementById('muscu-details').value.trim() });
+        writeLocalPlan('musculation', entries); form.reset(); renderPersonalCalendar('musculation', 'list-musculation', e => e.details);
+    });
+    renderPersonalCalendar('nutrition', 'list-nutrition', e => e.type);
+    renderPersonalCalendar('musculation', 'list-musculation', e => e.details);
+
+    function readPools() {
+        try {
+            const pools = JSON.parse(localStorage.getItem(localPlanKey('interclub_pools')) || 'null');
+            if (pools && Array.isArray(pools.A) && Array.isArray(pools.B)) return pools;
+        } catch {}
+        return { A: Array(6).fill(''), B: Array(6).fill('') };
+    }
+    function computeStandingsRows(pool, pools, matches) {
+        const rows = (pools[pool] || []).filter(Boolean).map(team => ({ team, played: 0, wins: 0, draws: 0, losses: 0, diff: 0, points: 0 }));
+        const byTeam = Object.fromEntries(rows.map(row => [row.team, row]));
+        matches.filter(match => match.pool === pool && Number.isFinite(match.scoreA) && Number.isFinite(match.scoreB)).forEach(match => {
+            const [home, away] = String(match.teams).split(' — ');
+            if (!byTeam[home] || !byTeam[away]) return;
+            const a = Number(match.scoreA), b = Number(match.scoreB);
+            byTeam[home].played++; byTeam[away].played++; byTeam[home].diff += a - b; byTeam[away].diff += b - a;
+            if (a > b) { byTeam[home].wins++; byTeam[home].points += 3; byTeam[away].losses++; }
+            else if (b > a) { byTeam[away].wins++; byTeam[away].points += 3; byTeam[home].losses++; }
+            else { byTeam[home].draws++; byTeam[away].draws++; byTeam[home].points += 1; byTeam[away].points += 1; }
+        });
+        rows.sort((a, b) => b.points - a.points || b.diff - a.diff || a.team.localeCompare(b.team));
+        return rows;
+    }
+    function standingsTableHtml(rows) {
+        return `<table class="standings-table"><thead><tr><th>#</th><th>Équipe</th><th>J</th><th>V</th><th>N</th><th>D</th><th>Diff.</th><th>Pts</th></tr></thead><tbody>${rows.length ? rows.map((row, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(row.team)}</td><td>${row.played}</td><td>${row.wins}</td><td>${row.draws}</td><td>${row.losses}</td><td>${row.diff > 0 ? '+' : ''}${row.diff}</td><td>${row.points}</td></tr>`).join('') : '<tr><td colspan="8">Ajoutez les équipes.</td></tr>'}</tbody></table>`;
+    }
+    function renderPools() {
+        const pools = readPools();
+        const matches = readLocalPlan('interclub_matches');
+        const target = document.getElementById('interclub-pools');
+        target.innerHTML = ['A', 'B'].map(pool => {
+            const rows = computeStandingsRows(pool, pools, matches);
+            return `<section class="pool-card">
+                <h3>🛡️ Poule ${pool}</h3>
+                ${pools[pool].map((team, index) => `<input type="text" data-pool="${pool}" data-index="${index}" value="${escapeHtml(team)}" placeholder="Équipe ${index + 1}">`).join('')}
+                <h4>🏆 Classement</h4>
+                ${standingsTableHtml(rows)}
+            </section>`;
+        }).join('');
+        updatePoolMatchOptions();
+    }
+    function savePools() {
+        const pools = { A: Array(6).fill(''), B: Array(6).fill('') };
+        document.querySelectorAll('#interclub-pools input').forEach(input => { pools[input.dataset.pool][Number(input.dataset.index)] = input.value.trim(); });
+        writeLocalPlan('interclub_pools', pools);
+        renderPools();
+    }
+    function updatePoolMatchOptions() {
+        const pool = document.getElementById('pool-match-pool').value;
+        const teams = (readPools()[pool] || []).filter(Boolean);
+        const select = document.getElementById('pool-match-teams');
+        const options = [];
+        teams.forEach((home, i) => teams.slice(i + 1).forEach(away => options.push(`${home} — ${away}`)));
+        select.innerHTML = '<option value="">Sélectionner les équipes…</option>' + options.map(match => `<option value="${escapeHtml(match)}">${escapeHtml(match)}</option>`).join('');
+    }
+    function renderPoolMatches() {
+        const list = document.getElementById('list-pool-matchs');
+        const matches = readLocalPlan('interclub_matches').sort((a, b) => String(a.date).localeCompare(String(b.date)));
+        list.innerHTML = matches.length ? matches.map((match, index) => `<li class="calendar-entry"><span class="calendar-date">${escapeHtml(dateLabel(match.date))}</span><span><b>${escapeHtml(match.teams)}</b><small>Poule ${escapeHtml(match.pool)}</small></span><form class="result-form" data-index="${index}"><input aria-label="Score équipe 1" type="number" min="0" value="${match.scoreA ?? ''}" placeholder="0"><span>—</span><input aria-label="Score équipe 2" type="number" min="0" value="${match.scoreB ?? ''}" placeholder="0"><button class="btn-save" type="submit">Résultat</button><button class="btn-delete-event" type="button" data-index="${index}" aria-label="Supprimer">🗑️</button></form></li>`).join('') : '<li>Aucune rencontre de poule programmée.</li>';
+        list.querySelectorAll('.result-form').forEach(form => form.addEventListener('submit', event => { event.preventDefault(); const inputs = form.querySelectorAll('input'); const scoreA = inputs[0].value, scoreB = inputs[1].value; if (scoreA === '' || scoreB === '') return; const current = readLocalPlan('interclub_matches').sort((a, b) => String(a.date).localeCompare(String(b.date))); current[Number(form.dataset.index)] = { ...current[Number(form.dataset.index)], scoreA: Number(scoreA), scoreB: Number(scoreB) }; writeLocalPlan('interclub_matches', current); renderPoolMatches(); renderStandings(); }));
+        list.querySelectorAll('.btn-delete-event').forEach(button => button.addEventListener('click', () => { const current = readLocalPlan('interclub_matches').sort((a, b) => String(a.date).localeCompare(String(b.date))); current.splice(Number(button.dataset.index), 1); writeLocalPlan('interclub_matches', current); renderPoolMatches(); renderStandings(); }));
+    }
+    function renderStandings() {
+        // Le classement est désormais intégré directement dans chaque carte de poule (voir renderPools).
+        renderPools();
+    }
+    document.getElementById('btn-save-pools').addEventListener('click', () => { savePools(); renderStandings(); });
+    document.getElementById('pool-match-pool').addEventListener('change', updatePoolMatchOptions);
+    document.getElementById('form-pool-match').addEventListener('submit', event => { event.preventDefault(); const teams = document.getElementById('pool-match-teams').value; if (!teams) return; const matches = readLocalPlan('interclub_matches'); matches.push({ date: document.getElementById('pool-match-date').value, pool: document.getElementById('pool-match-pool').value, teams }); writeLocalPlan('interclub_matches', matches); event.currentTarget.reset(); updatePoolMatchOptions(); renderPoolMatches(); renderStandings(); });
+    renderPools();
+    renderPoolMatches();
+    renderStandings();
+
+    // --- Onglets principaux (Tableau de bord / Fiches Adversaires) ---
+    document.querySelectorAll('.btn-tab').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll(':scope > .tab-content, .container > .tab-content').forEach(c => c.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            document.getElementById(e.currentTarget.dataset.tab).classList.add('active');
+        });
+    });
+
     let allPlayers = {};
-    let tournoisCache = {};
-    let pronosticsCache = {};
+    let cacheMatchsAll = {};
+    let cacheTournois = {};
+    let currentNextTournoiId = null;
+    let currentFicheTargetId = null;
 
     function escapeHtml(str) {
         return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
+    function normalizeText(str) {
+        return (str || '')
+            .toString()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
+    }
+
+    // --- Formate une date YYYY-MM-DD en JJ/MM/AAAA pour l'affichage ---
+    function formatDateFR(isoDate) {
+        if (!isoDate) return '';
+        const parts = isoDate.split('-');
+        if (parts.length !== 3) return isoDate;
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function tournamentSeries(t) {
+        if (t.series) return Object.values(t.series);
+        return t.serie ? [t.serie] : [];
+    }
+
+    function pointsForSeriesPlayer(player, type) {
+        if (!player) return 0;
+        if (type === 'double') return Number(player.ptsDouble || player.pointsDouble || 0);
+        if (type === 'mixte') return Number(player.ptsMixte || player.pointsMixte || 0);
+        return Number(player.ptsSimple || player.pointsSimple || 0);
+    }
+
+    function renderSeriesChart(series) {
+        const target = document.getElementById('serie-points-chart');
+        if (!target) return;
+        const type = series.type || 'simple';
+        const rows = (series.joueurs || []).map(id => {
+            const player = allPlayers[id];
+            return { name: player ? `${player.prenom || ''} ${(player.nom || '').toUpperCase()}`.trim() : 'Joueur inconnu', points: pointsForSeriesPlayer(player, type) };
+        }).sort((a, b) => b.points - a.points);
+        if (!rows.length) { target.innerHTML = '<div class="tournoi-empty">Aucun joueur inscrit dans cette série pour le moment.</div>'; return; }
+
+        const width = Math.max(620, rows.length * 105);
+        const height = 285, left = 52, right = 24, top = 28, bottom = 70;
+        const min = Math.min(...rows.map(r => r.points));
+        const max = Math.max(...rows.map(r => r.points));
+        const pad = Math.max(10, (max - min) * .12);
+        const yMin = Math.max(0, min - pad), yMax = max + pad;
+        const x = i => left + i * ((width - left - right) / Math.max(rows.length - 1, 1));
+        const y = value => top + (yMax - value) * ((height - top - bottom) / Math.max(yMax - yMin, 1));
+        const points = rows.map((r, i) => `${x(i)},${y(r.points)}`).join(' ');
+        const grid = [0, .25, .5, .75, 1].map(ratio => { const value = yMin + (yMax - yMin) * ratio; const yy = y(value); return `<line class="points-chart-grid" x1="${left}" x2="${width - right}" y1="${yy}" y2="${yy}"/><text class="points-chart-label" x="4" y="${yy + 4}">${Math.round(value)}</text>`; }).join('');
+        const dots = rows.map((r, i) => `<circle class="points-chart-dot" cx="${x(i)}" cy="${y(r.points)}" r="5"/><text class="points-chart-value" text-anchor="middle" x="${x(i)}" y="${y(r.points) - 12}">${Math.round(r.points)} pts</text><text class="points-chart-label" text-anchor="middle" x="${x(i)}" y="${height - 38}">${escapeHtml(r.name.length > 16 ? r.name.slice(0, 15) + '…' : r.name)}</text>`).join('');
+        target.innerHTML = `<div class="points-chart"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Courbe des points des joueurs inscrits"><text class="points-chart-label" x="${left}" y="15">Points ${type === 'double' ? 'double' : type === 'mixte' ? 'mixte' : 'simple'}</text>${grid}<polyline class="points-chart-line" points="${points}"/>${dots}</svg></div>`;
+    }
+
+    function renderTournamentView() {
+        const select = document.getElementById('tournoi-view-select');
+        const detail = document.getElementById('tournoi-view-detail');
+        const selectedId = select.value;
+        const list = Object.entries(cacheTournois).sort(([, a], [, b]) => String(b.date || '').localeCompare(String(a.date || '')));
+
+        select.innerHTML = '<option value="">Sélectionner un tournoi…</option>' + list.map(([id, t]) =>
+            `<option value="${escapeHtml(id)}">${escapeHtml(t.nom || 'Tournoi sans nom')}${t.date ? ` — ${escapeHtml(formatDateFR(t.date))}` : ''}</option>`
+        ).join('');
+        if (cacheTournois[selectedId]) select.value = selectedId;
+
+        if (!select.value || !cacheTournois[select.value]) {
+            detail.innerHTML = list.length
+                ? '<div class="tournoi-empty">Sélectionnez un tournoi pour afficher ses informations.</div>'
+                : '<div class="tournoi-empty">Aucun tournoi n’est disponible pour le moment.</div>';
+            return;
+        }
+
+        const t = cacheTournois[select.value];
+        const series = tournamentSeries(t);
+        const registered = series.some(s => Array.isArray(s.joueurs) && s.joueurs.includes(userId));
+        const date = t.dateFin && t.dateFin !== t.date
+            ? `${formatDateFR(t.date)} → ${formatDateFR(t.dateFin)}`
+            : formatDateFR(t.date || 'Date à confirmer');
+        const seriesHtml = series.length ? series.map(s => {
+            const players = Array.isArray(s.joueurs) ? s.joueurs.length : 0;
+            const suffix = players > 1 ? 's' : '';
+            return `<article class="serie-card"><h3>${escapeHtml(s.nom || s.type || 'Série')}</h3><p>${players} joueur${suffix} inscrit${suffix}</p>${Array.isArray(s.joueurs) && s.joueurs.includes(userId) ? '<p style="color: var(--green); margin-top: 7px; font-weight: 700;">✓ Vous êtes inscrit</p>' : ''}</article>`;
+        }).join('') : '<p style="color: var(--sub);">Les séries seront annoncées prochainement.</p>';
+
+        const seriesOptions = series.map((s, index) => `<option value="${index}">${escapeHtml(s.nom || s.type || `Série ${index + 1}`)}</option>`).join('');
+        detail.innerHTML = `<div class="tournoi-showcase-head"><h2>🏆 ${escapeHtml(t.nom || 'Tournoi')}</h2><div class="tournoi-meta"><span>📅 ${escapeHtml(date)}</span><span>📍 ${escapeHtml(t.lieu || 'Lieu à confirmer')}</span>${registered ? '<span style="color: #6ee7b7; font-weight: 700;">✓ Inscrit</span>' : ''}</div></div><h3 style="margin-bottom: 12px;">Séries du tournoi</h3><div class="tournoi-series">${seriesHtml}</div>${series.length ? `<div style="margin-top: 22px;"><label for="tournoi-serie-view-select">Courbe des points par série</label><select id="tournoi-serie-view-select" style="width:100%; margin:8px 0 12px; padding:10px; border-radius:8px; background:var(--bg); color:var(--text); border:1px solid var(--border);">${seriesOptions}</select><div id="serie-points-chart"></div></div>` : ''}`;
+        if (series.length) {
+            const seriesSelect = document.getElementById('tournoi-serie-view-select');
+            seriesSelect.addEventListener('change', () => renderSeriesChart(series[Number(seriesSelect.value)]));
+            renderSeriesChart(series[0]);
+        }
+    }
+
+    document.getElementById('tournoi-view-select').addEventListener('change', renderTournamentView);
+
+    // --- Clé de tri chronologique (plus récent en premier) : priorité à la date réelle
+    //     du match, puis à l'horodatage d'enregistrement en cas d'égalité / absence de date. ---
+    function matchSortKey(m) {
+        const dateStr = m.date || (m.timestamp ? new Date(m.timestamp).toISOString().slice(0, 10) : '0000-00-00');
+        const ts = String(m.timestamp || 0).padStart(15, '0');
+        return `${dateStr}_${ts}`;
+    }
+
+    // --- Détermine le rôle de l'utilisateur dans un match (simple OU double/mixte) ---
+    function getUserRoleInMatch(m, uid) {
+        const tableauType = m.tableauType || 'simple';
+
+        if (tableauType === 'double' || tableauType === 'mixte') {
+            if (!m.equipe1 || !m.equipe2) return { involved: false };
+            const inE1 = m.equipe1.includes(uid);
+            const inE2 = m.equipe2.includes(uid);
+            if (!inE1 && !inE2) return { involved: false };
+
+            const myTeam = inE1 ? m.equipe1 : m.equipe2;
+            const oppTeam = inE1 ? m.equipe2 : m.equipe1;
+            const partnerId = myTeam.find(id => id !== uid) || null;
+            const isWinner = (inE1 && m.vainqueur === 'e1') || (inE2 && m.vainqueur === 'e2');
+
+            return { involved: true, isWinner, opponentIds: oppTeam, partnerId, tableauType };
+        }
+
+        if (m.j1 !== uid && m.j2 !== uid) return { involved: false };
+        const isJ1 = m.j1 === uid;
+        const opponentId = isJ1 ? m.j2 : m.j1;
+        const isWinner = m.vainqueur === uid;
+        return { involved: true, isWinner, opponentIds: [opponentId], partnerId: null, tableauType };
+    }
+
+    function playerName(id) {
+        const j = allPlayers[id];
+        return j ? `${j.prenom} ${j.nom}` : 'Inconnu';
+    }
+
+    // --- Rendu d'une ligne de match : lisible en un coup d'œil (adversaire, victoire/défaite,
+    //     score mis en valeur set par set, et date du match) ---
+    function matchLineHtml(m, role) {
+        const isWin = role.isWinner;
+        const tagWin = isWin
+            ? '<span class="tag tag-big tag-win">✅ VICTOIRE</span>'
+            : '<span class="tag tag-big tag-loss">❌ DÉFAITE</span>';
+
+        const sets = [m.set1, m.set2, m.set3].filter(Boolean);
+        const scoreHtml = sets.length
+            ? sets.map(s => `<span class="score-set">${escapeHtml(s)}</span>`).join('')
+            : '<span class="score-set score-set-wo">Sans score (forfait)</span>';
+
+        const dateLabel = m.date ? formatDateFR(m.date) : (m.timestamp ? new Date(m.timestamp).toLocaleDateString('fr-FR') : '');
+
+        let opponentHtml;
+        if (role.partnerId) {
+            const partnerName = playerName(role.partnerId);
+            const oppNames = role.opponentIds.map(playerName).join(' / ');
+            opponentHtml = `Avec <b>${escapeHtml(partnerName)}</b> vs <b>${escapeHtml(oppNames)}</b>`;
+        } else {
+            const advName = playerName(role.opponentIds[0]);
+            opponentHtml = `vs <b>${escapeHtml(advName)}</b>`;
+        }
+
+        return `<li class="match-line ${isWin ? 'match-line-win' : 'match-line-loss'}">
+            <div class="match-line-top">
+                <span class="match-line-opp">${opponentHtml}</span>
+                ${tagWin}
+            </div>
+            <div class="match-line-bottom">
+                <span class="match-line-score">${scoreHtml}</span>
+                ${dateLabel ? `<span class="match-line-date">📅 ${escapeHtml(dateLabel)}</span>` : ''}
+            </div>
+        </li>`;
+    }
+
+    function formatRatio(wins, losses) {
+        const total = wins + losses;
+        if (total === 0) return 'Ratio : 0% (0V / 0D)';
+        const pct = Math.round((wins / total) * 100);
+        return `Ratio : ${pct}% (${wins}V / ${losses}D)`;
+    }
+
+    // --- Onglets Simple / Double / Mixte des listes de matchs ---
+    let matchesByScope = {
+        tournoi: { simple: [], double: [], mixte: [] },
+        club: { simple: [], double: [], mixte: [] }
+    };
+    let ratiosByScope = {
+        tournoi: { simple: { wins: 0, losses: 0 }, double: { wins: 0, losses: 0 }, mixte: { wins: 0, losses: 0 } },
+        club: { simple: { wins: 0, losses: 0 }, double: { wins: 0, losses: 0 }, mixte: { wins: 0, losses: 0 } }
+    };
+    let activeMatchTab = { tournoi: 'simple', club: 'simple' };
+
+    function renderMatchLists() {
+        ['tournoi', 'club'].forEach(scope => {
+            const type = activeMatchTab[scope];
+            const listEl = document.getElementById(scope === 'tournoi' ? 'list-matchs-tournoi' : 'list-matchs-club');
+            const lis = matchesByScope[scope][type];
+            listEl.innerHTML = lis.length ? lis.join('') : `<li>Aucun match de ${type === 'simple' ? 'simple' : type} enregistré</li>`;
+
+            const ratio = ratiosByScope[scope][type];
+            const ratioEl = document.getElementById(scope === 'tournoi' ? 'ratio-tournoi' : 'ratio-club');
+            ratioEl.innerText = formatRatio(ratio.wins, ratio.losses);
+        });
+    }
+
+    document.querySelectorAll('.btn-tab-mini').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const scope = btn.dataset.scope;
+            const type = btn.dataset.type;
+            activeMatchTab[scope] = type;
+            document.querySelectorAll(`.btn-tab-mini[data-scope="${scope}"]`).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderMatchLists();
+        });
+    });
+
+    // ============================================================
+    //                    FICHES ADVERSAIRES
+    // ============================================================
+
+    function renderFichesJoueursList() {
+        const container = document.getElementById('list-fiches-joueurs');
+        const search = normalizeText(document.getElementById('search-fiches-joueurs').value);
+
+        container.innerHTML = '';
+        let count = 0;
+
+        Object.keys(allPlayers).forEach(id => {
+            if (id === userId) return;
+            const j = allPlayers[id];
+            const label = `${j.prenom} ${j.nom}`;
+            const matches = !search || normalizeText(label).includes(search);
+            if (!matches) return;
+            count++;
+
+            const li = document.createElement('li');
+            li.className = 'player-pick-item' + (id === currentFicheTargetId ? ' active' : '');
+            li.dataset.id = id;
+            li.innerHTML = `<b>${escapeHtml(label)}</b>`;
+            container.appendChild(li);
+        });
+
+        if (count === 0) {
+            container.innerHTML = '<li>Aucun joueur ne correspond à la recherche.</li>';
+        }
+
+        container.querySelectorAll('.player-pick-item').forEach(li => {
+            li.addEventListener('click', () => openFiche(li.dataset.id));
+        });
+    }
+    document.getElementById('search-fiches-joueurs').addEventListener('input', renderFichesJoueursList);
+
+    function openFiche(targetId) {
+        currentFicheTargetId = targetId;
+        renderFichesJoueursList();
+
+        const j = allPlayers[targetId];
+        if (!j) return;
+
+        const detailBox = document.getElementById('fiche-detail');
+        detailBox.style.display = 'block';
+        document.getElementById('fiche-detail-name').innerText = `🕵️ ${j.prenom} ${j.nom}`;
+
+        onValue(ref(db, `fiches/${userId}/${targetId}`), (snap) => {
+            const data = snap.val() || {};
+            document.getElementById('fiche-qualites').value = data.qualites || '';
+            document.getElementById('fiche-faiblesses').value = data.faiblesses || '';
+            document.getElementById('fiche-style').value = data.style || '';
+        });
+
+        renderFicheMatchHistory(targetId);
+        detailBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('btn-save-fiche').addEventListener('click', () => {
+        if (!currentFicheTargetId) return;
+        const data = {
+            qualites: document.getElementById('fiche-qualites').value,
+            faiblesses: document.getElementById('fiche-faiblesses').value,
+            style: document.getElementById('fiche-style').value
+        };
+        update(ref(db), { [`fiches/${userId}/${currentFicheTargetId}`]: data }).then(() => {
+            alert("✅ Fiche enregistrée !");
+        }).catch((error) => {
+            console.error("Erreur enregistrement fiche :", error);
+            alert("❌ Impossible d'enregistrer cette fiche.\n\nErreur Firebase : " + error.message + "\n\nCela vient probablement des règles de sécurité de la base de données qui n'autorisent pas encore l'écriture du nœud « fiches ».");
+        });
+    });
+
+    function renderFicheMatchHistory(targetId) {
+        const container = document.getElementById('fiche-matchs-list');
+        if (!container) return;
+
+        const rows = [];
+        Object.keys(cacheMatchsAll).forEach(id => {
+            const m = cacheMatchsAll[id];
+            const role = getUserRoleInMatch(m, userId);
+            if (!role.involved) return;
+            if (!role.opponentIds.includes(targetId)) return;
+            rows.push({ m, role, key: matchSortKey(m) });
+        });
+        rows.sort((a, b) => b.key.localeCompare(a.key));
+
+        container.innerHTML = rows.length
+            ? rows.map(r => matchLineHtml(r.m, r.role)).join('')
+            : '<li>Aucun match enregistré contre ce joueur.</li>';
+    }
+
+    // ============================================================
+    //                FIN FICHES ADVERSAIRES
+    // ============================================================
+
     onValue(ref(db, 'joueurs'), (snapshot) => {
         allPlayers = snapshot.val() || {};
         loadUserData();
-        renderPronostics();
+        renderFichesJoueursList();
+        renderTournamentView();
     });
 
     function loadUserData() {
@@ -240,68 +947,56 @@
 
         onValue(ref(db, 'matchs'), (snapshot) => {
             const matchs = snapshot.val();
-            const listTournoi = document.getElementById('list-matchs-tournoi');
-            const listClub = document.getElementById('list-matchs-club');
+            cacheMatchsAll = matchs || {};
+
             const listOpponents = document.getElementById('list-opponents');
-            
-            listTournoi.innerHTML = '';
-            listClub.innerHTML = '';
             listOpponents.innerHTML = '';
 
-            let tournoiWins = 0, tournoiLosses = 0;
-            let clubWins = 0, clubLosses = 0;
+            matchesByScope = {
+                tournoi: { simple: [], double: [], mixte: [] },
+                club: { simple: [], double: [], mixte: [] }
+            };
+            ratiosByScope = {
+                tournoi: { simple: { wins: 0, losses: 0 }, double: { wins: 0, losses: 0 }, mixte: { wins: 0, losses: 0 } },
+                club: { simple: { wins: 0, losses: 0 }, double: { wins: 0, losses: 0 }, mixte: { wins: 0, losses: 0 } }
+            };
             const oppStats = {};
 
-            let hasTournoi = false;
-            let hasClub = false;
-
             if (matchs) {
-                Object.keys(matchs).forEach(id => {
-                    const m = matchs[id];
-                    if (m.j1 === userId || m.j2 === userId) {
-                        const isJ1 = m.j1 === userId;
-                        const advId = isJ1 ? m.j2 : m.j1;
-                        const advName = allPlayers[advId] ? `${allPlayers[advId].prenom} ${allPlayers[advId].nom}` : 'Inconnu';
-                        const isWinner = m.vainqueur === userId;
+                // Du plus récent au plus ancien : on trie par date réelle du match
+                // (puis par horodatage d'enregistrement en cas d'égalité) avant de
+                // construire les listes, afin que le tout premier élément affiché
+                // soit toujours le match le plus récent.
+                const sortedIds = Object.keys(matchs).sort((a, b) => matchSortKey(matchs[b]).localeCompare(matchSortKey(matchs[a])));
 
-                        // Statistiques adversaires (H2H)
+                sortedIds.forEach(id => {
+                    const m = matchs[id];
+                    const role = getUserRoleInMatch(m, userId);
+                    if (!role.involved) return;
+
+                    // Statistiques adversaires (H2H) : un match de double/mixte compte face à chacun des 2 adversaires
+                    role.opponentIds.forEach(advId => {
                         if (!oppStats[advId]) {
-                            oppStats[advId] = { name: advName, wins: 0, losses: 0, count: 0 };
+                            oppStats[advId] = { name: playerName(advId), wins: 0, losses: 0, count: 0 };
                         }
                         oppStats[advId].count++;
-                        if (isWinner) oppStats[advId].wins++;
+                        if (role.isWinner) oppStats[advId].wins++;
                         else oppStats[advId].losses++;
+                    });
 
-                        const tagHtml = isWinner ? '<span class="tag tag-win">VICTOIRE</span>' : '<span class="tag tag-loss">DÉFAITE</span>';
-                        const score = `${m.set1 || ''} ${m.set2 || ''} ${m.set3 || ''}`.trim();
-                        const li = `<li>vs <b>${advName}</b> — ${score} ${tagHtml}</li>`;
+                    const scope = (m.type === 'tournoi') ? 'tournoi' : 'club';
+                    const type = (role.tableauType === 'double' || role.tableauType === 'mixte') ? role.tableauType : 'simple';
 
-                        if (m.type === 'tournoi') {
-                            listTournoi.innerHTML += li;
-                            hasTournoi = true;
-                            if (isWinner) tournoiWins++; else tournoiLosses++;
-                        } else {
-                            listClub.innerHTML += li;
-                            hasClub = true;
-                            if (isWinner) clubWins++; else clubLosses++;
-                        }
-                    }
+                    matchesByScope[scope][type].push(matchLineHtml(m, role));
+                    if (role.isWinner) ratiosByScope[scope][type].wins++; else ratiosByScope[scope][type].losses++;
                 });
             }
 
-            if (!hasTournoi) listTournoi.innerHTML = '<li>Aucun match de tournoi enregistré</li>';
-            if (!hasClub) listClub.innerHTML = '<li>Aucun match de club enregistré</li>';
+            renderMatchLists();
 
-            // Affichage Ratios Tournois / Club
-            const formatRatio = (wins, losses) => {
-                const total = wins + losses;
-                if (total === 0) return 'Ratio : 0% (0V / 0D)';
-                const pct = Math.round((wins / total) * 100);
-                return `Ratio : ${pct}% (${wins}V / ${losses}D)`;
-            };
-
-            document.getElementById('ratio-tournoi').innerText = formatRatio(tournoiWins, tournoiLosses);
-            document.getElementById('ratio-club').innerText = formatRatio(clubWins, clubLosses);
+            if (currentFicheTargetId) {
+                renderFicheMatchHistory(currentFicheTargetId);
+            }
 
             // Génération de la liste des adversaires triée par nombre de matchs décroissant
             const sortedOpponents = Object.keys(oppStats).sort((a, b) => oppStats[b].count - oppStats[a].count);
@@ -334,52 +1029,115 @@
             }
         });
 
+        // --- Prochain tournoi (le plus proche dans le temps parmi ceux où le joueur est inscrit) ---
         onValue(ref(db, 'tournois'), (snapshot) => {
-            const tournois = snapshot.val();
-            tournoisCache = tournois || {};
+            const tournois = snapshot.val() || {};
+            cacheTournois = tournois;
+            renderTournamentView();
+            const todayStr = new Date().toISOString().slice(0, 10);
 
-            const list = document.getElementById('list-tournois');
-            list.innerHTML = '';
-            let count = 0;
-
-            if (tournois) {
-                Object.keys(tournois).forEach(id => {
-                    const t = tournois[id];
-                    if (t.serie && t.serie.joueurs && t.serie.joueurs.includes(userId)) {
-                        list.innerHTML += `<li><b>${t.nom}</b><br><small>📅 ${t.date} — 📍 ${t.lieu}</small></li>`;
-                        count++;
-                    }
-                });
+            // Un tournoi peut désormais contenir plusieurs séries : on regarde si le
+            // joueur est inscrit dans au moins une d'entre elles (ou dans l'ancienne
+            // "serie" unique, pour les tournois pas encore migrés vers le nouveau format).
+            function isRegisteredInTournoi(t, uid) {
+                if (t.series) {
+                    return Object.values(t.series).some(s => s.joueurs && s.joueurs.includes(uid));
+                }
+                if (t.serie) {
+                    return t.serie.joueurs && t.serie.joueurs.includes(uid);
+                }
+                return false;
             }
-            if (count === 0) list.innerHTML = '<li>Aucun tournoi inscrit</li>';
 
-            renderPronostics();
-        });
+            const upcomingIds = Object.keys(tournois)
+                .filter(id => isRegisteredInTournoi(tournois[id], userId))
+                .filter(id => {
+                    const t = tournois[id];
+                    const endRef = t.dateFin || t.date || '';
+                    return endRef >= todayStr;
+                })
+                .sort((a, b) => (tournois[a].date || '').localeCompare(tournois[b].date || ''));
 
-        onValue(ref(db, 'pronostics'), (snapshot) => {
-            pronosticsCache = snapshot.val() || {};
-            renderPronostics();
+            const infoEl = document.getElementById('prochain-tournoi-info');
+            const objBox = document.getElementById('prochain-tournoi-objectif');
+
+            if (upcomingIds.length === 0) {
+                infoEl.innerHTML = '<p>Aucun tournoi à venir.</p>';
+                objBox.style.display = 'none';
+                currentNextTournoiId = null;
+                return;
+            }
+
+            const id = upcomingIds[0];
+            const t = tournois[id];
+            currentNextTournoiId = id;
+
+            const dateLabel = (t.dateFin && t.dateFin !== t.date) ? `${t.date} → ${t.dateFin}` : (t.date || '');
+            infoEl.innerHTML = `
+                <p><b>${escapeHtml(t.nom)}</b></p>
+                <p style="color: var(--sub); font-size: 0.9rem; margin-top: 4px;">📅 ${escapeHtml(dateLabel)} — 📍 ${escapeHtml(t.lieu || '')}</p>
+            `;
+            objBox.style.display = 'block';
+
+            onValue(ref(db, `objectifsTournoi/${id}/${userId}`), (objSnap) => {
+                document.getElementById('tournoi-objectif').value = objSnap.val() || '';
+            });
         });
 
         onValue(ref(db, 'evenements'), (snapshot) => {
-            const evs = snapshot.val();
+            const evs = snapshot.val() || {};
             const listEntr = document.getElementById('list-entrainements');
             const listInter = document.getElementById('list-interclubs');
+            const listInterFull = document.getElementById('list-interclubs-full');
             
             listEntr.innerHTML = '';
             listInter.innerHTML = '';
+            listInterFull.innerHTML = '';
             let countEntr = 0, countInter = 0;
 
-            if (evs) {
-                Object.keys(evs).forEach(id => {
-                    const ev = evs[id];
-                    const item = `<li><b>${ev.titre}</b><br><small>📅 ${ev.date} à ${ev.heure}</small></li>`;
-                    if (ev.type === 'entrainement') { listEntr.innerHTML += item; countEntr++; }
-                    if (ev.type === 'interclub') { listInter.innerHTML += item; countInter++; }
-                });
-            }
+            // Tri par date/heure croissante pour un affichage chronologique
+            const sortedIds = Object.keys(evs).sort((a, b) => {
+                const evA = evs[a], evB = evs[b];
+                const keyA = `${evA.date || ''} ${evA.heure || ''}`;
+                const keyB = `${evB.date || ''} ${evB.heure || ''}`;
+                return keyA.localeCompare(keyB);
+            });
+
+            sortedIds.forEach(id => {
+                const ev = evs[id];
+                const isMine = ev.createdBy === userId;
+
+                if (ev.type === 'entrainement') {
+                    listEntr.innerHTML += `
+                        <li class="li-flex">
+                            <span><b>${escapeHtml(ev.titre)}</b><br><small>📅 ${escapeHtml(ev.date)} à ${escapeHtml(ev.heure)}</small></span>
+                            ${isMine ? `<button type="button" class="btn-delete-event" data-id="${id}" title="Supprimer">🗑️</button>` : ''}
+                        </li>`;
+                    countEntr++;
+                }
+                if (ev.type === 'interclub') {
+                    const heureLabel = ev.heure ? ` à ${escapeHtml(ev.heure)}` : '';
+                    const lieuLabel = ev.lieu ? ` — 📍 ${escapeHtml(ev.lieu)}` : '';
+                    const interclubHtml = `
+                        <li class="li-flex">
+                            <span><b>🆚 ${escapeHtml(ev.titre)}</b><br><small>📅 ${escapeHtml(ev.date)}${heureLabel}${lieuLabel}</small></span>
+                            ${isMine ? `<button type="button" class="btn-delete-event" data-id="${id}" title="Supprimer">🗑️</button>` : ''}
+                        </li>`;
+                    listInter.innerHTML += interclubHtml;
+                    listInterFull.innerHTML += interclubHtml;
+                    countInter++;
+                }
+            });
+
             if (countEntr === 0) listEntr.innerHTML = '<li>Aucun entraînement prévu</li>';
-            if (countInter === 0) listInter.innerHTML = '<li>Aucun interclub prévu</li>';
+            if (countInter === 0) {
+                listInter.innerHTML = '<li>Aucun interclub prévu</li>';
+                listInterFull.innerHTML = '<li>Aucun interclub prévu</li>';
+            }
+
+            [...listEntr.querySelectorAll('.btn-delete-event'), ...listInter.querySelectorAll('.btn-delete-event'), ...listInterFull.querySelectorAll('.btn-delete-event')].forEach(btn => {
+                btn.addEventListener('click', (e) => deleteEvenement(e.target.dataset.id));
+            });
         });
     }
 
@@ -390,112 +1148,69 @@
         });
     });
 
-    // ============================================================
-    //                         PRONOSTICS
-    // ============================================================
-
-    function pronosticKey(tournoiId, drawId, roundIndex, matchIndex) {
-        return `${tournoiId}_${drawId}_${roundIndex}_${matchIndex}`;
-    }
-
-    function renderPronostics() {
-        const container = document.getElementById('list-pronostics');
-        const scoreEl = document.getElementById('pronostics-score');
-        if (!container) return;
-
-        if (!tournoisCache || Object.keys(tournoisCache).length === 0) {
-            container.innerHTML = '<li>Aucun match à pronostiquer pour le moment.</li>';
-            return;
-        }
-
-        // Rassemble tous les matchs de tous les tableaux où les 2 joueurs sont connus
-        const items = [];
-        Object.keys(tournoisCache).forEach(tId => {
-            const t = tournoisCache[tId];
-            if (!t.draws) return;
-            Object.keys(t.draws).forEach(dId => {
-                const draw = t.draws[dId];
-                (draw.rounds || []).forEach((round, rIndex) => {
-                    round.forEach((match, mIndex) => {
-                        if (match.a && match.b) {
-                            items.push({ tId, dId, rIndex, mIndex, match, tournoiNom: t.nom });
-                        }
-                    });
-                });
-            });
+    // --- Objectif de résultat pour le prochain tournoi ---
+    document.getElementById('btn-save-tournoi-objectif').addEventListener('click', () => {
+        if (!currentNextTournoiId) return;
+        const text = document.getElementById('tournoi-objectif').value;
+        update(ref(db), { [`objectifsTournoi/${currentNextTournoiId}/${userId}`]: text }).then(() => {
+            alert("✅ Objectif enregistré !");
+        }).catch((error) => {
+            console.error("Erreur enregistrement objectif tournoi :", error);
+            alert("❌ Impossible d'enregistrer cet objectif.\n\nErreur Firebase : " + error.message + "\n\nCela vient probablement des règles de sécurité de la base de données qui n'autorisent pas encore l'écriture du nœud « objectifsTournoi ».");
         });
+    });
 
-        if (items.length === 0) {
-            container.innerHTML = '<li>Aucun match à pronostiquer pour le moment.</li>';
-            scoreEl.innerText = 'Aucun pronostic joué pour le moment';
-            return;
-        }
+    // --- Ajout d'un entraînement par le joueur ---
+    document.getElementById('form-entrainement').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const date = document.getElementById('entrainement-date').value;
+        const heure = document.getElementById('entrainement-heure').value;
+        const titre = document.getElementById('entrainement-titre').value.trim() || 'Entraînement';
 
-        // Les matchs non joués d'abord, puis les plus récents résultats
-        items.sort((a, b) => (!!a.match.vainqueur) - (!!b.match.vainqueur));
-
-        const displayItems = items.slice(0, 25);
-
-        container.innerHTML = displayItems.map(it => {
-            const key = pronosticKey(it.tId, it.dId, it.rIndex, it.mIndex);
-            const myPick = pronosticsCache[key] && pronosticsCache[key][userId];
-            const decided = !!it.match.vainqueur;
-            const winnerId = decided ? (it.match.vainqueur === 'a' ? it.match.a : it.match.b) : null;
-
-            const playerA = allPlayers[it.match.a];
-            const playerB = allPlayers[it.match.b];
-            const nameA = playerA ? `${playerA.prenom} ${playerA.nom}` : 'Joueur inconnu';
-            const nameB = playerB ? `${playerB.prenom} ${playerB.nom}` : 'Joueur inconnu';
-
-            let statusHtml = '';
-            if (decided && myPick) {
-                const correct = myPick === winnerId;
-                statusHtml = `<span class="tag ${correct ? 'tag-win' : 'tag-loss'}">${correct ? '✅ Bon pronostic' : '❌ Raté'}</span>`;
-            } else if (decided && !myPick) {
-                statusHtml = `<span class="tag tag-pending">Match terminé</span>`;
-            } else if (!decided && myPick) {
-                statusHtml = `<span class="tag tag-pending">🔮 Pronostic enregistré</span>`;
-            }
-
-            return `
-                <li>
-                    <div class="pronostic-tournoi">${escapeHtml(it.tournoiNom)}</div>
-                    <div class="li-flex">
-                        <span><b>${escapeHtml(nameA)}</b> vs <b>${escapeHtml(nameB)}</b></span>
-                        ${statusHtml}
-                    </div>
-                    ${decided ? '' : `
-                    <div class="pronostic-buttons">
-                        <button type="button" class="btn-pronostic ${myPick === it.match.a ? 'active' : ''}" data-key="${key}" data-pick="${it.match.a}">${escapeHtml(nameA)}</button>
-                        <button type="button" class="btn-pronostic ${myPick === it.match.b ? 'active' : ''}" data-key="${key}" data-pick="${it.match.b}">${escapeHtml(nameB)}</button>
-                    </div>`}
-                </li>
-            `;
-        }).join('');
-
-        container.querySelectorAll('.btn-pronostic').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                const pick = btn.dataset.pick;
-                update(ref(db, `pronostics/${key}`), { [userId]: pick }).catch((error) => {
-                    console.error("Erreur enregistrement pronostic :", error);
-                    alert("❌ Impossible d'enregistrer votre pronostic.\n\nErreur Firebase : " + error.message + "\n\nCela vient probablement des règles de sécurité de la base de données qui n'autorisent pas encore l'écriture du nœud « pronostics ».");
-                });
-            });
+        push(ref(db, 'evenements'), {
+            type: 'entrainement',
+            titre: titre,
+            date: date,
+            heure: heure,
+            createdBy: userId
+        }).then(() => {
+            e.target.reset();
+        }).catch((error) => {
+            console.error("Erreur ajout entraînement :", error);
+            alert("❌ Impossible d'ajouter cet entraînement.\n\nErreur Firebase : " + error.message + "\n\nCela vient probablement des règles de sécurité de la base de données qui n'autorisent pas encore l'écriture du nœud « evenements ».");
         });
+    });
 
-        // Tally des pronostics de l'utilisateur
-        let correctCount = 0, totalDecided = 0;
-        items.forEach(it => {
-            const key = pronosticKey(it.tId, it.dId, it.rIndex, it.mIndex);
-            const myPick = pronosticsCache[key] && pronosticsCache[key][userId];
-            if (it.match.vainqueur && myPick) {
-                totalDecided++;
-                const winnerId = it.match.vainqueur === 'a' ? it.match.a : it.match.b;
-                if (myPick === winnerId) correctCount++;
-            }
+    // --- Ajout d'un interclub par le joueur ---
+    document.getElementById('form-interclub').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const club = document.getElementById('interclub-club').value.trim();
+        const date = document.getElementById('interclub-date').value;
+        const heure = document.getElementById('interclub-heure').value;
+        const lieu = document.getElementById('interclub-lieu').value.trim();
+
+        push(ref(db, 'evenements'), {
+            type: 'interclub',
+            titre: club,
+            date: date,
+            heure: heure,
+            lieu: lieu,
+            createdBy: userId
+        }).then(() => {
+            e.target.reset();
+        }).catch((error) => {
+            console.error("Erreur ajout interclub :", error);
+            alert("❌ Impossible d'ajouter cet interclub.\n\nErreur Firebase : " + error.message + "\n\nCela vient probablement des règles de sécurité de la base de données qui n'autorisent pas encore l'écriture du nœud « evenements ».");
         });
-        scoreEl.innerText = totalDecided > 0 ? `${correctCount}/${totalDecided} bons pronostics` : 'Aucun pronostic joué pour le moment';
+    });
+
+    // --- Suppression d'un événement (entraînement ou interclub) ajouté par le joueur ---
+    function deleteEvenement(id) {
+        if (!confirm("Supprimer cet événement ?")) return;
+        update(ref(db), { [`evenements/${id}`]: null }).catch((error) => {
+            console.error("Erreur suppression événement :", error);
+            alert("❌ Impossible de supprimer cet événement.\n\nErreur Firebase : " + error.message);
+        });
     }
 </script>
 
