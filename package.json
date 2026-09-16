@@ -1,0 +1,11 @@
+{
+  "name": "badsmash-official-sync",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync:official-tournaments": "node scripts/sync-official-tournaments.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.1"
+  }
+}

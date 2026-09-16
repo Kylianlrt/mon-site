@@ -199,6 +199,13 @@
         font-size: 0.68rem; padding: 5px 10px; border-radius: 20px; font-weight: 800;
         letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
     }
+    .tournoi-source-link {
+        display: inline-flex; align-items: center; gap: 5px; margin-top: 9px;
+        color: var(--court-green); font-size: .78rem; font-weight: 700;
+        text-decoration: none;
+    }
+    .tournoi-source-link:hover { text-decoration: underline; }
+    .official-note { color: var(--chalk-dim); font-size: .8rem; margin: 10px 0 0; }
     .badge-bwf { background: rgba(246, 185, 59, 0.14); color: var(--gold); border: 1px solid rgba(246,185,59,0.4); }
     .badge-ffbad { background: rgba(47, 174, 110, 0.14); color: var(--court-green); border: 1px solid rgba(47,174,110,0.4); }
 
@@ -342,6 +349,7 @@
             <div id="tournois-list">
                 <div class="empty-state">Chargement des tournois…</div>
             </div>
+            <p id="official-tournaments-note" class="official-note"></p>
         </div>
     </section>
 
@@ -432,6 +440,7 @@
     let dbJoueurs = {};
     let dbClubs = {};
     let dbTournois = {};
+    let dbTournoisOfficiels = {};
     let dbMatchs = {};
 
     const flagsMap = {
@@ -541,6 +550,9 @@
     onValue(ref(db, 'clubs'), (snap) => { dbClubs = snap.val() || {}; renderAll(); });
     onValue(ref(db, 'joueurs'), (snap) => { dbJoueurs = snap.val() || {}; renderAll(); });
     onValue(ref(db, 'tournois'), (snap) => { dbTournois = snap.val() || {}; renderAll(); });
+    // Alimenté exclusivement par le synchroniseur serveur BadNet/eBad.
+    // Les tournois locaux restent dans "tournois" pour préserver les fonctions admin existantes.
+    onValue(ref(db, 'tournoisOfficiels'), (snap) => { dbTournoisOfficiels = snap.val() || {}; renderAll(); });
     onValue(ref(db, 'matchs'), (snap) => { dbMatchs = snap.val() || {}; renderAll(); });
 
     function renderAll() {
@@ -624,15 +636,29 @@
         const container = document.getElementById('tournois-list');
         title.innerHTML = activeCircuit === 'bwf' ? 'Tournois <span style="color:var(--chalk-dim); font-size:1rem;">— Circuit BWF</span>' : 'Tournois <span style="color:var(--chalk-dim); font-size:1rem;">— Circuit FFBaD</span>';
 
-        let list = Object.keys(dbTournois).map(id => ({ id, ...dbTournois[id] }));
+        const localTournois = Object.keys(dbTournois).map(id => ({ id, ...dbTournois[id] }));
+        const officiels = Object.keys(dbTournoisOfficiels).map(id => ({
+            id: `official:${id}`,
+            ...dbTournoisOfficiels[id],
+            officiel: true
+        }));
+        let list = [...localTournois, ...officiels];
 
         list = list.filter(t => {
             const isPro = t.type === 'bwf' || (t.serie && t.serie.ptsMin >= 1000);
-            return activeCircuit === 'bwf' ? isPro : !isPro;
+            // Un tournoi fédéral doit venir du synchroniseur et porter une source
+            // eBad ou BadNet ainsi qu'un identifiant d'évènement vérifiable.
+            const isOfficialFfbad = t.officiel === true &&
+                ['badnet', 'ebad'].includes(String(t.source || '').toLowerCase()) &&
+                Boolean(t.sourceEventId);
+            return activeCircuit === 'bwf' ? isPro : isOfficialFfbad;
         });
 
         if (list.length === 0) {
             container.innerHTML = `<div class="empty-state">Aucun tournoi ${activeCircuit.toUpperCase()} pour le moment.</div>`;
+            document.getElementById('official-tournaments-note').textContent = activeCircuit === 'ffbad'
+                ? 'Les tournois apparaîtront dès la première synchronisation officielle BadNet/eBad.'
+                : '';
             return;
         }
 
@@ -645,6 +671,11 @@
                 : status === 'finished'
                     ? `<span class="status-pill status-finished">Terminé</span>`
                     : `<span class="status-pill status-live"><span class="live-dot" style="background:var(--live-red); display:inline-block; margin-right:4px; vertical-align:middle;"></span>En cours</span>`;
+            const source = String(t.source || '').toLowerCase();
+            const sourceLabel = source === 'ebad' ? 'Voir sur eBad' : 'Voir sur BadNet';
+            const sourceLink = t.sourceUrl
+                ? `<a class="tournoi-source-link" href="${escapeHtml(t.sourceUrl)}" target="_blank" rel="noopener noreferrer">↗ ${sourceLabel}</a>`
+                : '';
             return `
             <div class="tournoi-item">
                 <div>
@@ -653,6 +684,7 @@
                         <span>📍 ${escapeHtml(t.lieu || 'Lieu à confirmer')}</span>
                         <span>📅 ${escapeHtml(t.date || '—')}</span>
                     </div>
+                    ${sourceLink}
                 </div>
                 <span class="tournoi-badge ${activeCircuit === 'bwf' ? 'badge-bwf' : 'badge-ffbad'}">
                     ${activeCircuit === 'bwf' ? '⭐ BWF' : '🇫🇷 FFBaD'}
@@ -672,6 +704,10 @@
         }
 
         container.innerHTML = html;
+        const officialNote = document.getElementById('official-tournaments-note');
+        officialNote.textContent = activeCircuit === 'ffbad'
+            ? 'Données officielles synchronisées depuis BadNet et eBad. Les liens ouvrent la source publiée par l’organisateur.'
+            : '';
     }
 
     // ============================================================
